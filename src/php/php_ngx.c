@@ -156,6 +156,10 @@ ZEND_TSRMLS_CACHE_DEFINE()
 ZEND_GET_MODULE(php_ngx)
 #endif
 
+#if defined(PHP_WIN32) && defined(ZTS)
+ZEND_TSRMLS_CACHE_DEFINE()
+#endif
+
 static int php_ngx_startup(sapi_module_struct *sapi_module)
 {
     if (php_module_startup(sapi_module, NULL, 0) == FAILURE){
