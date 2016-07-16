@@ -7,6 +7,22 @@
 #ifndef _PHP_NGX_H_
 #define _PHP_NGX_H_
 
+#include <php.h>
+#include <SAPI.h>
+#include <php_main.h>
+#include <php_variables.h>
+#include <php_ini.h>
+#include <zend_ini.h>
+#include <zend_exceptions.h>
+#include <ext/standard/php_standard.h>
+#include <ext/standard/info.h>
+
+int php_ngx_module_init();
+void php_ngx_module_shutdown(TSRMLS_D);
+
+int php_ngx_request_init(TSRMLS_D);
+void php_ngx_request_shutdown(TSRMLS_D);
+
 extern zend_module_entry php_ngx_module_entry;
 #define phpext_php_ngx_ptr &php_ngx_module_entry
 
@@ -27,12 +43,12 @@ extern zend_module_entry php_ngx_module_entry;
 /*
     Declare any global variables you may need between the BEGIN
     and END macros here:
-
+*/
 ZEND_BEGIN_MODULE_GLOBALS(php_ngx)
     zend_long  global_value;
     char *global_string;
 ZEND_END_MODULE_GLOBALS(php_ngx)
-*/
+
 
 /* Always refer to the globals in your function as PHP_NGX_G(variable).
    You are encouraged to rename these macros something shorter, see
