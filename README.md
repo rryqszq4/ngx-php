@@ -1,8 +1,7 @@
 php7-nginx-module
 =================
 
-Embedded php7 scripting language for nginx-module.  
-[ngx_php](https://github.com/rryqszq4/php7-nginx-module) for php5.  
+Embedded php7 scripting language for nginx-module. [ngx_php](https://github.com/rryqszq4/php7-nginx-module) for php5.  
 QQ group：558795330
 
 Requirement
@@ -16,7 +15,7 @@ nginx-1.9.15
 Installation
 -------
 ```sh
-git clone https://github.com/rryqszq4/ngx_php.git
+git clone https://github.com/rryqszq4/php7-nginx-module.git
 cd ngx_php
 
 wget 'http://nginx.org/download/nginx-1.6.3.tar.gz'
@@ -30,8 +29,7 @@ export PHP_LIB=/path/to/php/lib
 ./configure --user=www --group=www \
             --prefix=/path/to/nginx \
             --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-            --add-module=/path/to/ngx_php/dev/ngx_devel_kit \
-            --add-module=/path/to/ngx_php
+            --add-module=/path/to/php7-nginx-module
 ```
 
 Synopsis
