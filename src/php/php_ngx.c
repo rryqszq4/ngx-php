@@ -14,7 +14,7 @@ ZEND_DECLARE_MODULE_GLOBALS(php_ngx)
 
 
 /* True global resources - no need for thread safety here */
-static int le_php_ngx;
+//static int le_php_ngx;
 
 /* {{{ PHP_INI
  */
@@ -36,7 +36,7 @@ PHP_INI_END()
 PHP_FUNCTION(confirm_php_ngx_compiled)
 {
     char *arg = NULL;
-    size_t arg_len, len;
+    size_t arg_len;
     zend_string *strg;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
@@ -173,7 +173,7 @@ static int php_ngx_deactivate(TSRMLS_D)
     return SUCCESS;
 }
 
-static int php_ngx_ub_write(const char *str, uint str_length TSRMLS_DC)
+static size_t php_ngx_ub_write(const char *str, size_t str_length TSRMLS_DC)
 {
     return str_length;
 }
@@ -187,7 +187,7 @@ static int php_ngx_header_handler(sapi_header_struct *sapi_header, sapi_header_o
     return 0;
 }
 
-static int php_ngx_read_post(char *buffer, uint count_bytes TSRMLS_DC)
+static size_t php_ngx_read_post(char *buffer, size_t count_bytes TSRMLS_DC)
 {
     return 0;
 }
@@ -255,9 +255,7 @@ sapi_module_struct php_ngx_module = {
     NULL,
 
     0,
-#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3)
     0,
-#endif
 
     NULL,
 
@@ -285,7 +283,7 @@ ZEND_END_ARG_INFO()
 
 static const zend_function_entry additional_functions[] = {
     ZEND_FE(dl, arginfo_dl)
-    {NULL, NULL, NULL}
+    {NULL, NULL, NULL, 0, 0}
 };
 
 int php_ngx_module_init()
@@ -308,7 +306,7 @@ int php_ngx_module_init()
 
 #ifdef ZTS
   tsrm_startup(1, 1, 0, NULL);
-  tsrm_ls = ts_resource(0);
+  (void)ts_resource(0);
   ZEND_TSRMLS_CACHE_UPDATE();
 #endif
 
