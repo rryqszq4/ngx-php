@@ -1,7 +1,8 @@
 php7-nginx-module
 =================
 
-Embedded php7 scripting language for nginx-module. [ngx_php](https://github.com/rryqszq4/php7-nginx-module) for php5.  
+Embedded php7 scripting language for nginx-module.  
+[ngx_php](https://github.com/rryqszq4/ngx_php) for php5.  
 QQ group：558795330
 
 Requirement
