@@ -1,7 +1,7 @@
-php7-nginx-module
+ngx_php7
 =================
 
-Embedded php7 scripting language for nginx-module.  
+Embedded php7 script language for nginx-module.  
 [ngx_php](https://github.com/rryqszq4/ngx_php) for php5.  
 QQ group：558795330
 
@@ -16,21 +16,20 @@ nginx-1.9.15
 Installation
 -------
 ```sh
-git clone https://github.com/rryqszq4/php7-nginx-module.git
-cd ngx_php
+$ git clone https://github.com/rryqszq4/ngx_php7.git
 
-wget 'http://nginx.org/download/nginx-1.6.3.tar.gz'
-tar -zxvf nginx-1.6.3.tar.gz
-cd nginx-1.6.3
+$ wget 'http://nginx.org/download/nginx-1.6.3.tar.gz'
+$ tar -zxvf nginx-1.6.3.tar.gz
+$ cd nginx-1.6.3
 
-export PHP_BIN=/path/to/php/bin
-export PHP_INC=/path/to/php/include/php
-export PHP_LIB=/path/to/php/lib
+$ export PHP_BIN=/path/to/php/bin
+$ export PHP_INC=/path/to/php/include/php
+$ export PHP_LIB=/path/to/php/lib
 
-./configure --user=www --group=www \
-            --prefix=/path/to/nginx \
-            --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-            --add-module=/path/to/php7-nginx-module
+$ ./configure --user=www --group=www \
+$             --prefix=/path/to/nginx \
+$             --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+$             --add-module=/path/to/ngx_php7
 ```
 
 Synopsis
@@ -61,7 +60,7 @@ http {
     
         location /php {
             content_by_php '
-                echo "hello php7-nginx-module";
+                echo "hello ngx_php7";
             ';
         }
     }

@@ -14,7 +14,7 @@
 
 #include "ngx_http_php_core.h"
 
-#define MODULE_NAME "php7_nginx_module"
+#define MODULE_NAME "ngx_php7"
 #define MODULE_VERSION  "0.0.3"
 
 extern ngx_module_t ngx_http_php_module;
