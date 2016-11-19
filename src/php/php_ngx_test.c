@@ -9,16 +9,16 @@
 
 static zend_class_entry *php_ngx_test_generator_class_entry;
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_test_construct_arginfo, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(ngx_test_generator_construct_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_yield_construct_arginfo, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(ngx_test_generator_yield_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_send_construct_arginfo, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(ngx_test_generator_send_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_receive_construct_arginfo, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(ngx_test_generator_receive_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 
@@ -39,15 +39,15 @@ PHP_METHOD(ngx_test_generator, send)
 
 PHP_METHOD(ngx_test_generator, receive)
 {
-    
+
 }
 
 
 static const zend_function_entry php_ngx_test_generator_class_functions[] = {
-    PHP_ME(ngx_test_generator, __construct, ngx_test_construct_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR);
-    PHP_ME(ngx_test_generator, yield, ngx_test_yield_arginfo, ZEND_ACC_PUBLIC);
-    PHP_ME(ngx_test_generator, send, ngx_test_send_arginfo, ZEND_ACC_PUBLIC);
-    PHP_ME(ngx_test_generator, receive, ngx_test_receive_arginfo, ZEND_ACC_PUBLIC);
+    PHP_ME(ngx_test_generator, __construct, ngx_test_generator_construct_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(ngx_test_generator, yield, ngx_test_generator_yield_arginfo, ZEND_ACC_PUBLIC)
+    PHP_ME(ngx_test_generator, send, ngx_test_generator_send_arginfo, ZEND_ACC_PUBLIC)
+    PHP_ME(ngx_test_generator, receive, ngx_test_generator_receive_arginfo, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
