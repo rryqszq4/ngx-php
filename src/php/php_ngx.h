@@ -17,6 +17,10 @@
 #include <ext/standard/php_standard.h>
 #include <ext/standard/info.h>
 
+#include <ngx_http.h>
+
+extern ngx_http_request_t * ngx_php_request;
+
 int php_ngx_module_init();
 void php_ngx_module_shutdown(TSRMLS_D);
 
@@ -49,6 +53,7 @@ extern zend_module_entry php_ngx_module_entry;
 ZEND_BEGIN_MODULE_GLOBALS(php_ngx)
     zend_long  global_value;
     char *global_string;
+    ngx_http_request_t *global_r;
 ZEND_END_MODULE_GLOBALS(php_ngx)
 
 

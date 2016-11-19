@@ -9,6 +9,8 @@
 #include "ext/standard/info.h"
 #include "php_ngx.h"
 
+#include "../ngx_http_php_module.h"
+
 /* If you declare any globals in php_php_ngx.h uncomment this: */
 ZEND_DECLARE_MODULE_GLOBALS(php_ngx)
 
@@ -96,6 +98,9 @@ PHP_RINIT_FUNCTION(php_ngx)
 #if defined(COMPILE_DL_PHP_NGX) && defined(ZTS)
     ZEND_TSRMLS_CACHE_UPDATE();
 #endif
+
+    PHP_NGX_G(global_r) = NULL;
+
     return SUCCESS;
 }
 /* }}} */
