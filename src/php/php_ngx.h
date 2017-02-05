@@ -1,5 +1,5 @@
 /**
- *    Copyright(c) 2016 rryqszq4
+ *    Copyright(c) 2016-2017 rryqszq4
  *
  *
  */
@@ -18,6 +18,8 @@
 #include <ext/standard/info.h>
 
 #include <ngx_http.h>
+
+#include "php_ngx_track.h"
 
 extern ngx_http_request_t * ngx_php_request;
 
@@ -53,7 +55,7 @@ extern zend_module_entry php_ngx_module_entry;
 ZEND_BEGIN_MODULE_GLOBALS(php_ngx)
     zend_long  global_value;
     char *global_string;
-    ngx_http_request_t *global_r;
+    //ngx_http_request_t *global_r;
 ZEND_END_MODULE_GLOBALS(php_ngx)
 
 

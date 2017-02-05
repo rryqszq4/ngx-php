@@ -1,5 +1,5 @@
 /**
- *    Copyright(c) 2016 rryqszq4
+ *    Copyright(c) 2016-2017 rryqszq4
  *
  *
  */
@@ -104,7 +104,7 @@ PHP_RINIT_FUNCTION(php_ngx)
     ZEND_TSRMLS_CACHE_UPDATE();
 #endif
 
-    PHP_NGX_G(global_r) = NULL;
+    //PHP_NGX_G(global_r) = NULL;
 
     return SUCCESS;
 }
