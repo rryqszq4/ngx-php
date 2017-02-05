@@ -23,6 +23,9 @@ char *ngx_http_php_content_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 char *ngx_http_php_content_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 char *ngx_http_php_content_async_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
+char *ngx_http_php_opcode_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+char *ngx_http_php_stack_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+
 
 #if defined(NDK) && NDK
 

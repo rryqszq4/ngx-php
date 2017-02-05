@@ -10,6 +10,10 @@
 #include <ngx_http.h>
 #include "php/php_ngx.h"
 
+#define OUTPUT_CONTENT  1<<0
+#define OUTPUT_OPCODE   1<<1
+#define OUTPUT_STACK    1<<2
+
 extern ngx_http_request_t *ngx_php_request;
 
 typedef struct ngx_http_php_state_t {
@@ -75,6 +79,11 @@ typedef struct ngx_http_php_ctx_t {
     pthread_t pthread_id;
 
     ngx_int_t error;
+
+    unsigned output_type;
+    unsigned opcode_logo;
+    unsigned stack_logo;
+    ngx_uint_t stack_depth;
     
 } ngx_http_php_ctx_t;
 

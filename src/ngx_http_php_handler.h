@@ -29,6 +29,12 @@ ngx_int_t ngx_http_php_content_file_handler(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_content_inline_handler(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_content_post_handler(ngx_http_request_t *r);
 
+ngx_int_t ngx_http_php_opcode_handler(ngx_http_request_t *r);
+ngx_int_t ngx_http_php_opcode_inline_handler(ngx_http_request_t *r);
+
+ngx_int_t ngx_http_php_stack_handler(ngx_http_request_t *r);
+ngx_int_t ngx_http_php_stack_inline_handler(ngx_http_request_t *r);
+
 /*ngx_int_t ngx_http_php_content_async_handler(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_content_async_inline_handler(ngx_http_request_t *r);
 void *ngx_http_php_async_inline_thread(void *arg);

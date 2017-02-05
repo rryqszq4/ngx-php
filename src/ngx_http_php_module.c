@@ -110,6 +110,24 @@ static ngx_command_t ngx_http_php_commands[] = {
      ngx_http_php_content_inline_handler
     },
 
+    {ngx_string("opcode_by_php"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_opcode_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_opcode_inline_handler
+    },
+
+    {ngx_string("stack_by_php"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_stack_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_stack_inline_handler
+    },
+
  /*   {ngx_string("content_async_by_php"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
@@ -273,6 +291,20 @@ ngx_http_php_handler_init(ngx_http_core_main_conf_t *cmcf, ngx_http_php_main_con
                     }
                     *h = ngx_http_php_content_handler;
                 }
+                if (pmcf->enabled_opcode_handler) {
+                    h = ngx_array_push(&cmcf->phases[phase].handlers);
+                    if (h == NULL) {
+                        return NGX_ERROR;
+                    }
+                    *h = ngx_http_php_opcode_handler;
+                }
+                if (pmcf->enabled_stack_handler) {
+                    h = ngx_array_push(&cmcf->phases[phase].handlers);
+                    if (h == NULL) {
+                        return NGX_ERROR;
+                    }
+                    *h = ngx_http_php_stack_handler;
+                }
                 /*if (pmcf->enabled_content_async_handler){
                     h = ngx_array_push(&cmcf->phases[phase].handlers);
                     if (h == NULL){
@@ -343,6 +375,10 @@ ngx_http_php_create_loc_conf(ngx_conf_t *cf)
 
     plcf->content_async_inline_code = NGX_CONF_UNSET_PTR;
 
+    plcf->opcode_inline_code = NGX_CONF_UNSET_PTR;
+
+    plcf->stack_inline_code = NGX_CONF_UNSET_PTR;
+
     return plcf;
 }
 
@@ -368,6 +404,10 @@ ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     prev->content_inline_code = conf->content_inline_code;
 
     prev->content_async_inline_code = conf->content_async_inline_code;
+
+    prev->opcode_inline_code = conf->opcode_inline_code;
+
+    prev->stack_inline_code = conf->stack_inline_code;
 
     return NGX_CONF_OK;
 }
@@ -399,7 +439,18 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 
     //old_zend_error_cb = zend_error_cb;
     //zend_error_cb = ngx_php_error_cb;
+    /*
+    ori_compile_file = zend_compile_file;
+    zend_compile_file = ngx_compile_file;
 
+    ori_compile_string = zend_compile_string;
+    zend_compile_string = ngx_compile_string;
+
+    ori_execute_ex = zend_execute_ex;
+    zend_execute_ex = ngx_execute_ex;
+
+    zend_execute_internal = ngx_execute_internal;
+    */
     return NGX_OK;
 }
 

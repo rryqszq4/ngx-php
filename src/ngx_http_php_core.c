@@ -249,37 +249,40 @@ size_t ngx_http_php_code_ub_write(const char *str, size_t str_length TSRMLS_DC)
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    ns.data = (u_char *)str;
-    ns.len = str_length;
+    if (ctx->output_type & OUTPUT_CONTENT){
 
-    if (ctx->rputs_chain == NULL){
-        chain = ngx_pcalloc(r->pool, sizeof(ngx_http_php_rputs_chain_list_t));
-        chain->out = ngx_alloc_chain_link(r->pool);
-        chain->last = &chain->out;
-    }else {
-        chain = ctx->rputs_chain;
-        (*chain->last)->next = ngx_alloc_chain_link(r->pool);
-        chain->last = &(*chain->last)->next;
+        ns.data = (u_char *)str;
+        ns.len = str_length;
+
+        if (ctx->rputs_chain == NULL){
+            chain = ngx_pcalloc(r->pool, sizeof(ngx_http_php_rputs_chain_list_t));
+            chain->out = ngx_alloc_chain_link(r->pool);
+            chain->last = &chain->out;
+        }else {
+            chain = ctx->rputs_chain;
+            (*chain->last)->next = ngx_alloc_chain_link(r->pool);
+            chain->last = &(*chain->last)->next;
+        }
+
+        b = ngx_calloc_buf(r->pool);
+        (*chain->last)->buf = b;
+        (*chain->last)->next = NULL;
+
+        u_str = ngx_pstrdup(r->pool, &ns);
+        //u_str[ns.len] = '\0';
+        (*chain->last)->buf->pos = u_str;
+        (*chain->last)->buf->last = u_str + ns.len;
+        (*chain->last)->buf->memory = 1;
+        ctx->rputs_chain = chain;
+        ngx_http_set_ctx(r, ctx, ngx_http_php_module);
+
+        if (r->headers_out.content_length_n == -1){
+            r->headers_out.content_length_n += ns.len + 1;
+        }else {
+            r->headers_out.content_length_n += ns.len;
+        }
+
     }
-
-    b = ngx_calloc_buf(r->pool);
-    (*chain->last)->buf = b;
-    (*chain->last)->next = NULL;
-
-    u_str = ngx_pstrdup(r->pool, &ns);
-    //u_str[ns.len] = '\0';
-    (*chain->last)->buf->pos = u_str;
-    (*chain->last)->buf->last = u_str + ns.len;
-    (*chain->last)->buf->memory = 1;
-    ctx->rputs_chain = chain;
-    ngx_http_set_ctx(r, ctx, ngx_http_php_module);
-
-    if (r->headers_out.content_length_n == -1){
-        r->headers_out.content_length_n += ns.len + 1;
-    }else {
-        r->headers_out.content_length_n += ns.len;
-    }
-
     return r->headers_out.content_length_n;
 }
 
