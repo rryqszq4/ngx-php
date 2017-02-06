@@ -23,6 +23,6 @@ CORE_INCS="$CORE_INCS $PHP_INC $PHP_INC/main $PHP_INC/TSRM $PHP_INC/Zend $PHP_IN
 
 CORE_LIBS="$CORE_LIBS `$PHP_BIN/php-config --ldflags` -L$PHP_LIB -lphp7 `$PHP_BIN/php-config --libs` "
 
-#CORE_INCS="$CORE_INCS /usr/local/php7013/include/php /usr/local/php7013/include/php/main /usr/local/php7013/include/php/TSRM /usr/local/php7013/include/php/Zend /usr/local/php7013/include/php/ext /usr/local/php7013/include/php/ext/date/lib /usr/local/php7013/include/php/sapi/embed "
+#CORE_INCS="$CORE_INCS /usr/local/php7015/include/php /usr/local/php7015/include/php/main /usr/local/php7015/include/php/TSRM /usr/local/php7015/include/php/Zend /usr/local/php7015/include/php/ext /usr/local/php7015/include/php/ext/date/lib /usr/local/php7015/include/php/sapi/embed "
 
-#CORE_LIBS="$CORE_LIBS `/usr/local/php7013/bin/php-config --ldflags` -L/usr/local/php7013/lib -lphp7 `/usr/local/php/bin/php-config --libs` "
+#CORE_LIBS="$CORE_LIBS `/usr/local/php7015/bin/php-config --ldflags` -L/usr/local/php7015/lib -lphp7 `/usr/local/php/bin/php-config --libs` "
