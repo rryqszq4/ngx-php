@@ -387,6 +387,39 @@ static void ngx_stack_print_tab(ngx_uint_t depth, int flag)
     }
 }
 
+static void 
+track_zend_execute_data(zend_execute_data *execute_data)
+{
+    int i;
+    zend_op op;
+    if (execute_data) {
+        php_printf("------------------------------\n");
+        php_printf("|zend_execute_data = %p\n", execute_data);
+        php_printf("|.opline = %p\n", execute_data->opline);
+        if (execute_data->opline) {
+        php_printf("|    .opcode = %d\n", execute_data->opline->opcode);
+        }
+        php_printf("|.call = %p\n", execute_data->call);
+        php_printf("|.func = %p\n", execute_data->func);
+        if (execute_data->func) {
+        php_printf("|    .type = %d\n", execute_data->func->type,execute_data->func->type);
+        php_printf("|    .op_array = %p\n", execute_data->func->op_array);
+        if (&execute_data->func->op_array) {
+        php_printf("|        .last = %d\n", execute_data->func->op_array.last);
+        for (i = 1; i < (int)execute_data->func->op_array.last; i++) {
+        op = execute_data->func->op_array.opcodes[i];
+        php_printf("|        [%d].opcode = %s\n", i, zend_get_opcode_name(op.opcode));
+        }    
+        }
+        }
+        php_printf("|.This = %p\n", execute_data->This);
+        php_printf("|.called_scope = %p\n", execute_data->called_scope);
+        php_printf("|.prev_execute_data = %p\n", execute_data->prev_execute_data);
+        php_printf("|.symbol_table = %p\n", execute_data->symbol_table);
+        php_printf("------------------------------\n");
+    }
+}
+
 void ngx_execute_ex(zend_execute_data *execute_data TSRMLS_DC)
 {
     int lineno;
@@ -429,6 +462,8 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_start;
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
+
+    //track_zend_execute_data(execute_data);
 
     ori_execute_ex(execute_data TSRMLS_CC);
 
@@ -491,6 +526,8 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_start;
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
+
+    //track_zend_execute_data(execute_data);
 
     execute_internal(execute_data, return_value);
 
