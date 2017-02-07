@@ -391,26 +391,34 @@ static void
 track_zend_execute_data(zend_execute_data *execute_data)
 {
     int i;
+    zend_op_array op_array;
     zend_op op;
+
     if (execute_data) {
         php_printf("------------------------------\n");
         php_printf("|zend_execute_data = %p\n", execute_data);
         php_printf("|.opline = %p\n", execute_data->opline);
         if (execute_data->opline) {
-        php_printf("|    .opcode = %d\n", execute_data->opline->opcode);
+        php_printf("|    .opcode = %s\n", zend_get_opcode_name(execute_data->opline->opcode));
         }
         php_printf("|.call = %p\n", execute_data->call);
         php_printf("|.func = %p\n", execute_data->func);
         if (execute_data->func) {
         php_printf("|    .type = %d\n", execute_data->func->type,execute_data->func->type);
+            if (&execute_data->func->op_array) {
         php_printf("|    .op_array = %p\n", execute_data->func->op_array);
-        if (&execute_data->func->op_array) {
-        php_printf("|        .last = %d\n", execute_data->func->op_array.last);
-        for (i = 1; i < (int)execute_data->func->op_array.last; i++) {
-        op = execute_data->func->op_array.opcodes[i];
+                op_array = execute_data->func->op_array;
+        php_printf("|        .last = %d\n", op_array.last);
+                if (op_array.scope) {
+        php_printf("|        .function_name = %s::%s\n", ZSTR_VAL(op_array.scope->name), op_array.function_name?ZSTR_VAL(op_array.function_name):NULL);
+                }else {
+        php_printf("|        .function_name = %s\n", op_array.function_name?ZSTR_VAL(op_array.function_name):NULL);
+                }
+                for (i = 1; i < (int)op_array.last; i++) {
+        op = op_array.opcodes[i];
         php_printf("|        [%d].opcode = %s\n", i, zend_get_opcode_name(op.opcode));
-        }    
-        }
+                }    
+            }
         }
         php_printf("|.This = %p\n", execute_data->This);
         php_printf("|.called_scope = %p\n", execute_data->called_scope);
