@@ -207,7 +207,7 @@ static void ngx_track_op_array(zend_op_array *op_array TSRMLS_DC)
     php_printf("    %-6s%-6s%-38s%-16s%-16s%-16s\n","id","line","opcode","op1","op2","result");
     php_printf("    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 
-    for (i = 1; i < op_array->last; i++) {
+    for (i = 0; i < op_array->last; i++) {
         op = op_array->opcodes[i];
         php_printf("    %-6d%-6d%-38s", 
             i, 
@@ -388,7 +388,7 @@ static void ngx_stack_print_tab(ngx_uint_t depth, int flag)
 }
 
 void 
-track_zend_execute_data(zend_execute_data *execute_data)
+ngx_track_zend_execute_data(zend_execute_data *execute_data)
 {
     int i;
     zend_op_array op_array;
@@ -396,7 +396,7 @@ track_zend_execute_data(zend_execute_data *execute_data)
 
     if (execute_data) {
         php_printf("------------------------------\n");
-        php_printf("|zend_execute_data = %p\n", execute_data);
+        php_printf("|zend_execute_data = %p {\n", execute_data);
         php_printf("|.opline = %p\n", execute_data->opline);
         if (execute_data->opline) {
         php_printf("|    .opcode = %s\n", zend_get_opcode_name(execute_data->opline->opcode));
@@ -415,9 +415,10 @@ track_zend_execute_data(zend_execute_data *execute_data)
                 }else {
         php_printf("|        .function_name = %s\n", op_array.function_name?ZSTR_VAL(op_array.function_name):NULL);
                 }
-                for (i = 1; i < (int)op_array.last; i++) {
+        php_printf("|        .opcodes = %p\n", op_array.opcodes);
+                for (i = 0; i < (int)op_array.last; i++) {
         op = op_array.opcodes[i];
-        php_printf("|        [%d].opcode = %s\n", i, zend_get_opcode_name(op.opcode));
+        php_printf("|        [%d].opcode = %p(%s)\n", i, &op_array.opcodes[i], zend_get_opcode_name(op.opcode));
                 }    
             }
         }
@@ -425,6 +426,7 @@ track_zend_execute_data(zend_execute_data *execute_data)
         php_printf("|.called_scope = %p\n", execute_data->called_scope);
         php_printf("|.prev_execute_data = %p\n", execute_data->prev_execute_data);
         php_printf("|.symbol_table = %p\n", execute_data->symbol_table);
+        php_printf("|}\n");
         php_printf("------------------------------\n");
     }
 }
@@ -472,7 +474,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    //track_zend_execute_data(execute_data);
+    //ngx_track_zend_execute_data(execute_data);
 
     ori_execute_ex(execute_data TSRMLS_CC);
 
@@ -536,7 +538,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    //track_zend_execute_data(execute_data);
+    //ngx_track_zend_execute_data(execute_data);
 
     execute_internal(execute_data, return_value);
 
