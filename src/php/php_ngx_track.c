@@ -387,7 +387,7 @@ static void ngx_stack_print_tab(ngx_uint_t depth, int flag)
     }
 }
 
-static void 
+void 
 track_zend_execute_data(zend_execute_data *execute_data)
 {
     int i;
@@ -408,6 +408,7 @@ track_zend_execute_data(zend_execute_data *execute_data)
             if (&execute_data->func->op_array) {
         php_printf("|    .op_array = %p\n", execute_data->func->op_array);
                 op_array = execute_data->func->op_array;
+        php_printf("|        .type = %d\n", op_array.type);
         php_printf("|        .last = %d\n", op_array.last);
                 if (op_array.scope) {
         php_printf("|        .function_name = %s::%s\n", ZSTR_VAL(op_array.scope->name), op_array.function_name?ZSTR_VAL(op_array.function_name):NULL);
