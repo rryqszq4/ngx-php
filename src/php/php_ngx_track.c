@@ -402,6 +402,7 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
         php_printf("|    .opcode = %s\n", zend_get_opcode_name(execute_data->opline->opcode));
         }
         php_printf("|.call = %p\n", execute_data->call);
+        php_printf("|.return_value = %p\n", execute_data->return_value);
         php_printf("|.func = %p\n", execute_data->func);
         if (execute_data->func) {
         php_printf("|    .type = %d\n", execute_data->func->type,execute_data->func->type);
@@ -427,6 +428,30 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
         php_printf("|.prev_execute_data = %p\n", execute_data->prev_execute_data);
         php_printf("|.symbol_table = %p\n", execute_data->symbol_table);
         php_printf("|}\n");
+        php_printf("------------------------------\n");
+    }
+}
+
+void 
+ngx_track_zend_generator(zend_generator *generator)
+{
+    if (generator) {
+        php_printf("------------------------------\n");
+        php_printf("|zend_generator = %p {\n", generator);
+        php_printf("|.std = %p\n", generator->std);
+        php_printf("|.iterator = %p\n", generator->iterator);
+        php_printf("|.execute_data = %p\n", generator->execute_data);
+        ngx_track_zend_execute_data(generator->execute_data);
+        php_printf("|.stack = %p\n", generator->stack);
+        php_printf("|.value = %p\n", generator->value);
+        php_printf("|.key = %p\n", generator->key);
+        php_printf("|.retval = %p\n", generator->retval);
+        php_printf("|.send_target = %p\n", generator->send_target);
+        php_printf("|.largest_used_integer_key = %p\n", generator->largest_used_integer_key);
+        php_printf("|.values = %p\n", generator->values);
+        php_printf("|.node = %p\n", generator->node);
+        php_printf("|.execute_fake = %p\n", generator->execute_fake);
+        php_printf("|.flags = %p\n", generator->flags);
         php_printf("------------------------------\n");
     }
 }

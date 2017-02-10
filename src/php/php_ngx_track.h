@@ -14,6 +14,7 @@
 #include <php_ini.h>
 #include <zend_ini.h>
 #include <zend_exceptions.h>
+#include <zend_generators.h>
 #include <ext/standard/php_standard.h>
 #include <ext/standard/info.h>
 
@@ -28,5 +29,6 @@ void ngx_execute_ex(zend_execute_data *execute_data TSRMLS_DC);
 void ngx_execute_internal(zend_execute_data *execute_data, zval *return_value TSRMLS_DC);
 
 void ngx_track_zend_execute_data(zend_execute_data *execute_data);
+void ngx_track_zend_generator(zend_generator *generator);
 
 #endif
