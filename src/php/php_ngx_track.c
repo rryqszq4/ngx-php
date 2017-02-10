@@ -391,6 +391,7 @@ void
 ngx_track_zend_execute_data(zend_execute_data *execute_data)
 {
     int i;
+    zend_function *fbc;
     zend_op_array op_array;
     zend_op op;
 
@@ -406,15 +407,28 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
         php_printf("|.func = %p\n", execute_data->func);
         if (execute_data->func) {
         php_printf("|    .type = %d\n", execute_data->func->type,execute_data->func->type);
+            if (&execute_data->func->common) {
+        php_printf("|    .common = %p\n", execute_data->func->common);
+            fbc = execute_data->func;
+        php_printf("|        .type = %d\n", fbc->common.type);
+        php_printf("|        .arg_flags = %p\n", fbc->common.arg_flags);
+        php_printf("|        .fn_flags = %p\n", fbc->common.fn_flags);
+        php_printf("|        .function_name = %s\n", fbc->common.function_name?ZSTR_VAL(fbc->common.function_name):"(null)");
+        php_printf("|        .prototype = %p\n", fbc->common.prototype);
+        php_printf("|        .num_args = %p\n", fbc->common.num_args);
+        php_printf("|        .required_num_args = %p\n", fbc->common.required_num_args);    
+        php_printf("|        .arg_info = %p\n", fbc->common.arg_info);
+            }
             if (&execute_data->func->op_array) {
         php_printf("|    .op_array = %p\n", execute_data->func->op_array);
                 op_array = execute_data->func->op_array;
         php_printf("|        .type = %d\n", op_array.type);
+        php_printf("|        .fn_flags = %p\n", op_array.fn_flags);
         php_printf("|        .last = %d\n", op_array.last);
                 if (op_array.scope) {
         php_printf("|        .function_name = %s::%s\n", ZSTR_VAL(op_array.scope->name), op_array.function_name?ZSTR_VAL(op_array.function_name):NULL);
                 }else {
-        php_printf("|        .function_name = %s\n", op_array.function_name?ZSTR_VAL(op_array.function_name):NULL);
+        php_printf("|        .function_name = %s\n", op_array.function_name?ZSTR_VAL(op_array.function_name):"(null)");
                 }
         php_printf("|        .opcodes = %p\n", op_array.opcodes);
                 for (i = 0; i < (int)op_array.last; i++) {
@@ -499,7 +513,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    //ngx_track_zend_execute_data(execute_data);
+    ngx_track_zend_execute_data(execute_data);
 
     ori_execute_ex(execute_data TSRMLS_CC);
 
@@ -563,7 +577,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    //ngx_track_zend_execute_data(execute_data);
+    ngx_track_zend_execute_data(execute_data);
 
     execute_internal(execute_data, return_value);
 
