@@ -30,5 +30,6 @@ void ngx_execute_internal(zend_execute_data *execute_data, zval *return_value TS
 
 void ngx_track_zend_execute_data(zend_execute_data *execute_data);
 void ngx_track_zend_generator(zend_generator *generator);
+void ngx_track_zend_generator_node(zend_generator_node *node);
 
 #endif

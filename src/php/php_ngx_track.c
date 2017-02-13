@@ -394,6 +394,7 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
     zend_function *fbc;
     zend_op_array op_array;
     zend_op op;
+    zend_generator *generator;
 
     if (execute_data) {
         php_printf("------------------------------\n");
@@ -404,6 +405,14 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
         }
         php_printf("|.call = %p\n", execute_data->call);
         php_printf("|.return_value = %p\n", execute_data->return_value);
+        if (execute_data->return_value) {
+        //if (execute_data->func->common.fn_flags == 0x8800101) {
+            generator = (zend_generator *)execute_data->return_value;
+            if (generator) {
+        //php_printf("|.execute_data = %p\n", generator->execute_data);
+                ngx_track_zend_generator(generator);
+            }
+        }
         php_printf("|.func = %p\n", execute_data->func);
         if (execute_data->func) {
         php_printf("|    .type = %d\n", execute_data->func->type,execute_data->func->type);
@@ -455,7 +464,7 @@ ngx_track_zend_generator(zend_generator *generator)
         php_printf("|.std = %p\n", generator->std);
         php_printf("|.iterator = %p\n", generator->iterator);
         php_printf("|.execute_data = %p\n", generator->execute_data);
-        ngx_track_zend_execute_data(generator->execute_data);
+        //ngx_track_zend_execute_data(generator->execute_data);
         php_printf("|.stack = %p\n", generator->stack);
         php_printf("|.value = %p\n", generator->value);
         php_printf("|.key = %p\n", generator->key);
@@ -464,8 +473,25 @@ ngx_track_zend_generator(zend_generator *generator)
         php_printf("|.largest_used_integer_key = %p\n", generator->largest_used_integer_key);
         php_printf("|.values = %p\n", generator->values);
         php_printf("|.node = %p\n", generator->node);
+        ngx_track_zend_generator_node(&generator->node);
         php_printf("|.execute_fake = %p\n", generator->execute_fake);
         php_printf("|.flags = %p\n", generator->flags);
+        php_printf("|}\n");
+        php_printf("------------------------------\n");
+    }
+}
+
+void 
+ngx_track_zend_generator_node(zend_generator_node *node)
+{
+    if (node) {
+        php_printf("------------------------------\n");
+        php_printf("|zend_generator_node = %p {\n", node);
+        php_printf("|.parent = %p\n",node->parent);
+        php_printf("|.children = %p\n", node->children);
+        php_printf("|.child = %p\n", node->child);
+        php_printf("|.ptr = %p\n", node->ptr);
+        php_printf("|}\n");
         php_printf("------------------------------\n");
     }
 }
@@ -513,7 +539,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    ngx_track_zend_execute_data(execute_data);
+    //ngx_track_zend_execute_data(execute_data);
 
     ori_execute_ex(execute_data TSRMLS_CC);
 
@@ -577,7 +603,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    ngx_track_zend_execute_data(execute_data);
+    //ngx_track_zend_execute_data(execute_data);
 
     execute_internal(execute_data, return_value);
 
@@ -598,3 +624,6 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
         
     }
 }
+
+
+
