@@ -410,7 +410,7 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
             generator = (zend_generator *)execute_data->return_value;
             if (generator) {
         //php_printf("|.execute_data = %p\n", generator->execute_data);
-                ngx_track_zend_generator(generator);
+                ngx_track_zend_generator(generator, 4);
             }
         }
         php_printf("|.func = %p\n", execute_data->func);
@@ -456,43 +456,57 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
 }
 
 void 
-ngx_track_zend_generator(zend_generator *generator)
+ngx_track_zend_generator(zend_generator *generator, int tabs_len)
 {
+    char *tabs;
+
     if (generator) {
-        php_printf("------------------------------\n");
-        php_printf("|zend_generator = %p {\n", generator);
-        php_printf("|.std = %p\n", generator->std);
-        php_printf("|.iterator = %p\n", generator->iterator);
-        php_printf("|.execute_data = %p\n", generator->execute_data);
+        tabs = emalloc(tabs_len+1);
+        memset(tabs, ' ', tabs_len);
+
+        php_printf("%s------------------------------\n", tabs);
+        php_printf("%s|zend_generator = %p {\n", tabs,generator);
+        php_printf("%s|.std = %p\n", tabs, generator->std);
+        php_printf("%s|.iterator = %p\n", tabs, generator->iterator);
+        php_printf("%s|.execute_data = %p\n", tabs, generator->execute_data);
         //ngx_track_zend_execute_data(generator->execute_data);
-        php_printf("|.stack = %p\n", generator->stack);
-        php_printf("|.value = %p\n", generator->value);
-        php_printf("|.key = %p\n", generator->key);
-        php_printf("|.retval = %p\n", generator->retval);
-        php_printf("|.send_target = %p\n", generator->send_target);
-        php_printf("|.largest_used_integer_key = %p\n", generator->largest_used_integer_key);
-        php_printf("|.values = %p\n", generator->values);
-        php_printf("|.node = %p\n", generator->node);
-        ngx_track_zend_generator_node(&generator->node);
-        php_printf("|.execute_fake = %p\n", generator->execute_fake);
-        php_printf("|.flags = %p\n", generator->flags);
-        php_printf("|}\n");
-        php_printf("------------------------------\n");
+        php_printf("%s|.stack = %p\n", tabs, generator->stack);
+        php_printf("%s|.value = %p\n", tabs, generator->value);
+        php_printf("%s|.key = %p\n", tabs, generator->key);
+        php_printf("%s|.retval = %p\n", tabs, generator->retval);
+        php_printf("%s|.send_target = %p\n", tabs, generator->send_target);
+        php_printf("%s|.largest_used_integer_key = %p\n", tabs, generator->largest_used_integer_key);
+        php_printf("%s|.values = %p\n", tabs, generator->values);
+        php_printf("%s|.node = %p\n", tabs, generator->node);
+        ngx_track_zend_generator_node(&generator->node, tabs_len+4);
+        php_printf("%s|.execute_fake = %p\n", tabs, generator->execute_fake);
+        php_printf("%s|.flags = %p\n", tabs, generator->flags);
+        php_printf("%s|}\n", tabs);
+        php_printf("%s------------------------------\n", tabs);
+    
+        efree(tabs);
     }
 }
 
 void 
-ngx_track_zend_generator_node(zend_generator_node *node)
+ngx_track_zend_generator_node(zend_generator_node *node, int tabs_len)
 {
+    char *tabs;
+
     if (node) {
-        php_printf("------------------------------\n");
-        php_printf("|zend_generator_node = %p {\n", node);
-        php_printf("|.parent = %p\n",node->parent);
-        php_printf("|.children = %p\n", node->children);
-        php_printf("|.child = %p\n", node->child);
-        php_printf("|.ptr = %p\n", node->ptr);
-        php_printf("|}\n");
-        php_printf("------------------------------\n");
+        tabs = emalloc(tabs_len+1);
+        memset(tabs, ' ', tabs_len);
+
+        php_printf("%s------------------------------\n", tabs);
+        php_printf("%s|zend_generator_node = %p {\n", tabs, node);
+        php_printf("%s|.parent = %p\n", tabs, node->parent);
+        php_printf("%s|.children = %p\n", tabs, node->children);
+        php_printf("%s|.child = %p\n", tabs, node->child);
+        php_printf("%s|.ptr = %p\n", tabs, node->ptr);
+        php_printf("%s|}\n", tabs);
+        php_printf("%s------------------------------\n", tabs);
+
+        efree(tabs);
     }
 }
 

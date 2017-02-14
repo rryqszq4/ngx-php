@@ -29,7 +29,7 @@ void ngx_execute_ex(zend_execute_data *execute_data TSRMLS_DC);
 void ngx_execute_internal(zend_execute_data *execute_data, zval *return_value TSRMLS_DC);
 
 void ngx_track_zend_execute_data(zend_execute_data *execute_data);
-void ngx_track_zend_generator(zend_generator *generator);
-void ngx_track_zend_generator_node(zend_generator_node *node);
+void ngx_track_zend_generator(zend_generator *generator, int tabs_len);
+void ngx_track_zend_generator_node(zend_generator_node *node, int tabs_len);
 
 #endif
