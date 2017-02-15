@@ -27,6 +27,9 @@ static inline zend_class_entry *ngx_get_called_scope(const zend_execute_data *e)
 static inline const char *ngx_get_executed_filename(void);
 static void ngx_function_name(zend_execute_data *execute_data);
 
+static void ngx_track_print_sample_tabs(ngx_uint_t depth);
+static void ngx_stack_print_tab(ngx_uint_t depth, int flag);
+
 zend_op_array* ngx_compile_file(zend_file_handle* file_handle, int type TSRMLS_DC)
 {
     zend_op_array *op_array;
@@ -358,6 +361,14 @@ static void ngx_function_name(zend_execute_data *execute_data)
     }
 }
 
+static void ngx_track_print_sample_tabs(ngx_uint_t depth)
+{
+    int i;
+    for (i = 0; i < (int)depth; i++) {
+        php_printf("    ");
+    }
+}
+
 static void ngx_stack_print_tab(ngx_uint_t depth, int flag)
 {
     int i;
@@ -410,7 +421,7 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
             generator = (zend_generator *)execute_data->return_value;
             if (generator) {
         //php_printf("|.execute_data = %p\n", generator->execute_data);
-                ngx_track_zend_generator(generator, 4);
+                ngx_track_zend_generator(generator, 1);
             }
         }
         php_printf("|.func = %p\n", execute_data->func);
@@ -458,55 +469,47 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
 void 
 ngx_track_zend_generator(zend_generator *generator, int tabs_len)
 {
-    char *tabs;
 
     if (generator) {
-        tabs = emalloc(tabs_len+1);
-        memset(tabs, ' ', tabs_len);
 
-        php_printf("%s------------------------------\n", tabs);
-        php_printf("%s|zend_generator = %p {\n", tabs,generator);
-        php_printf("%s|.std = %p\n", tabs, generator->std);
-        php_printf("%s|.iterator = %p\n", tabs, generator->iterator);
-        php_printf("%s|.execute_data = %p\n", tabs, generator->execute_data);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("------------------------------\n");
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|zend_generator = %p {\n", generator);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.std = %p\n", generator->std);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.iterator = %p\n", generator->iterator);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.execute_data = %p\n", generator->execute_data);
         //ngx_track_zend_execute_data(generator->execute_data);
-        php_printf("%s|.stack = %p\n", tabs, generator->stack);
-        php_printf("%s|.value = %p\n", tabs, generator->value);
-        php_printf("%s|.key = %p\n", tabs, generator->key);
-        php_printf("%s|.retval = %p\n", tabs, generator->retval);
-        php_printf("%s|.send_target = %p\n", tabs, generator->send_target);
-        php_printf("%s|.largest_used_integer_key = %p\n", tabs, generator->largest_used_integer_key);
-        php_printf("%s|.values = %p\n", tabs, generator->values);
-        php_printf("%s|.node = %p\n", tabs, generator->node);
-        ngx_track_zend_generator_node(&generator->node, tabs_len+4);
-        php_printf("%s|.execute_fake = %p\n", tabs, generator->execute_fake);
-        php_printf("%s|.flags = %p\n", tabs, generator->flags);
-        php_printf("%s|}\n", tabs);
-        php_printf("%s------------------------------\n", tabs);
-    
-        efree(tabs);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.stack = %p\n", generator->stack);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.value = %p\n", generator->value);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.key = %p\n", generator->key);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.retval = %p\n", generator->retval);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.send_target = %p\n", generator->send_target);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.largest_used_integer_key = %p\n", generator->largest_used_integer_key);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.values = %p\n", generator->values);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.node = %p\n", generator->node);
+        ngx_track_zend_generator_node(&generator->node, tabs_len*2);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.execute_fake = %p\n", generator->execute_fake);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.flags = %p\n", generator->flags);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|}\n");
+        ngx_track_print_sample_tabs(tabs_len);php_printf("------------------------------\n");
+
     }
 }
 
 void 
 ngx_track_zend_generator_node(zend_generator_node *node, int tabs_len)
 {
-    char *tabs;
 
     if (node) {
-        tabs = emalloc(tabs_len+1);
-        memset(tabs, ' ', tabs_len);
 
-        php_printf("%s------------------------------\n", tabs);
-        php_printf("%s|zend_generator_node = %p {\n", tabs, node);
-        php_printf("%s|.parent = %p\n", tabs, node->parent);
-        php_printf("%s|.children = %p\n", tabs, node->children);
-        php_printf("%s|.child = %p\n", tabs, node->child);
-        php_printf("%s|.ptr = %p\n", tabs, node->ptr);
-        php_printf("%s|}\n", tabs);
-        php_printf("%s------------------------------\n", tabs);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("------------------------------\n");
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|zend_generator_node = %p {\n", node);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.parent = %p\n", node->parent);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.children = %p\n", node->children);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.child = %p\n", node->child);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.ptr = %p\n", node->ptr);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|}\n");
+        ngx_track_print_sample_tabs(tabs_len);php_printf("------------------------------\n");
 
-        efree(tabs);
     }
 }
 
@@ -553,7 +556,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    //ngx_track_zend_execute_data(execute_data);
+    ngx_track_zend_execute_data(execute_data);
 
     ori_execute_ex(execute_data TSRMLS_CC);
 
@@ -617,7 +620,7 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    //ngx_track_zend_execute_data(execute_data);
+    ngx_track_zend_execute_data(execute_data);
 
     execute_internal(execute_data, return_value);
 
