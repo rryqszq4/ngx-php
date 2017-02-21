@@ -30,6 +30,8 @@ static void ngx_function_name(zend_execute_data *execute_data);
 static void ngx_track_print_sample_tabs(ngx_uint_t depth);
 static void ngx_stack_print_tab(ngx_uint_t depth, int flag);
 
+void ngx_track_zend_op_array(zend_op_array *op_array);
+
 zend_op_array* ngx_compile_file(zend_file_handle* file_handle, int type TSRMLS_DC)
 {
     zend_op_array *op_array;
@@ -39,6 +41,8 @@ zend_op_array* ngx_compile_file(zend_file_handle* file_handle, int type TSRMLS_D
     ngx_http_request_t *r = ngx_php_request;
     ngx_http_php_ctx_t *ctx;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ngx_track_zend_op_array(op_array);
 
     if (op_array && (ctx->output_type & OUTPUT_OPCODE)) {
         ctx->output_type = OUTPUT_CONTENT;
@@ -82,6 +86,8 @@ zend_op_array *ngx_compile_string(zval *source_string, char *filename TSRMLS_DC)
     ngx_http_request_t *r = ngx_php_request;
     ngx_http_php_ctx_t *ctx;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ngx_track_zend_op_array(op_array);
 
     if (op_array && (ctx->output_type & OUTPUT_OPCODE)) {
         ctx->output_type = OUTPUT_CONTENT;
@@ -395,6 +401,56 @@ static void ngx_stack_print_tab(ngx_uint_t depth, int flag)
         }else {
             php_printf("    ");
         }
+    }
+}
+
+void 
+ngx_track_zend_op(zend_op *opline, int tabs_len)
+{
+    if (opline) {
+        ngx_track_print_sample_tabs(tabs_len);php_printf("------------------------------\n");
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|zend_op = %p {\n", opline);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.handler = %p\n", opline->handler);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.op1 = %p\n", opline->op1);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.op2 = %p\n", opline->op2);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.result = %p\n", opline->result);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.extended_value = %d\n", opline->extended_value);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.lineno = %d\n", opline->lineno);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.opcode = %d\n", opline->opcode);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.op1_type = %d\n", opline->op1_type);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.op2_type = %d\n", opline->op2_type);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|.result_type = %d\n", opline->result_type);
+        ngx_track_print_sample_tabs(tabs_len);php_printf("|}\n");
+        ngx_track_print_sample_tabs(tabs_len);php_printf("------------------------------\n");
+    }
+}
+
+void
+ngx_track_zend_op_array(zend_op_array *op_array)
+{
+    int i;
+    zend_op op;
+
+    if (op_array) {
+        php_printf("------------------------------\n");
+        php_printf("|zend_op_array = %p {\n", op_array);
+        php_printf("|.type = %d\n", op_array->type);
+        php_printf("|.arg_flags = %d\n", op_array->arg_flags);
+        php_printf("|.fn_flags = %p\n", op_array->fn_flags);
+            if (op_array->scope) {
+        php_printf("|    .function_name = %s::%s\n", ZSTR_VAL(op_array->scope->name), op_array->function_name?ZSTR_VAL(op_array->function_name):NULL);
+            }else {
+        php_printf("|    .function_name = %s\n", op_array->function_name?ZSTR_VAL(op_array->function_name):"(null)");
+            }
+        php_printf("|    .opcodes = %p\n", op_array->opcodes);
+            for (i = 0; i < (int)op_array->last; i++) {
+                op = op_array->opcodes[i];
+        php_printf("|    [%d].opcode = %p(%s)\n", i, &op_array->opcodes[i], zend_get_opcode_name(op.opcode));
+        ngx_track_zend_op(&op, 2);
+            } 
+        php_printf("|}\n");
+        php_printf("------------------------------\n");
+
     }
 }
 
