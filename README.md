@@ -16,6 +16,13 @@ nginx-1.9.15
 Installation
 -------
 ```sh
+$ wget 'http://php.net/distributions/php-7.0.23.tar.gz'
+tar xf php-7.0.23.tar.gz
+cd php-7.0.23
+
+$ ./configure --prefix=/path/to/php --enable-embed
+$ make && make install
+
 $ git clone https://github.com/rryqszq4/ngx_php7.git
 
 $ wget 'http://nginx.org/download/nginx-1.6.3.tar.gz'
