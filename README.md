@@ -17,8 +17,8 @@ Installation
 -------
 ```sh
 $ wget 'http://php.net/distributions/php-7.0.23.tar.gz'
-tar xf php-7.0.23.tar.gz
-cd php-7.0.23
+$ tar xf php-7.0.23.tar.gz
+$ cd php-7.0.23
 
 $ ./configure --prefix=/path/to/php --enable-embed
 $ make && make install
