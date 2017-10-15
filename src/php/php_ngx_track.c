@@ -514,7 +514,9 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
             }
         }
         php_printf("|.This = %p\n", execute_data->This);
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
         php_printf("|.called_scope = %p\n", execute_data->called_scope);
+#endif
         php_printf("|.prev_execute_data = %p\n", execute_data->prev_execute_data);
         php_printf("|.symbol_table = %p\n", execute_data->symbol_table);
         php_printf("|}\n");
@@ -534,7 +536,9 @@ ngx_track_zend_generator(zend_generator *generator, int tabs_len)
         ngx_track_print_sample_tabs(tabs_len);php_printf("|.iterator = %p\n", generator->iterator);
         ngx_track_print_sample_tabs(tabs_len);php_printf("|.execute_data = %p\n", generator->execute_data);
         //ngx_track_zend_execute_data(generator->execute_data);
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
         ngx_track_print_sample_tabs(tabs_len);php_printf("|.stack = %p\n", generator->stack);
+#endif
         ngx_track_print_sample_tabs(tabs_len);php_printf("|.value = %p\n", generator->value);
         ngx_track_print_sample_tabs(tabs_len);php_printf("|.key = %p\n", generator->key);
         ngx_track_print_sample_tabs(tabs_len);php_printf("|.retval = %p\n", generator->retval);

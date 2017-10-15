@@ -257,8 +257,10 @@ sapi_module_struct php_ngx_module = {
 
     "",                             /* php_ini_path_override */
 
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
     NULL,
     NULL,
+#endif
 
     NULL,
     NULL,
