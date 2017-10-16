@@ -322,9 +322,9 @@ int php_ngx_module_init()
   ZEND_TSRMLS_CACHE_UPDATE();
 #endif
 
-#ifdef ZEND_SIGNALS
-    zend_signal_startup();
-#endif
+//#ifdef ZEND_SIGNALS
+//    zend_signal_startup();
+//#endif
 
   sapi_startup(&php_ngx_module);
 
