@@ -20,6 +20,12 @@ PHP_METHOD(ngx_request, method)
         ZVAL_STRINGL(return_value, "GET", sizeof("GET") - 1);
     }else if (r->method == NGX_HTTP_POST) {
         ZVAL_STRINGL(return_value, "POST", sizeof("POST") - 1);
+    }else if (r->method == NGX_HTTP_PUT) {
+        ZVAL_STRINGL(return_value, "PUT", sizeof("PUT") - 1);
+    }else if (r->method == NGX_HTTP_HEAD) {
+        ZVAL_STRINGL(return_value, "HEAD", sizeof("HEAD") - 1);
+    }else if (r->method == NGX_HTTP_DELETE) {
+        ZVAL_STRINGL(return_value, "DELETE", sizeof("DELETE") - 1);
     }
 }
 
