@@ -15,6 +15,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_document_root_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_document_uri_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(ngx_request, method)
 {
     ngx_http_request_t *r;
@@ -47,9 +50,28 @@ PHP_METHOD(ngx_request, document_root)
     ZVAL_STRINGL(return_value, (char *)plcf->document_root.data, plcf->document_root.len);
 }
 
+PHP_METHOD(ngx_request, document_uri)
+{
+    ngx_http_request_t *r;
+
+    r = ngx_php_request;
+
+    if ((r->uri.data)[r->uri.len-1] == '/') {
+        char *tmp_uri;
+        tmp_uri = emalloc(r->uri.len + 9 + 1);
+        ngx_cpystrn((u_char *)tmp_uri, (u_char *)r->uri.data, r->uri.len + 1);
+        strncat(tmp_uri, "index.php", 9);
+        ZVAL_STRINGL(return_value, (char *)tmp_uri, r->uri.len + 9);
+        efree(tmp_uri);
+    } else {
+        ZVAL_STRINGL(return_value, (char *)r->uri.data, r->uri.len);
+    }
+}
+
 static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, method, ngx_request_method_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, document_root, ngx_request_document_root_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx_request, document_uri, ngx_request_document_uri_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
