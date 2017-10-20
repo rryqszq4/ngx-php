@@ -14,7 +14,8 @@
 #include <ext/standard/info.h>
 
 PHP_METHOD(ngx_request, method);
+PHP_METHOD(ngx_request, document_root);
 
-void php_ngx_request_init(int module_number TSRMLS_DC);
+void ext_php_ngx_request_init(int module_number TSRMLS_DC);
 
 #endif
