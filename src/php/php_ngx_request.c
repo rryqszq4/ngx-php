@@ -21,6 +21,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_script_name_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_script_filename_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(ngx_request, method)
 {
     ngx_http_request_t *r;
@@ -84,11 +87,38 @@ PHP_METHOD(ngx_request, script_name)
     }
 }
 
+PHP_METHOD(ngx_request, script_filename)
+{
+    ngx_http_request_t *r;
+    ngx_http_php_loc_conf_t *plcf;
+
+    r = ngx_php_request;
+    plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
+
+    if ((r->uri.data)[r->uri.len-1] == '/'){
+        char *tmp_script;
+        tmp_script = emalloc(plcf->document_root.len + r->uri.len + 9 + 1);
+        ngx_cpystrn((u_char *)tmp_script, (u_char *)plcf->document_root.data, plcf->document_root.len+1);
+        strncat(tmp_script, (char *)r->uri.data, r->uri.len);
+        strncat(tmp_script, "index.php", 9);
+        ZVAL_STRINGL(return_value, (char *)tmp_script, plcf->document_root.len + r->uri.len + 9);
+        efree(tmp_script);
+    } else {
+        char *tmp_script;
+        tmp_script = emalloc(plcf->document_root.len + r->uri.len + 1);
+        ngx_cpystrn((u_char *)tmp_script, (u_char *)plcf->document_root.data, plcf->document_root.len+1);
+        strncat(tmp_script, (char *)r->uri.data, r->uri.len);
+        ZVAL_STRINGL(return_value, (char *)tmp_script, plcf->document_root.len + r->uri.len);
+        efree(tmp_script);
+    }
+}
+
 static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, method, ngx_request_method_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, document_root, ngx_request_document_root_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, document_uri, ngx_request_document_uri_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, script_name, ngx_request_script_name_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx_request, script_filename, ngx_request_script_filename_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
