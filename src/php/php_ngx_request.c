@@ -24,6 +24,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_script_filename_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_query_string_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(ngx_request, method)
 {
     ngx_http_request_t *r;
@@ -113,12 +116,26 @@ PHP_METHOD(ngx_request, script_filename)
     }
 }
 
+PHP_METHOD(ngx_request, query_string)
+{
+    ngx_http_request_t *r;
+
+    r = ngx_php_request;
+
+    if (r->args.len > 0){
+        ZVAL_STRINGL(return_value, (char *)r->args.data, r->args.len);
+    }else {
+        ZVAL_STRINGL(return_value, (char *)"", 0);
+    }
+}
+
 static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, method, ngx_request_method_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, document_root, ngx_request_document_root_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, document_uri, ngx_request_document_uri_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, script_name, ngx_request_script_name_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, script_filename, ngx_request_script_filename_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx_request, query_string, ngx_request_query_string_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
