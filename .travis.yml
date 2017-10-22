@@ -24,7 +24,7 @@ cache:
   - apt
 env:
   - PHP_SRC_VERSION=7.0.24
-  - NGINX_SRC_VERSION=1.10.3
+    NGINX_SRC_VERSION=1.10.3
 install:
   - sudo cpanm -n Test::Nginx
 before_script:

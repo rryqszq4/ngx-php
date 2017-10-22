@@ -38,7 +38,7 @@ echo "php install ..."
 --enable-zip \
 --enable-soap \
 --without-pear  \
---enable-maintainer-zts \
+#--enable-maintainer-zts \
 --enable-embed
 make
 make install
