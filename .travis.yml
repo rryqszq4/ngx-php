@@ -1,0 +1,31 @@
+language: c
+sudo: required
+addons:
+  apt:
+    packages:
+      - locales
+      - language-pack-de
+      - re2c
+      - libgmp-dev
+      - libicu-dev
+      - libmcrypt-dev
+      - libtidy-dev
+      - libenchant-dev
+      - libaspell-dev
+      - libpspell-dev
+      - librecode-dev
+      - libsasl2-dev
+      - libxpm-dev
+      - libt1-dev
+      - cpanminus
+compiler:
+  - gcc
+cache:
+  - apt
+env:
+  - PHP_SRC_VERSION=7.0.24
+  - NGINX_SRC_VERSION=1.10.3
+install:
+  - sudo cpanm -n Test::Nginx
+before_script:
+  - ./travis/compiler.sh
