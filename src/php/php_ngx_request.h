@@ -19,6 +19,7 @@ PHP_METHOD(ngx_request, document_uri);
 PHP_METHOD(ngx_request, script_name);
 PHP_METHOD(ngx_request, script_filename);
 PHP_METHOD(ngx_request, query_string);
+PHP_METHOD(ngx_request, request_uri);
 
 void ext_php_ngx_request_init(int module_number TSRMLS_DC);
 
