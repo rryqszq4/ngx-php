@@ -3,6 +3,7 @@ ngx_php7
 
 [![Build Status](https://travis-ci.org/rryqszq4/ngx_php7.svg?branch=master)](https://travis-ci.org/rryqszq4/ngx_php7)
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php/blob/master/LICENSE)
+
 [ngx_php7](https://github.com/rryqszq4/ngx_php7) - Embedded php7 script language for nginx-module.  
 [ngx_php](https://github.com/rryqszq4/ngx_php) for php5 nginx-module.  
 QQ group：558795330
@@ -10,6 +11,7 @@ QQ group：558795330
 Requirement
 -----------
 - PHP 7.0.*  
+PHP 7.1.*  
 - nginx-1.4.7  
 nginx-1.6.3  
 nginx-1.8.1  
