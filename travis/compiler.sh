@@ -16,13 +16,11 @@ cd ${PHP_SRC}
 echo "php install ..."
 ./configure --prefix=${PHP_SRC_ROOT} \
 --with-config-file-path=${PHP_SRC_ROOT} \
---with-mysql=mysqlnd \
 --with-mysqli=mysqlnd \
 --with-pdo-mysql=mysqlnd \
+--enable-shared \
 --with-zlib \
 --enable-xml \
---enable-magic-quotes \
---enable-safe-mode \
 --enable-bcmath \
 --enable-shmop \
 --enable-sysvsem \
@@ -38,12 +36,11 @@ echo "php install ..."
 --enable-zip \
 --enable-soap \
 --without-pear  \
-#--enable-maintainer-zts \
---enable-embed
+--enable-embed=shared
 make
 make install
-sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/lib/libphp7.so
-sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/local/lib/libphp7.so
+#sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/lib/libphp7.so
+#sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/local/lib/libphp7.so
 echo "php install ... done"
 cp php.ini-production ${PHP_SRC_ROOT}'/php.ini'
 
