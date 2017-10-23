@@ -42,6 +42,7 @@ echo "php install ..."
 --enable-embed
 make
 make install
+ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/lib/libphp7.so
 echo "php install ... done"
 cp php.ini-production ${PHP_SRC_ROOT}'/php.ini'
 
