@@ -29,3 +29,5 @@ install:
   - sudo cpanm -n Test::Nginx
 before_script:
   - ./travis/compiler.sh
+script:
+  - ./travis/test.sh
