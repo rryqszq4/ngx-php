@@ -33,6 +33,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_server_protocol_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_remote_addr_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(ngx_request, method)
 {
     ngx_http_request_t *r;
@@ -153,6 +156,15 @@ PHP_METHOD(ngx_request, server_protocol)
     ZVAL_STRINGL(return_value, (char *)r->http_protocol.data, r->http_protocol.len);
 }
 
+PHP_METHOD(ngx_request, remote_addr)
+{
+    ngx_http_request_t *r;
+
+    r = ngx_php_request;
+
+    ZVAL_STRINGL(return_value, (char *)r->connection->addr_text.data, r->connection->addr_text.len);
+}
+
 static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, method, ngx_request_method_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, document_root, ngx_request_document_root_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -162,6 +174,7 @@ static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, query_string, ngx_request_query_string_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, request_uri, ngx_request_request_uri_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, server_protocol, ngx_request_server_protocol_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx_request, remote_addr, ngx_request_remote_addr_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
