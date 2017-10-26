@@ -45,6 +45,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_server_port_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_server_name_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(ngx_request, method)
 {
     ngx_http_request_t *r;
@@ -193,28 +196,49 @@ PHP_METHOD(ngx_request, server_addr)
 
 PHP_METHOD(ngx_request, remote_port)
 {
+    ngx_http_request_t *r;
     ngx_uint_t port;
     struct sockaddr_in  *sin;
     char *tmp_port;
+
+    r = ngx_php_request;
     tmp_port = emalloc(sizeof("65535") - 1);
     sin = (struct sockaddr_in *) r->connection->local_sockaddr;
     port = ntohs(sin->sin_port);
     ngx_sprintf((u_char *)tmp_port, "%ui", port);
+    
     ZVAL_STRING(return_value, (char *)tmp_port);
+    
     efree(tmp_port);
 }
 
 PHP_METHOD(ngx_request, server_port)
 {
+    ngx_http_request_t *r;
     ngx_uint_t port;
     struct sockaddr_in  *sin;
     char *tmp_port;
+
+    r = ngx_php_request;
     tmp_port = emalloc(sizeof("65535") - 1);
     sin = (struct sockaddr_in *) r->connection->local_sockaddr;
     port = ntohs(sin->sin_port);
     ngx_sprintf((u_char *)tmp_port, "%ui", port);
+
     ZVAL_STRING(return_value, (char *)tmp_port);
+    
     efree(tmp_port);
+}
+
+PHP_METHOD(ngx_request, server_name)
+{
+    ngx_http_request_t *r;
+    ngx_http_core_srv_conf_t *cscf;
+
+    r = ngx_php_request;
+    cscf = ngx_http_get_module_srv_conf(r, ngx_http_core_module);
+
+    ZVAL_STRINGL(return_value, (char *)cscf->server_name.data, cscf->server_name.len);
 }
 
 static const zend_function_entry php_ngx_request_class_functions[] = {
@@ -230,6 +254,7 @@ static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, server_addr, ngx_request_server_addr_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, remote_port, ngx_request_remote_port_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, server_port, ngx_request_server_port_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx_request, server_name, ngx_request_server_name_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
