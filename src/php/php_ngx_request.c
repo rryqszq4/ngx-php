@@ -39,6 +39,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_server_addr_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_server_port_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(ngx_request, method)
 {
     ngx_http_request_t *r;
@@ -185,6 +188,19 @@ PHP_METHOD(ngx_request, server_addr)
     }
 }
 
+PHP_METHOD(ngx_request, server_port)
+{
+    ngx_uint_t port;
+    struct sockaddr_in  *sin;
+    char *tmp_port;
+    tmp_port = emalloc(sizeof("65535") - 1);
+    sin = (struct sockaddr_in *) r->connection->local_sockaddr;
+    port = ntohs(sin->sin_port);
+    ngx_sprintf((u_char *)tmp_port, "%ui", port);
+    ZVAL_STRING(return_value, (char *)tmp_port);
+    efree(tmp_port);
+}
+
 static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, method, ngx_request_method_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, document_root, ngx_request_document_root_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -196,6 +212,7 @@ static const zend_function_entry php_ngx_request_class_functions[] = {
     PHP_ME(ngx_request, server_protocol, ngx_request_server_protocol_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, remote_addr, ngx_request_remote_addr_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx_request, server_addr, ngx_request_server_addr_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx_request, server_port, ngx_request_server_port_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
