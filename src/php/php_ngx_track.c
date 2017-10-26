@@ -42,7 +42,8 @@ zend_op_array* ngx_compile_file(zend_file_handle* file_handle, int type TSRMLS_D
     ngx_http_php_ctx_t *ctx;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    ngx_track_zend_op_array(op_array);
+    //debug
+    //ngx_track_zend_op_array(op_array);
 
     if (op_array && (ctx->output_type & OUTPUT_OPCODE)) {
         ctx->output_type = OUTPUT_CONTENT;
@@ -87,7 +88,8 @@ zend_op_array *ngx_compile_string(zval *source_string, char *filename TSRMLS_DC)
     ngx_http_php_ctx_t *ctx;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    ngx_track_zend_op_array(op_array);
+    //debug
+    //ngx_track_zend_op_array(op_array);
 
     if (op_array && (ctx->output_type & OUTPUT_OPCODE)) {
         ctx->output_type = OUTPUT_CONTENT;
@@ -616,7 +618,8 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    ngx_track_zend_execute_data(execute_data);
+    //debug
+    //ngx_track_zend_execute_data(execute_data);
 
     ori_execute_ex(execute_data TSRMLS_CC);
 
@@ -680,7 +683,8 @@ php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODUL
     struct timeval tv_end;
     gettimeofday(&tv_start, 0);
 
-    ngx_track_zend_execute_data(execute_data);
+    //debug
+    //ngx_track_zend_execute_data(execute_data);
 
     execute_internal(execute_data, return_value);
 
