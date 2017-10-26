@@ -23,6 +23,7 @@ PHP_METHOD(ngx_request, request_uri);
 PHP_METHOD(ngx_request, server_protocol);
 PHP_METHOD(ngx_request, remote_addr);
 PHP_METHOD(ngx_request, server_addr);
+PHP_METHOD(ngx_request, remote_port);
 PHP_METHOD(ngx_request, server_port);
 
 void ext_php_ngx_request_init(int module_number TSRMLS_DC);
