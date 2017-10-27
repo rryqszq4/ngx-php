@@ -48,7 +48,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_server_name_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_request_headers_arginfo. 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_headers_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(ngx_request, method)
@@ -202,17 +202,17 @@ PHP_METHOD(ngx_request, remote_port)
     ngx_http_request_t *r;
     ngx_uint_t port;
     struct sockaddr_in  *sin;
-    char *tmp_port;
+    //char *tmp_port;
 
     r = ngx_php_request;
-    tmp_port = emalloc(sizeof("65535") - 1);
+    //tmp_port = emalloc(sizeof("65535") - 1);
     sin = (struct sockaddr_in *) r->connection->local_sockaddr;
     port = ntohs(sin->sin_port);
-    ngx_sprintf((u_char *)tmp_port, "%ui", port);
-    
-    ZVAL_STRING(return_value, (char *)tmp_port);
-    
-    efree(tmp_port);
+    //ngx_sprintf((u_char *)tmp_port, "%ui", port);
+
+    //ZVAL_STRING(return_value, (char *)tmp_port);
+    ZVAL_LONG(return_value, port);
+    //efree(tmp_port);
 }
 
 PHP_METHOD(ngx_request, server_port)
@@ -220,17 +220,17 @@ PHP_METHOD(ngx_request, server_port)
     ngx_http_request_t *r;
     ngx_uint_t port;
     struct sockaddr_in  *sin;
-    char *tmp_port;
+    //char *tmp_port;
 
     r = ngx_php_request;
-    tmp_port = emalloc(sizeof("65535") - 1);
+    //tmp_port = emalloc(sizeof("65535") - 1);
     sin = (struct sockaddr_in *) r->connection->local_sockaddr;
     port = ntohs(sin->sin_port);
-    ngx_sprintf((u_char *)tmp_port, "%ui", port);
+    //ngx_sprintf((u_char *)tmp_port, "%ui", port);
 
-    ZVAL_STRING(return_value, (char *)tmp_port);
-    
-    efree(tmp_port);
+    //ZVAL_STRING(return_value, (char *)tmp_port);
+    ZVAL_LONG(return_value, port);
+    //efree(tmp_port);
 }
 
 PHP_METHOD(ngx_request, server_name)
@@ -268,59 +268,59 @@ PHP_METHOD(ngx_request, headers)
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-type", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'content_type', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "content_type", (char *)header[i].value.data, header[i].value.len);
         }else {
-            add_assoc_stringl(return_value, 'content_type', (char *)"", 0);
+            add_assoc_stringl(return_value, "content_type", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-length", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'content_length', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "content_length", (char *)header[i].value.data, header[i].value.len);
         }else {
-            add_assoc_stringl(return_value, 'content_length', (char *)"", 0);
+            add_assoc_stringl(return_value, "content_length", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'accept', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "accept", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"host", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'host', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "host", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"connection", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'connection', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "connection", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"user-agent", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'user_agent', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "user_agent", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept-encoding", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'accept_encoding', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "accept_encoding", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept-language", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'accept_language', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "accept_language", (char *)header[i].value.data, header[i].value.len);
         }
         
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"referer", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'referer', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "referer", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"pragma", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'pragma', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "pragma", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"cache-control", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'cache_control', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "cache_control", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"upgrade-insecure-requests", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'upgrade_insecure_requests', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "upgrade_insecure_requests", (char *)header[i].value.data, header[i].value.len);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"cookie", header[i].key.len) == 0){
-            add_assoc_stringl(return_value, 'cookie', (char *)header[i].value.data, header[i].value.len);
+            add_assoc_stringl(return_value, "cookie", (char *)header[i].value.data, header[i].value.len);
         }
 
     }
