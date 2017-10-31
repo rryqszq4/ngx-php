@@ -178,7 +178,7 @@ ngx_php_error_cb(int type,
                 error_type_str = "Unknown error";
                 break;
         }
-        buffer_len = spprintf(&buffer, 0, "{! %s: %s in %s on line %d !}\n", error_type_str, buffer, error_filename, error_lineno);
+        buffer_len = spprintf(&buffer, 0, "\n%s: %s in %s on line %d\n", error_type_str, buffer, error_filename, error_lineno);
 
         ngx_buf_t *b;
         ngx_http_php_rputs_chain_list_t *chain;
