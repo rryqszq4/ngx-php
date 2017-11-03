@@ -437,8 +437,8 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 
     zend_startup_module(&php_ngx_module_entry);
 
-    //old_zend_error_cb = zend_error_cb;
-    //zend_error_cb = ngx_php_error_cb;
+    old_zend_error_cb = zend_error_cb;
+    zend_error_cb = ngx_php_error_cb;
     
     ori_compile_file = zend_compile_file;
     zend_compile_file = ngx_compile_file;

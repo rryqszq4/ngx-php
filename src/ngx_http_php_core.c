@@ -222,6 +222,7 @@ ngx_php_error_cb(int type,
         }
 
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php_error: %s %s", error_filename, buffer);
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, " %s: %s in %s on line %d \n", error_type_str, buffer, error_filename, error_lineno);
 
         efree(buffer);
         zend_bailout();
