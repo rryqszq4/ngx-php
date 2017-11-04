@@ -12,6 +12,10 @@
 #include <ngx_config.h>
 #include <nginx.h>
 
+#if defined(NDK) && NDK
+#include <ndk.h>
+#endif
+
 #include "ngx_http_php_core.h"
 
 #define NGX_HTTP_PHP_MODULE_NAME "ngx_php7"
