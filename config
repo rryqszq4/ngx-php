@@ -26,3 +26,5 @@ CORE_LIBS="$CORE_LIBS `$PHP_BIN/php-config --ldflags` -L$PHP_LIB -lphp7 `$PHP_BI
 #CORE_INCS="$CORE_INCS /disk4/local/php71/include/php /disk4/local/php71/include/php/main /disk4/local/php71/include/php/TSRM /disk4/local/php71/include/php/Zend /disk4/local/php71/include/php/ext /disk4/local/php71/include/php/ext/date/lib /disk4/local/php71/include/php/sapi/embed "
 
 #CORE_LIBS="$CORE_LIBS `/disk4/local/php71/bin/php-config --ldflags` -L/disk4/local/php71/lib -lphp7 `/disk4/local/php71/bin/php-config --libs` "
+
+have=NDK_SET_VAR . auto/have

@@ -65,6 +65,7 @@ ls ${PHP_SRC_ROOT}
 echo "nginx install ..."
 ./configure --prefix=${NGINX_SRC_ROOT} \
 --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+--add-module=../../../ngx_php7/dev/ngx_devel_kit \
 --add-module=../../../ngx_php7
 make
 make install
