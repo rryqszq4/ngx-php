@@ -456,8 +456,8 @@ ngx_http_php_set_run_inline(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
         zval retval;
         zend_eval_string_ex(filter_data->code->code.string, &retval, "ngx_php run code return", 1 TSRMLS_CC);
 
-        if (Z_TYPE_P(retval) == IS_TRUE || 
-            Z_TYPE_P(retval) == IS_FALSE ||  
+        if (Z_TYPE(retval) == IS_TRUE || 
+            Z_TYPE(retval) == IS_FALSE ||  
             Z_TYPE(retval) == IS_LONG ||
             Z_TYPE(retval) == IS_DOUBLE ||
             Z_TYPE(retval) == IS_STRING ){
@@ -577,7 +577,7 @@ ngx_http_php_set_run_file(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
             //return FAILURE;
             return NGX_CONF_ERROR;
         }
-        php_execute_simple_script(&file_handle, &retval TSRMLS_CC);
+        php_execute_simple_script(&file_handle, retval TSRMLS_CC);
 
         if (Z_TYPE_P(retval) == IS_TRUE || 
             Z_TYPE_P(retval) == IS_FALSE || 
