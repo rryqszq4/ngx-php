@@ -8,6 +8,7 @@
 #define NGX_HTTP_PHP_CORE_H
 
 #include <ngx_http.h>
+#include <php_embed.h>
 #include "php/php_ngx.h"
 
 #define OUTPUT_CONTENT  1<<0
