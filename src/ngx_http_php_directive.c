@@ -568,6 +568,7 @@ ngx_http_php_set_run_file(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
         zval *retval;
         zend_file_handle file_handle;
 
+        retval = NULL;
         file_handle.type = ZEND_HANDLE_FP;
         file_handle.opened_path = NULL;
         file_handle.free_filename = 0;
