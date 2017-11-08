@@ -16,6 +16,9 @@
 // handler
 //ngx_int_t ngx_http_php_init_handler(ngx_conf_t *cf, ngx_http_php_main_conf_t *pmcf);
 
+ngx_int_t ngx_http_php_post_read_handler(ngx_http_request_t *r);
+void ngx_http_php_request_cleanup_handler(void *data);
+
 ngx_int_t ngx_http_php_rewrite_handler(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_rewrite_file_handler(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_rewrite_inline_handler(ngx_http_request_t *r);

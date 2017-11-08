@@ -13,6 +13,36 @@
 //#include "php/php_ngx_location.h"
 
 #include "php/php_ngx.h"
+#include "php/php_ngx_request.h"
+
+ngx_int_t
+ngx_http_php_post_read_handler(ngx_http_request_t *r)
+{
+    ngx_http_php_ctx_t *ctx;
+    
+    ngx_php_request = r;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+    if (ctx == NULL) {
+        ctx = ngx_pcalloc(r->pool, sizeof(*ctx));
+        if (ctx == NULL) {
+            return NGX_ERROR;
+        }
+        ctx->rewrite_phase = 0;
+        ctx->access_phase = 0;
+        ctx->content_phase = 0;
+        ctx->phase_status = NGX_DECLINED;
+    }
+
+    ngx_http_set_ctx(r, ctx, ngx_http_php_module);
+
+    return NGX_OK;
+}
+
+void
+ngx_http_php_request_cleanup_handler(void *data)
+{
+    return ;
+}
 
 ngx_int_t 
 ngx_http_php_rewrite_handler(ngx_http_request_t *r)

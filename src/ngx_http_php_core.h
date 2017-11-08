@@ -86,6 +86,12 @@ typedef struct ngx_http_php_ctx_t {
     unsigned stack_logo;
     ngx_uint_t stack_depth;
     
+    unsigned rewrite_phase : 1;
+    unsigned access_phase : 1;
+    unsigned content_phase : 1;
+
+    ngx_int_t phase_status;
+
 } ngx_http_php_ctx_t;
 
 
