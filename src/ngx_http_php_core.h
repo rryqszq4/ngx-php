@@ -111,6 +111,12 @@ ngx_http_php_code_t *ngx_http_php_code_from_string(ngx_pool_t *pool, ngx_str_t *
 //ngx_int_t ngx_php_embed_run(ngx_http_request_t *r, ngx_http_php_code_t *code);
 ngx_int_t ngx_php_ngx_run(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php_code_t *code);
 
+ngx_int_t ngx_php_eval_code(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php_code_t *code);
+ngx_int_t ngx_php_eval_file(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php_code_t *code);
+
+ngx_int_t ngx_php_get_request_status();
+ngx_int_t ngx_php_set_request_status(ngx_int_t rc);
+
 // php_ngx sapi call_back
 size_t ngx_http_php_code_ub_write(const char *str, size_t str_length TSRMLS_DC);
 void ngx_http_php_code_flush(void *server_context);

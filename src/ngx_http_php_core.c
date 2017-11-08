@@ -586,3 +586,53 @@ ngx_php_ngx_run(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php
 
     return 0;
 }
+
+ngx_int_t 
+ngx_php_eval_code(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php_code_t *code)
+{
+
+    if (code->code_type == NGX_HTTP_PHP_CODE_TYPE_STRING) {
+
+        zend_eval_string_ex(code->code.string, NULL, "ngx_php eval code", 1);
+
+    }
+
+    return 0;
+}
+
+ngx_int_t 
+ngx_php_eval_file(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php_code_t *code)
+{
+    if (code->code_type == NGX_HTTP_PHP_CODE_TYPE_FILE){
+
+        zend_file_handle file_handle;
+
+        file_handle.type = ZEND_HANDLE_FP;
+        file_handle.opened_path = NULL;
+        file_handle.free_filename = 0;
+        file_handle.filename = code->code.file;
+        if (!(file_handle.handle.fp = VCWD_FOPEN(file_handle.filename, "rb"))) {
+            php_printf("Could not open input file: %s\n", file_handle.filename);
+            return FAILURE;
+        }
+        php_execute_script(&file_handle);
+
+    }
+
+    return 0;
+}
+
+ngx_int_t 
+ngx_php_get_request_status()
+{
+    return EG(exit_status);
+}
+
+ngx_int_t ngx_php_set_request_status(ngx_int_t rc)
+{
+    EG(exit_status) = rc;
+
+    return 0;
+}
+
+
