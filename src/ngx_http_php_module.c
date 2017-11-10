@@ -11,6 +11,9 @@
 #include <nginx.h>
 
 #include "php/php_ngx.h"
+#include "php/php_ngx_core.h"
+#include "php/php_ngx_log.h"
+#include "php/php_ngx_request.h"
 
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_directive.h"
@@ -245,7 +248,7 @@ ngx_http_php_handler_init(ngx_http_core_main_conf_t *cmcf, ngx_http_php_main_con
     ngx_http_handler_pt *h;
     ngx_http_phases phase;
     ngx_http_phases phases[] = {
-        //NGX_HTTP_POST_READ_PHASE,
+        NGX_HTTP_POST_READ_PHASE,
         NGX_HTTP_REWRITE_PHASE,
         NGX_HTTP_ACCESS_PHASE,
         NGX_HTTP_CONTENT_PHASE,
@@ -256,15 +259,13 @@ ngx_http_php_handler_init(ngx_http_core_main_conf_t *cmcf, ngx_http_php_main_con
     for (i = 0; i < phases_c; i++){
         phase = phases[i];
         switch (phase){
-            /*case NGX_HTTP_POST_READ_PHASE:
-                if (pmcf->enabled_post_read_handler){
-                    h = ngx_array_push(&cmcf->phases[phase].handlers);
-                    if (h == NULL){
-                        return NGX_ERROR;
-                    }
-                    *h = ngx_http_php_post_read_handler;
+            case NGX_HTTP_POST_READ_PHASE:
+                h = ngx_array_push(&cmcf->phases[phase].handlers);
+                if (h == NULL){
+                    return NGX_ERROR;
                 }
-                break;*/
+                *h = ngx_http_php_post_read_handler;
+                break;
             case NGX_HTTP_REWRITE_PHASE:
                 if (pmcf->enabled_rewrite_handler){
                     h = ngx_array_push(&cmcf->phases[phase].handlers);
@@ -450,6 +451,11 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     zend_execute_ex = ngx_execute_ex;
 
     zend_execute_internal = ngx_execute_internal;
+
+    php_ngx_request_init(TSRMLS_C);
+    php_ngx_core_init(0 TSRMLS_CC);
+    php_ngx_log_init(0 TSRMLS_CC);
+    ext_php_ngx_request_init(0 TSRMLS_CC);
     
     return NGX_OK;
 }
@@ -458,5 +464,6 @@ static void
 ngx_http_php_exit_worker(ngx_cycle_t *cycle)
 {
     TSRMLS_FETCH();
+    php_ngx_request_shutdown(TSRMLS_C);
     php_ngx_module_shutdown(TSRMLS_C);
 }
