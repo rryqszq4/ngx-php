@@ -92,6 +92,8 @@ typedef struct ngx_http_php_ctx_t {
 
     ngx_int_t phase_status;
 
+    zval *generator_closure;
+
 } ngx_http_php_ctx_t;
 
 

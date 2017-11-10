@@ -31,7 +31,7 @@ static const zend_function_entry php_ngx_class_functions[] = {
     {NULL, NULL, NULL, 0, 0}
 };
 
-void php_core_ngx_init(int module_number TSRMLS_DC)
+void php_ngx_core_init(int module_number TSRMLS_DC)
 {
     zend_class_entry ngx_class_entry;
     INIT_CLASS_ENTRY(ngx_class_entry, "ngx", php_ngx_class_functions);
