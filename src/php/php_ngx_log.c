@@ -17,17 +17,16 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(ngx_log, error)
 {
     long level;
-    char *log_str;
-    int log_len;
+    zend_string *log_str;
     ngx_http_request_t *r;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ls", &level, &log_str, &log_len) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lS", &level, &log_str) == FAILURE){
         RETURN_NULL();
     }
 
     r = ngx_php_request;
 
-    ngx_log_error((ngx_uint_t)level, r->connection->log, 0, "%*s", log_len, log_str);
+    ngx_log_error((ngx_uint_t)level, r->connection->log, 0, "%*s", ZSTR_LEN(log_str), ZSTR_VAL(log_str));
 }
 
 static const zend_function_entry php_ngx_log_class_functions[] = {
