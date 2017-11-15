@@ -170,6 +170,14 @@ ZEND_GET_MODULE(php_ngx)
 ZEND_TSRMLS_CACHE_DEFINE()
 #endif
 
+const char HARDCODED_INI[] =
+    "html_errors=0\n"
+    "register_argc_argv=1\n"
+    "implicit_flush=1\n"
+    "output_buffering=0\n"
+    "max_execution_time=0\n"
+    "max_input_time=-1\n\0";
+
 static int php_ngx_startup(sapi_module_struct *sapi_module)
 {
     if (php_module_startup(sapi_module, NULL, 0) == FAILURE){
@@ -338,6 +346,9 @@ int php_ngx_module_init()
   setmode(_fileno(stdout), O_BINARY);       /* make the stdio mode be binary */
   setmode(_fileno(stderr), O_BINARY);       /* make the stdio mode be binary */
 #endif
+
+  php_ngx_module.ini_entries = malloc(sizeof(HARDCODED_INI));
+  memcpy(php_ngx_module.ini_entries, HARDCODED_INI, sizeof(HARDCODED_INI));
 
   php_ngx_module.additional_functions = additional_functions;
 
