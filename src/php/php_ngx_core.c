@@ -13,6 +13,10 @@ ZEND_BEGIN_ARG_INFO_EX(ngx_exit_arginfo, 0, 0, 1)
     ZEND_ARG_INFO(0, status)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_query_args_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(ngx, _exit)
 {
     long status = 0;
@@ -26,8 +30,65 @@ PHP_METHOD(ngx, _exit)
     zend_bailout();
 }
 
+PHP_METHOD(ngx, query_args)
+{
+    ngx_http_request_t *r;
+    u_char *buf, *p;
+    u_char *last;
+    int idx;
+    unsigned parsing_value = 0;
+
+    r = ngx_php_request;
+
+    if (r->args.len == 0) {
+        RETURN_NULL();
+    }
+
+    array_init(return_value);
+    idx = 0;
+
+    buf = ngx_palloc(r->pool, r->args.len);
+    ngx_memcpy(buf, r->args.data, r->args.len);
+    last = buf + r->args.len;
+
+    p = buf;
+    parsing_value = 0;
+
+    while (buf != last) {
+        if (*buf == '=') {
+            //php_printf("%d, %.*s\n", buf-p,buf-p, p);
+            buf++;
+            p = buf;
+            parsing_value = 1;
+        }else if (*buf == '&') {
+            //php_printf("%.*s", buf-p, p);
+            add_index_stringl(return_value, idx, (char *)p, buf-p);
+            idx++;
+
+            buf++;
+            p = buf;
+            parsing_value = 0;
+        }
+        
+        if (buf != last){
+            buf++;
+        }
+    }
+
+    if (parsing_value){
+        php_printf("%.*s", buf-p, p);
+        add_index_stringl(return_value, idx, (char *)p, buf-p);
+        idx++;
+    }
+
+    ngx_pfree(r->pool, buf);
+
+
+}
+
 static const zend_function_entry php_ngx_class_functions[] = {
     PHP_ME(ngx, _exit, ngx_exit_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx, query_args, ngx_query_args_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
