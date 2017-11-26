@@ -12,6 +12,9 @@
 #include <php.h>
 #include <php_ini.h>
 #include <ext/standard/info.h>
+#include <zend_closures.h>
+
+extern ZEND_API zend_class_entry *zend_ce_generator;
 
 PHP_METHOD(ngx_generator, run);
 PHP_METHOD(ngx_generator, next);
