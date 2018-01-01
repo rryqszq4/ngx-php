@@ -36,6 +36,8 @@ echo "php install ..."
 --enable-zip \
 --enable-soap \
 --without-pear  \
+--disable-cli \
+--disable-cgi \
 --enable-embed=shared
 make
 make install
