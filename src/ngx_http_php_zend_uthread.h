@@ -1,0 +1,25 @@
+/**
+ *    Copyright(c) 2016-2018 rryqszq4
+ *
+ *
+ */
+
+#ifndef NGX_HTTP_PHP_ZEND_UTHREAD_H
+#include NGX_HTTP_PHP_ZEND_UTHREAD_H
+
+#include <ngx_core.h>
+#include <ngx_http.h>
+#include <ngx_config.h>
+#include <nginx.h>
+
+#include <php.h>
+#include <php_ini.h>
+#include <ext/standard/info.h>
+
+void ngx_http_php_zend_uthread_inline_routine(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
+
+#endif
