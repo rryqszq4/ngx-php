@@ -9,7 +9,7 @@
 #include "ext/standard/info.h"
 #include "php_ngx.h"
 
-#include "../ngx_http_php_module.h"
+#include "../../ngx_http_php_module.h"
 
 #include "php_ngx_test.h"
 

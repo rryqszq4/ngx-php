@@ -5,6 +5,7 @@
  */
 
 #include "ngx_http_php_sleep.h"
+#include "ngx_http_php_zend_uthread.h"
 
 static void ngx_http_php_sleep_cleanup(void *data);
 
@@ -35,8 +36,7 @@ ngx_http_php_sleep(ngx_http_request_t *r)
     if (ctx == NULL) {
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
-
-    ctx->rewrite_phase = 1;
+    
     ctx->phase_status = NGX_AGAIN;
 
     ngx_memzero(&ctx->sleep, sizeof(ngx_event_t));
@@ -68,6 +68,7 @@ ngx_http_php_sleep_handler(ngx_event_t *ev)
     r = ev->data;
 
     // todo uthread_resume
+    ngx_http_php_zend_uthread_resume(r);
 
     ngx_http_core_run_phases(r);
 }

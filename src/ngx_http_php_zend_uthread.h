@@ -5,7 +5,7 @@
  */
 
 #ifndef NGX_HTTP_PHP_ZEND_UTHREAD_H
-#include NGX_HTTP_PHP_ZEND_UTHREAD_H
+#define NGX_HTTP_PHP_ZEND_UTHREAD_H
 
 #include <ngx_core.h>
 #include <ngx_http.h>

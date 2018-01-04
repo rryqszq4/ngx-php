@@ -10,10 +10,11 @@
 #include <ngx_conf_file.h>
 #include <nginx.h>
 
-#include "php/php_ngx.h"
-#include "php/php_ngx_core.h"
-#include "php/php_ngx_log.h"
-#include "php/php_ngx_request.h"
+#include "php/impl/php_ngx.h"
+#include "php/impl/php_ngx_core.h"
+#include "php/impl/php_ngx_log.h"
+#include "php/impl/php_ngx_request.h"
+#include "php/impl/php_ngx_generator.h"
 
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_directive.h"
@@ -453,9 +454,11 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     zend_execute_internal = ngx_execute_internal;
 
     php_ngx_request_init(TSRMLS_C);
+    
     php_ngx_core_init(0 TSRMLS_CC);
     php_ngx_log_init(0 TSRMLS_CC);
     ext_php_ngx_request_init(0 TSRMLS_CC);
+    php_ngx_generator_init(0 TSRMLS_CC);
     
     return NGX_OK;
 }

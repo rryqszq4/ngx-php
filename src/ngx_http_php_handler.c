@@ -12,8 +12,8 @@
 
 //#include "php/php_ngx_location.h"
 
-#include "php/php_ngx.h"
-#include "php/php_ngx_request.h"
+#include "php/impl/php_ngx.h"
+#include "php/impl/php_ngx_request.h"
 
 static void ngx_http_php_rewrite_inline_uthread_routine(void *data);
 static void ngx_http_php_rewrite_file_uthread_routine(void *data);

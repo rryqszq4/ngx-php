@@ -5,7 +5,7 @@
  */
 
 #include "php_ngx_core.h"
-#include "../ngx_http_php_module.h"
+#include "../../ngx_http_php_module.h"
 
 static zend_class_entry *php_ngx_class_entry;
 

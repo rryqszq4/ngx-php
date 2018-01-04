@@ -5,24 +5,30 @@ NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_http_php_module.c \
                 $ngx_addon_dir/src/ngx_http_php_directive.c \
                 $ngx_addon_dir/src/ngx_http_php_handler.c \
                 $ngx_addon_dir/src/ngx_http_php_request.c \
-                $ngx_addon_dir/src/php/php_ngx.c \
-                $ngx_addon_dir/src/php/php_ngx_test.c \
-                $ngx_addon_dir/src/php/php_ngx_track.c \
-                $ngx_addon_dir/src/php/php_ngx_core.c \
-                $ngx_addon_dir/src/php/php_ngx_log.c \
-                $ngx_addon_dir/src/php/php_ngx_request.c \
+                $ngx_addon_dir/src/ngx_http_php_zend_uthread.c \
+                $ngx_addon_dir/src/ngx_http_php_sleep.c \
+                $ngx_addon_dir/src/php/impl/php_ngx.c \
+                $ngx_addon_dir/src/php/impl/php_ngx_test.c \
+                $ngx_addon_dir/src/php/impl/php_ngx_track.c \
+                $ngx_addon_dir/src/php/impl/php_ngx_core.c \
+                $ngx_addon_dir/src/php/impl/php_ngx_log.c \
+                $ngx_addon_dir/src/php/impl/php_ngx_request.c \
+                $ngx_addon_dir/src/php/impl/php_ngx_generator.c \
                 "
 NGX_ADDON_DEPS="$NGX_ADDON_DEPS $ngx_addon_dir/src/ngx_http_php_module.h \
                 $ngx_addon_dir/src/ngx_http_php_core.h \
                 $ngx_addon_dir/src/ngx_http_php_directive.h \
                 $ngx_addon_dir/src/ngx_http_php_handler.h \
                 $ngx_addon_dir/src/ngx_http_php_request.h \
-                $ngx_addon_dir/src/php/php_ngx.h \
-                $ngx_addon_dir/src/php/php_ngx_test.h \
-                $ngx_addon_dir/src/php/php_ngx_track.h \
-                $ngx_addon_dir/src/php/php_ngx_core.h \
-                $ngx_addon_dir/src/php/php_ngx_log.h \
-                $ngx_addon_dir/src/php/php_ngx_request.h \
+                $ngx_addon_dir/src/ngx_http_php_zend_uthread.h \
+                $ngx_addon_dir/src/ngx_http_php_sleep.h \
+                $ngx_addon_dir/src/php/impl/php_ngx.h \
+                $ngx_addon_dir/src/php/impl/php_ngx_test.h \
+                $ngx_addon_dir/src/php/impl/php_ngx_track.h \
+                $ngx_addon_dir/src/php/impl/php_ngx_core.h \
+                $ngx_addon_dir/src/php/impl/php_ngx_log.h \
+                $ngx_addon_dir/src/php/impl/php_ngx_request.h \
+                $ngx_addon_dir/src/php/impl/php_ngx_generator.h \
                 "
 
 CORE_INCS="$CORE_INCS $PHP_INC $PHP_INC/main $PHP_INC/TSRM $PHP_INC/Zend $PHP_INC/ext $PHP_INC/ext/date/lib $PHP_INC/sapi/embed "

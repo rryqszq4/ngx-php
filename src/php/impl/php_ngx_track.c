@@ -12,7 +12,7 @@
 
 #include "php_ngx.h"
 #include "php_ngx_track.h"
-#include "../ngx_http_php_module.h"
+#include "../../ngx_http_php_module.h"
 
 static int ngx_track_zval(zval zv);
 static void ngx_track_znode(unsigned int node_type, znode_op node, zend_op_array *op_array TSRMLS_DC);
