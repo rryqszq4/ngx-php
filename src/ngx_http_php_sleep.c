@@ -9,6 +9,8 @@
 
 static void ngx_http_php_sleep_cleanup(void *data);
 
+static void ngx_http_php_sleep_handler(ngx_event_t *ev);
+
 static void
 ngx_http_php_sleep_cleanup(void *data)
 {
@@ -60,7 +62,7 @@ ngx_http_php_sleep(ngx_http_request_t *r)
     return NGX_OK;
 }
 
-void 
+static void 
 ngx_http_php_sleep_handler(ngx_event_t *ev)
 {
     ngx_http_request_t *r;

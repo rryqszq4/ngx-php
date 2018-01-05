@@ -10,6 +10,5 @@
 #include "ngx_http_php_module.h"
 
 ngx_int_t ngx_http_php_sleep(ngx_http_request_t *r);
-void ngx_http_php_sleep_handler(ngx_event_t *ev);
 
 #endif
