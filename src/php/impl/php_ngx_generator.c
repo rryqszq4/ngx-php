@@ -198,6 +198,8 @@ PHP_METHOD(ngx_php, main)
             ctx->phase_status = NGX_OK;
         }
 
+    }else {
+        efree(ctx->generator_closure);
     }
 
 }

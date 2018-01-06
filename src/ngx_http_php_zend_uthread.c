@@ -91,9 +91,9 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
             zval_ptr_dtor(&func_next);
             ctx->phase_status = NGX_AGAIN;
         }else {
-            efree(ctx->generator_closure);
             ctx->phase_status = NGX_OK;
             ngx_http_core_run_phases(r);
+            efree(ctx->generator_closure);
         }
     }zend_catch {
 
