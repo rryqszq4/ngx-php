@@ -437,7 +437,9 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     
     php_ngx_module_init();
 
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 2
     zend_startup_module(&php_ngx_module_entry);
+#endif
 
     old_zend_error_cb = zend_error_cb;
     zend_error_cb = ngx_php_error_cb;
