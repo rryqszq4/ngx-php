@@ -135,8 +135,8 @@ PHP_METHOD(ngx_php, main)
 
     zval *closure = NULL;
 
-    zend_function *fptr;
-    zval val;
+    //zend_function *fptr;
+    //zval val;
 
     ngx_http_request_t *r;
 
@@ -145,20 +145,9 @@ PHP_METHOD(ngx_php, main)
     zval retval;
 
     if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "O", &closure, zend_ce_closure) == SUCCESS) {
-        fptr = (zend_function*)zend_get_closure_method_def(closure TSRMLS_CC);
-        Z_ADDREF_P(closure);
+        //fptr = (zend_function*)zend_get_closure_method_def(closure TSRMLS_CC);
+        //Z_ADDREF_P(closure);
     }else {
-        return ;
-    }
-
-    zend_create_closure(&val, fptr, NULL, NULL, NULL);
-
-    zval generator_closure;
-    object_init_ex(&generator_closure, zend_ce_generator);
-
-    if (call_user_function(EG(function_table), NULL, closure, &generator_closure, 0, NULL TSRMLS_CC) == FAILURE)
-    {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling closure");
         return ;
     }
 
@@ -170,20 +159,45 @@ PHP_METHOD(ngx_php, main)
         return ;
     }
 
-    ZVAL_STRING(&func_valid, "valid");
-    call_user_function(NULL, closure, &func_valid, &retval, 0, NULL);
-    zval_ptr_dtor(&func_valid);
+    //zend_create_closure(&val, fptr, NULL, NULL, NULL);
 
-    if (Z_TYPE(retval) == IS_FALSE){
-        ZVAL_STRING(&func_next, "next");
+    //zval generator_closure;
+    //object_init_ex(return_value, zend_ce_generator);
+    
+    ctx->generator_closure = (zval *)emalloc(sizeof(zval));
+    //object_init_ex(ctx->generator_closure, zend_ce_generator);
 
-        call_user_function(NULL, &(generator_closure), &func_next, &retval, 0, NULL TSRMLS_CC);
+    if (call_user_function(EG(function_table), NULL, closure, ctx->generator_closure, 0, NULL TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling closure");
+        return ;
+    }
 
-        zval_ptr_dtor(&func_next);
+    if (Z_TYPE_P(ctx->generator_closure) == IS_OBJECT){
 
-        ctx->generator_closure = &(generator_closure);
-        ctx->rewrite_phase = 0;
-        ctx->phase_status = NGX_AGAIN;
+        ZVAL_STRING(&func_valid, "valid");
+        if (call_user_function(NULL, ctx->generator_closure, &func_valid, &retval, 0, NULL) == FAILURE)
+        {
+            php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling valid");
+            return ;
+        }
+        zval_ptr_dtor(&func_valid);
+
+        //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "rewrite_phase: %d r:%p closure:%p", ctx->rewrite_phase,r,ctx->generator_closure);
+
+        if (Z_TYPE(retval) == IS_TRUE){
+            ZVAL_STRING(&func_next, "next");
+
+            call_user_function(NULL, ctx->generator_closure, &func_next, &retval, 0, NULL TSRMLS_CC);
+
+            zval_ptr_dtor(&func_next);
+
+            //ctx->rewrite_phase = 0;
+            ctx->phase_status = NGX_AGAIN;
+        }else {
+            ctx->phase_status = NGX_OK;
+        }
+
     }
 
 }

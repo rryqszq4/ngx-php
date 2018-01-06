@@ -40,6 +40,7 @@ ngx_http_php_post_read_handler(ngx_http_request_t *r)
         ctx->access_phase = 0;
         ctx->content_phase = 0;
         ctx->phase_status = NGX_DECLINED;
+        ngx_memzero(&ctx->sleep, sizeof(ngx_event_t));
     }
 
     ngx_http_set_ctx(r, ctx, ngx_http_php_module);
