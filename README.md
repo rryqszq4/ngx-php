@@ -12,6 +12,7 @@ Requirement
 -----------
 - PHP 7.0.*  
 PHP 7.1.*  
+PHP 7.2.*  
 - nginx-1.4.7  
 nginx-1.6.3  
 nginx-1.8.1  
@@ -40,7 +41,7 @@ $ export PHP_LIB=/path/to/php/lib
 $ ./configure --user=www --group=www \
 $             --prefix=/path/to/nginx \
 $             --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-$             --add-module=/path/to/ngx_php7/dev/ngx_devel_kit \
+$             --add-module=/path/to/ngx_php7/third-party/ngx_devel_kit \
 $             --add-module=/path/to/ngx_php7
 ```
 
