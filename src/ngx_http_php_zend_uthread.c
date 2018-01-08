@@ -4,6 +4,7 @@
  *
  */
 
+#include "ngx_php_debug.h"
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_zend_uthread.h"
 
@@ -77,14 +78,15 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         zval_ptr_dtor(&func_next);
         */
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,"closure: %p", closure);
-        
+
         ZVAL_STRING(&func_valid, "valid");
 
         call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC);
         zval_ptr_dtor(&func_valid);
 
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,"closure: %p %d", closure, Z_TYPE(retval));
-        
+        ngx_php_debug("r:%p, closure:%p, retval:%d", r, closure, Z_TYPE(retval));
+
         if (Z_TYPE(retval) == IS_TRUE) {
             ZVAL_STRING(&func_next, "next");
             call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC);

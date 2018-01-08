@@ -4,6 +4,7 @@
  *
  */
 
+#include "ngx_php_debug.h"
 #include "ngx_http_php_sleep.h"
 #include "ngx_http_php_zend_uthread.h"
 
@@ -48,6 +49,8 @@ ngx_http_php_sleep(ngx_http_request_t *r)
     ctx->sleep.data = r;
 
     //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,"%p %p %d", r, &ctx->sleep, ctx->delay_time);
+
+    ngx_php_debug("r:%p, &ctx->sleep:%p, ctx->delay_time:%d", r, &ctx->sleep, (int)ctx->delay_time);
 
     ngx_add_timer(&ctx->sleep, (ngx_msec_t) ctx->delay_time);
 

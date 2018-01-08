@@ -4,6 +4,7 @@
  *
  */
 
+#include "../../ngx_php_debug.h"
 #include "php_ngx_generator.h"
 #include "../../ngx_http_php_module.h"
 
@@ -184,6 +185,7 @@ PHP_METHOD(ngx_php, main)
         zval_ptr_dtor(&func_valid);
 
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "rewrite_phase: %d r:%p closure:%p", ctx->rewrite_phase,r,ctx->generator_closure);
+        ngx_php_debug("r:%p, closure:%p, retval:%d", r, ctx->generator_closure, Z_TYPE(retval));
 
         if (Z_TYPE(retval) == IS_TRUE){
             ZVAL_STRING(&func_next, "next");
