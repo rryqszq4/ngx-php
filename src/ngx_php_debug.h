@@ -11,11 +11,15 @@
 #include <nginx.h>
 #include <ngx_core.h>
 
+#ifndef NGX_PHP_DEBUG
+#define NGX_PHP_DEBUG 0
+#endif
+
 #if defined(NGX_PHP_DEBUG) && (NGX_PHP_DEBUG)
 
     #if (NGX_HAVE_VARIADIC_MACROS)
 
-        #define ngx_php_debug(...) fprintf(stderr, "%-60s", __func__); \
+        #define ngx_php_debug(...) fprintf(stderr, "[ngx_php] [debug] %s: ", __func__); \
             fprintf(stderr, __VA_ARGS__); \
             fprintf(stderr, " at %s line %d.\n", __FILE__, __LINE__);
 
