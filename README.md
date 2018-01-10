@@ -1,8 +1,10 @@
-ngx_php7
-=================
+<div align="left">
+<a href="https://github.com/rryqszq4/ngx_php7"><img width="320" src="https://raw.githubusercontent.com/rryqszq4/ngx_php7/master/docs/ngx_php7_logo_v0.2.png"></a>
+</div>
 
 [![Build Status](https://travis-ci.org/rryqszq4/ngx_php7.svg?branch=master)](https://travis-ci.org/rryqszq4/ngx_php7)
-[![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php/blob/master/LICENSE)
+[![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php7/blob/master/LICENSE)
+[![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx_php7)
 
 [ngx_php7](https://github.com/rryqszq4/ngx_php7) - Embedded php7 script language for nginx-module.  
 [ngx_php](https://github.com/rryqszq4/ngx_php) for php5 nginx-module.  
