@@ -22,6 +22,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_php_next, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+/*
 PHP_METHOD(ngx_generator, run)
 {
 
@@ -100,9 +101,9 @@ PHP_METHOD(ngx_generator, next)
 
     }
 
-    /*closure = zend_read_static_property(
-        php_ngx_generator_class_entry, "closure", sizeof("closure")-1, 0 TSRMLS_CC
-    );*/
+    //closure = zend_read_static_property(
+    //    php_ngx_generator_class_entry, "closure", sizeof("closure")-1, 0 TSRMLS_CC
+    //);
 
     closure = ctx->generator_closure;
 
@@ -130,6 +131,7 @@ PHP_METHOD(ngx_generator, next)
     }
 
 }
+*/
 
 PHP_METHOD(ngx_php, main)
 {
@@ -257,8 +259,8 @@ PHP_METHOD(ngx_php, next)
 }
 
 static const zend_function_entry php_ngx_generator_class_functions[]={
-    PHP_ME(ngx_generator, run, arginfo_ngx_generstor_run, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_ME(ngx_generator, next, arginfo_ngx_generstor_next, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    //PHP_ME(ngx_generator, run, arginfo_ngx_generstor_run, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    //PHP_ME(ngx_generator, next, arginfo_ngx_generstor_next, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
 
