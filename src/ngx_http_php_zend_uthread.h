@@ -16,9 +16,13 @@
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
-void ngx_http_php_zend_uthread_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);
 
 void ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_yield(ngx_http_request_t *r, char *func_name);
 
 void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
 

@@ -1,5 +1,5 @@
 /**
- *    Copyright(c) 2016-2017 rryqszq4
+ *    Copyright(c) 2016-2018 rryqszq4
  *
  *
  */
@@ -381,6 +381,10 @@ ngx_http_php_create_loc_conf(ngx_conf_t *cf)
 
     plcf->stack_inline_code = NGX_CONF_UNSET_PTR;
 
+    plcf->enabled_rewrite_inline_compile = 0;
+    plcf->enabled_access_inline_compile = 0;
+    plcf->enabled_content_inline_compile = 0;
+
     return plcf;
 }
 
@@ -410,6 +414,10 @@ ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     prev->opcode_inline_code = conf->opcode_inline_code;
 
     prev->stack_inline_code = conf->stack_inline_code;
+
+    prev->enabled_rewrite_inline_compile = conf->enabled_rewrite_inline_compile;
+    prev->enabled_access_inline_compile = conf->enabled_access_inline_compile;
+    prev->enabled_content_inline_compile = conf->enabled_content_inline_compile;
 
     return NGX_CONF_OK;
 }

@@ -1,5 +1,5 @@
 /**
- *    Copyright(c) 2016-2017 rryqszq4
+ *    Copyright(c) 2016-2018 rryqszq4
  *
  *
  */
@@ -67,6 +67,10 @@ typedef struct {
 
     ngx_int_t (*opcode_handler)(ngx_http_request_t *r);
     ngx_int_t (*stack_handler)(ngx_http_request_t *r);
+
+    unsigned enabled_rewrite_inline_compile:1;
+    unsigned enabled_access_inline_compile:1;
+    unsigned enabled_content_inline_compile:1;
     
 } ngx_http_php_loc_conf_t;
 
