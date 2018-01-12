@@ -36,8 +36,9 @@ static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retva
         zval local_retval;
 
         EG(no_extensions)=1;
-
-        new_op_array->scope = zend_get_executed_scope();
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1
+    new_op_array->scope = zend_get_executed_scope();
+#endif
 
         zend_try {
             ZVAL_UNDEF(&local_retval);
