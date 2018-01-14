@@ -1,9 +1,13 @@
-2018-01-06 rryqszq4 <rryqszq@gmail.com>
+ngx_php7 0.0.11 changes:                                                            12 Jan 2018
     * Add php impl ngx_request for replace $_SERVER, not support $_SERVER.
 
     * Add php impl ngx::sleep with ngx sleep event handler. 
 
     * Add php impl ngx::query_args.
+
+    * Add macros ngx_php_debug.
+
+    * Remove impl ngx_generator class.
 
 2017-03-29 rryqszq4 <rryqszq@gmail.com>
     * add ngx_generator for coroutine
