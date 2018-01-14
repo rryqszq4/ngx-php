@@ -116,7 +116,7 @@ ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)
             plcf->enabled_rewrite_inline_compile = 1;
         }
 
-        ngx_http_php_zend_uthread_yield(r, "ngx_rewrite");
+        ngx_http_php_zend_uthread_create(r, "ngx_rewrite");
 
     }zend_end_try();
 }
@@ -148,7 +148,7 @@ ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r)
             plcf->enabled_access_inline_compile = 1;
         }
 
-        ngx_http_php_zend_uthread_yield(r, "ngx_access");
+        ngx_http_php_zend_uthread_create(r, "ngx_access");
 
     }zend_end_try();
 }
@@ -180,7 +180,7 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
             plcf->enabled_content_inline_compile = 1;
         }
         
-        ngx_http_php_zend_uthread_yield(r, "ngx_content");
+        ngx_http_php_zend_uthread_create(r, "ngx_content");
     
     }zend_end_try();
 }
@@ -209,7 +209,7 @@ ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r)
 }
 
 void 
-ngx_http_php_zend_uthread_yield(ngx_http_request_t *r, char *func_name)
+ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_name)
 {
     zval func_main;
     zval func_next;
