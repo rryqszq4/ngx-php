@@ -6,9 +6,8 @@
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php7/blob/master/LICENSE)
 [![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx_php7)
 
-[ngx_php7](https://github.com/rryqszq4/ngx_php7) - Embedded php7 script language for nginx-module.  
-[ngx_php](https://github.com/rryqszq4/ngx_php) for php5 nginx-module.  
-QQ group：558795330
+[ngx_php7](https://github.com/rryqszq4/ngx_php7) - Embedded php7 programming language for nginx-module.  
+[ngx_php](https://github.com/rryqszq4/ngx_php) - Embedded php5 script language for nginx-module.  
 
 Requirement
 -----------
@@ -84,7 +83,8 @@ http {
 
 Copyright and License
 ---------------------
-Copyright (c) 2016, rryqszq4 <rryqszq@gmail.com>
+```
+Copyright (c) 2016-2018, rryqszq4 <rryqszq@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -107,3 +107,4 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
