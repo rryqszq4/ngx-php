@@ -5,7 +5,7 @@
  */
 
 #ifndef NGX_HTTP_PHP_SOCKET_H
-#include NGX_HTTP_PHP_SOCKET_H
+#define NGX_HTTP_PHP_SOCKET_H
 
 #include <ngx_config.h>
 #include <ngx_core.h>
@@ -14,11 +14,17 @@
 #include <ngx_http.h>
 
 
-typedef struct ngx_http_php_socket_pool_s {
+/*typedef struct ngx_http_php_socket_pool_s {
 
-};
+};*/
 
-typedef struct ngx_http_php_socket_upstream_s {
+typedef struct ngx_http_php_socket_upstream_s
+        ngx_http_php_socket_upstream_t;
+
+typedef void (*ngx_http_php_socket_upstream_handler_pt)(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t);
+
+struct ngx_http_php_socket_upstream_s {
 
     ngx_http_php_socket_upstream_handler_pt     read_event_handler;
     ngx_http_php_socket_upstream_handler_pt     write_event_handler;
@@ -36,7 +42,7 @@ typedef struct ngx_http_php_socket_upstream_s {
     ngx_buf_t       buffer;
     off_t           length;
 
-    ngx_chain_t     *bufs_in
+    ngx_chain_t     *bufs_in;
 
     ngx_err_t       socket_errno;
 
@@ -46,10 +52,10 @@ typedef struct ngx_http_php_socket_upstream_s {
     ngx_chain_t     *request_bufs;
     
 
-} ngx_http_php_socket_upstream_t;
+};
 
-void ngx_http_php_socket_connect(ngx_http_php_socket_t *s);
-void ngx_http_php_socket_close(ngx_http_php_socker_t *s);
+void ngx_http_php_socket_connect(ngx_http_request_t *r);
+void ngx_http_php_socket_close(ngx_http_request_t *r);
 
 void ngx_http_php_socket_send();
 void ngx_http_php_socket_recv();

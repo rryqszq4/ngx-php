@@ -10,10 +10,13 @@
 #include "ngx_http_php_zend_uthread.h"
 
 static void ngx_http_php_socket_handler(ngx_event_t *event);
-static void ngx_http_php_socket_dummy_handler(ngx_http_request_t *r);
+//static void ngx_http_php_socket_dummy_handler(ngx_http_request_t *r);
 static void ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx);
 
-static void ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r, 
+static int ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u);
+
+static void ngx_http_php_socket_connected_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u);
 
 static void ngx_http_php_socket_finalize(ngx_http_request_t *r, 
@@ -22,7 +25,7 @@ static void ngx_http_php_socket_finalize(ngx_http_request_t *r,
 static void
 ngx_http_php_socket_handler(ngx_event_t *ev)
 {
-    ngx_connection_t *c;
+    //ngx_connection_t *c;
     ngx_http_request_t *r;
 
     r = ev->data;
@@ -31,12 +34,14 @@ ngx_http_php_socket_handler(ngx_event_t *ev)
 
 }
 
+/*
 static void 
 ngx_http_php_socket_dummy_handler(ngx_http_request_t *r)
 {
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
                     "ngx_php tcp socket dummy handler.");
 }
+*/
 
 static void 
 ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
@@ -45,7 +50,14 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
     ngx_connection_t                *c;
     ngx_http_upstream_resolved_t    *ur;
     ngx_http_php_socket_upstream_t  *u;
-    ngx_http_php_ctx_t              *php_ctx;
+    u_char                          *p;
+    size_t                          len;
+    //ngx_http_php_ctx_t              *php_ctx;
+
+    socklen_t                        socklen;
+    struct sockaddr                 *sockaddr;
+
+    ngx_uint_t                      i;
 
     u = ctx->data;
     r = u->request;
@@ -67,7 +79,6 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
     u_char      text[NGX_SOCKADDR_STRLEN];
     ngx_str_t   addr;
     ngx_uint_t  i;
-    }
 
     addr.data = text;
 
@@ -80,6 +91,12 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
     }
     }
 #endif
+
+    if (ur->naddrs == 1) {
+        i = 0;
+    }else {
+        i = ngx_random() % ur->naddrs;
+    }
 
     socklen = ur->addrs[i].socklen;
 
@@ -120,14 +137,15 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
 
 }
 
-static void 
+static int 
 ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u)
 {
-    ngx_int_t               rc;
-    ngx_http_php_ctx_t      *ctx;
-    ngx_peer_connection_t   *pc;
-    ngx_connection_t        *c;
+    ngx_int_t                       rc;
+    //ngx_http_php_ctx_t              *ctx;
+    ngx_peer_connection_t           *pc;
+    ngx_connection_t                *c;
+    ngx_http_upstream_resolved_t    *ur;
 
     pc = &u->peer;
 
@@ -161,8 +179,8 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     c->write->handler = ngx_http_php_socket_handler;
     c->read->handler = ngx_http_php_socket_handler;
 
-    u->write_event_handler = ngx_http_php_socket_connect_handler;
-    u->read_event_handler = ngx_http_php_socket_connect_handler;
+    u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt )ngx_http_php_socket_connected_handler;
+    u->read_event_handler = (ngx_http_php_socket_upstream_handler_pt )ngx_http_php_socket_connected_handler;
 
     c->sendfile &= r->connection->sendfile;
 
@@ -184,7 +202,7 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     /* init or reinit the ngx_output_chain() and ngx_chain_writer() contexts */
 
         
-
+    return NGX_OK;
 }
 
 static void 
@@ -227,15 +245,24 @@ ngx_http_php_socket_finalize(ngx_http_request_t *r,
     }
 }
 
+static void 
+ngx_http_php_socket_connected_handler(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u)
+{
+
+}
+
 void
 ngx_http_php_socket_connect(ngx_http_request_t *r)
 {
     ngx_http_php_ctx_t                  *ctx;
-    ngx_http_php_loc_conf_t             *plcf;
-    ngx_str_t                           host;
-    int                                 port;
+    //ngx_http_php_loc_conf_t             *plcf;
+    //ngx_str_t                           host;
+    //int                                 port;
     ngx_resolver_ctx_t                  *rctx, temp;
     ngx_http_core_loc_conf_t            *clcf;
+
+    ngx_url_t                           url;
 
     ngx_int_t                           rc;
     ngx_peer_connection_t               *peer;
@@ -267,7 +294,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     url.no_resolve = 1;
 
     if (ngx_parse_url(r->pool, &url) != NGX_OK) {
-        if (u.err) {
+        if (url.err) {
             ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
                           "%s in upstream \"%V\"", url.err, &url.url);
         }
@@ -280,14 +307,14 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
         //return NGX_ERROR;
     }
 
-    if (url.addrs && url.addr[0].sockaddr) {
+    if (url.addrs && url.addrs[0].sockaddr) {
         u->resolved->sockaddr = url.addrs[0].sockaddr;
         u->resolved->socklen = url.addrs[0].socklen;
         u->resolved->naddrs = 1;
         u->resolved->host = url.addrs[0].name;
     } else {
-        u->resolved->host = host;
-        u->resolved->port = (in_port_t) port;
+        u->resolved->host = ctx->host;
+        u->resolved->port = (in_port_t) ctx->port;
     }
 
     if (u->resolved->sockaddr) {
@@ -301,7 +328,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
 
     clcf = ngx_http_get_module_loc_conf(r, ngx_http_core_module);
 
-    temp.name = host;
+    temp.name = ctx->host;
     rctx = ngx_resolve_start(clcf->resolver, &temp);
     if (rctx == NULL) {
 
@@ -311,7 +338,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
 
     }
 
-    rctx->name = host;
+    rctx->name = ctx->host;
     rctx->handler = ngx_http_php_socket_resolve_handler;
     rctx->data = u;
     rctx->timeout = clcf->resolver_timeout;
@@ -337,7 +364,7 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
     u = ctx->upstream;
 
     if (u == NULL || 
-        u->peer.connection == NULL || )
+        u->peer.connection == NULL )
     {
         return ;
     }
@@ -354,11 +381,13 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
 void
 ngx_http_php_socket_send(ngx_http_request_t *r)
 {
-    size_t size;
-    ssize_t n;
-    ngx_event_t *wev;
-    ngx_connection_t *c;
-    ngx_buf_t *b;
+    /*size_t                              size;
+    ssize_t                             n;
+    ngx_event_t                         *wev;
+    ngx_connection_t                    *c;
+    ngx_buf_t                           *b;
+
+    ngx_http_php_socket_upstream_t      *u;
 
     wev = c->write;
 
@@ -376,7 +405,7 @@ ngx_http_php_socket_send(ngx_http_request_t *r)
                 
             }
         }
-    }
+    }*/
 
 
 }
