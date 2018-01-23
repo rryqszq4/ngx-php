@@ -19,16 +19,22 @@ static int ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
 static void ngx_http_php_socket_connected_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u);
 
+static ngx_int_t ngx_http_php_socket_get_peer(ngx_peer_connection_t *pc, 
+    void *data);
+
 static void ngx_http_php_socket_finalize(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u);
 
 static void
 ngx_http_php_socket_handler(ngx_event_t *ev)
 {
-    //ngx_connection_t *c;
-    ngx_http_request_t *r;
+    ngx_connection_t                    *c;
+    ngx_http_request_t                  *r;
+    ngx_http_php_socket_upstream_t      *u;
 
-    r = ev->data;
+    c = ev->data;
+    u = c->data;
+    r = u->request;
 
     ngx_http_php_zend_uthread_resume(r);
 
@@ -42,6 +48,13 @@ ngx_http_php_socket_dummy_handler(ngx_http_request_t *r)
                     "ngx_php tcp socket dummy handler.");
 }
 */
+
+static ngx_int_t 
+ngx_http_php_socket_get_peer(ngx_peer_connection_t *pc, 
+    void *data)
+{
+    return NGX_OK;
+}
 
 static void 
 ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
@@ -66,6 +79,8 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
 
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0,
                    "php socket resolve handler.");
+
+    ngx_php_debug("php socket resolve handler.");
 
     if (ctx->state) {
 
@@ -133,7 +148,7 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
     ngx_resolve_name_done(ctx);
     ur->ctx = NULL;
 
-
+    ngx_http_php_socket_resolve_retval_handler(r, u);
 
 }
 
@@ -142,12 +157,16 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     ngx_http_php_socket_upstream_t *u)
 {
     ngx_int_t                       rc;
-    //ngx_http_php_ctx_t              *ctx;
+    ngx_http_php_ctx_t              *ctx;
     ngx_peer_connection_t           *pc;
     ngx_connection_t                *c;
     ngx_http_upstream_resolved_t    *ur;
 
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
     pc = &u->peer;
+
+    ngx_php_debug("%p", pc);
 
     ur = u->resolved;
 
@@ -157,7 +176,11 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
         pc->name = &ur->host;
     }
 
+    pc->get = ngx_http_php_socket_get_peer;
+
     rc = ngx_event_connect_peer(pc);
+
+    ngx_php_debug("rc: %d %p", (int)rc, ctx->generator_closure);
 
     if (rc == NGX_ERROR) {
 
@@ -172,6 +195,8 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     }
 
     /* rc == NGX_OK || rc == NGX_AGAIN || rc == NGX_DONE */
+
+    ctx->phase_status = NGX_AGAIN;
 
     c = pc->connection;
     c->data = u;
@@ -249,7 +274,7 @@ static void
 ngx_http_php_socket_connected_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u)
 {
-
+    ngx_php_debug("php socket connected handler.");
 }
 
 void
@@ -284,7 +309,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     peer->log = r->connection->log;
     peer->log_error = NGX_ERROR_ERR;
 
-    ngx_php_debug("php peer connection log: %p", peer->log);
+    ngx_php_debug("php peer connection log: %p %p", peer->log, peer);
 
     ngx_memzero(&url, sizeof(ngx_url_t));
 
@@ -297,6 +322,9 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
         if (url.err) {
             ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
                           "%s in upstream \"%V\"", url.err, &url.url);
+        }else {
+            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
+                          "failed to parse host name \"%s\"", ctx->host.data);
         }
         //return NGX_ERROR;
     }
@@ -331,11 +359,11 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     temp.name = ctx->host;
     rctx = ngx_resolve_start(clcf->resolver, &temp);
     if (rctx == NULL) {
-
+        ngx_php_debug("failed to start the resolver.");
     }
 
     if (rctx == NGX_NO_RESOLVER) {
-
+        ngx_php_debug("no resolver defined to resolve \"%s\"", ctx->host.data);
     }
 
     rctx->name = ctx->host;
@@ -350,7 +378,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
                        "php tcp socket fail to run resolver immediately");
     }
 
-
+    
 }
 
 void 

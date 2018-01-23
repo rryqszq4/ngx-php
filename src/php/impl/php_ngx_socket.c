@@ -79,10 +79,10 @@ PHP_METHOD(ngx_socket, recv)
 PHP_METHOD(ngx_socket, close)
 {
     ngx_http_request_t *r;
-    ngx_http_php_ctx_t *ctx;
+    //ngx_http_php_ctx_t *ctx;
 
     r = ngx_php_request;
-    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+    //ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     ngx_http_php_socket_close(r);
 }

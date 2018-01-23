@@ -21,6 +21,6 @@ PHP_METHOD(ngx_socket, close);
 PHP_METHOD(ngx_socket, settimeout);
 PHP_METHOD(ngx_socket, setkeepalive);
 
-void php_ngx_socket_init(int module_number TSRMLS_DC);
+void ext_php_ngx_socket_init(int module_number TSRMLS_DC);
 
 #endif
