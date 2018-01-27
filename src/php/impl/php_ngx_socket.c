@@ -68,6 +68,38 @@ PHP_METHOD(ngx_socket, connect)
 
 PHP_METHOD(ngx_socket, send)
 {
+    ngx_http_request_t              *r;
+    ngx_http_php_ctx_t              *ctx;
+    ngx_http_php_socket_upstream_t  *u;
+    ngx_str_t                       ns;
+    ngx_buf_t                       *b;
+    ngx_chain_t                     *cl;
+
+    zend_string *buf_str;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &buf_str) == FAILURE) {
+        RETURN_NULL();
+    }
+
+    r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ns.data = (u_char *)ZSTR_VAL(buf_str);
+    ns.len = ZSTR_LEN(buf_str);
+
+    b = ngx_create_temp_buf(r->pool, ns.len + 1);
+
+    cl = ngx_alloc_chain_link(r->pool);
+
+    cl->buf = b;
+    cl->next = NULL;
+
+    u = ctx->upstream;
+    u->request_bufs = cl;
+
+    b->last = ngx_copy(b->last, ns.data, ns.len);
+
+    ngx_http_php_socket_send(r);
 
 }
 

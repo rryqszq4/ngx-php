@@ -1,5 +1,5 @@
 /**
- *    Copyright(c) 2016-2017 rryqszq4
+ *    Copyright(c) 2016-2018 rryqszq4
  *
  *
  */
@@ -44,6 +44,9 @@ struct ngx_http_php_socket_upstream_s {
 
     ngx_chain_t     *bufs_in;
 
+    ngx_chain_t     *busy_bufs;
+    ngx_chain_t     *free_bufs;
+
     ngx_err_t       socket_errno;
 
     ngx_int_t       (*input_filter)(void *data, ssize_t bytes);
@@ -57,8 +60,8 @@ struct ngx_http_php_socket_upstream_s {
 void ngx_http_php_socket_connect(ngx_http_request_t *r);
 void ngx_http_php_socket_close(ngx_http_request_t *r);
 
-void ngx_http_php_socket_send();
-void ngx_http_php_socket_recv();
+void ngx_http_php_socket_send(ngx_http_request_t *r);
+void ngx_http_php_socket_recv(ngx_http_request_t *r);
 
 
 

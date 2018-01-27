@@ -1,5 +1,5 @@
 /**
- *    Copyright(c) 2016-2017 rryqszq4
+ *    Copyright(c) 2016-2018 rryqszq4
  *
  *
  */
@@ -10,7 +10,10 @@
 #include "ngx_http_php_zend_uthread.h"
 
 static void ngx_http_php_socket_handler(ngx_event_t *event);
-//static void ngx_http_php_socket_dummy_handler(ngx_http_request_t *r);
+
+static void ngx_http_php_socket_dummy_handler(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u);
+
 static void ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx);
 
 static int ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r, 
@@ -23,6 +26,12 @@ static ngx_int_t ngx_http_php_socket_get_peer(ngx_peer_connection_t *pc,
     void *data);
 
 static void ngx_http_php_socket_finalize(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u);
+
+static ngx_int_t ngx_http_php_socket_upstream_send(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u);
+
+static void ngx_http_php_socket_send_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u);
 
 static void
@@ -40,14 +49,13 @@ ngx_http_php_socket_handler(ngx_event_t *ev)
 
 }
 
-/*
 static void 
-ngx_http_php_socket_dummy_handler(ngx_http_request_t *r)
+ngx_http_php_socket_dummy_handler(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u)
 {
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
                     "ngx_php tcp socket dummy handler.");
 }
-*/
 
 static ngx_int_t 
 ngx_http_php_socket_get_peer(ngx_peer_connection_t *pc, 
@@ -277,6 +285,109 @@ ngx_http_php_socket_connected_handler(ngx_http_request_t *r,
     ngx_php_debug("php socket connected handler.");
 }
 
+static ngx_int_t 
+ngx_http_php_socket_upstream_send(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u)
+{
+    ngx_int_t           n;
+    ngx_connection_t    *c;
+    ngx_http_php_ctx_t  *ctx;
+    ngx_buf_t           *b;
+
+    c = u->peer.connection;
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
+                   "php socket send data.");
+    ngx_php_debug("php socket send data.");
+
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+    if (ctx == NULL) {
+        return NGX_ERROR;
+    }
+
+    b = u->request_bufs->buf;
+
+    for (;;) {
+        n = c->send(c, b->pos, b->last - b->pos);
+    
+        if (n >= 0) {
+            b->pos += n;
+
+            if (b->pos == b->last) {
+                ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0, 
+                               "php socket send all the data.");
+                ngx_php_debug("php socket send all the data.");
+
+                if (c->write->timer_set) {
+                    ngx_del_timer(c->write);
+                }
+
+                ngx_chain_update_chains(r->pool, &u->free_bufs, &u->busy_bufs, &u->request_bufs,
+                    (ngx_buf_tag_t) &ngx_http_php_module);
+
+                u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_dummy_handler;
+
+                if (ngx_handle_write_event(c->write, 0) != NGX_OK) {
+
+                    return NGX_ERROR;
+                }
+
+                return NGX_OK;
+            }
+
+            /* keep sending more data */
+            continue;
+        }
+
+        /* NGX_ERROR || NGX_AGAIN */
+        break;
+    }
+
+    if (n == NGX_ERROR) {
+
+        return NGX_ERROR;
+    }
+
+    u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_send_handler;
+
+    //ngx_add_timer
+
+
+    return NGX_AGAIN;
+
+
+}
+
+static void 
+ngx_http_php_socket_send_handler(ngx_http_request_t *r, 
+    ngx_http_php_socket_upstream_t *u)
+{
+    ngx_connection_t                    *c;
+    ngx_http_php_loc_conf_t             *plcf;
+
+    c = u->peer.connection;
+
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
+                   "php socket send handler.");
+    ngx_php_debug("php socket send handler.");
+
+    if (c->write->timedout) {
+        plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
+
+        if (plcf->log_socket_errors) {
+            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
+                          "php socket write timed out.");
+        }
+
+        return ;
+    }
+
+    if (u->request_bufs) {
+        (void) ngx_http_php_socket_upstream_send(r, u);
+    }
+
+}
+
 void
 ngx_http_php_socket_connect(ngx_http_request_t *r)
 {
@@ -409,32 +520,51 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
 void
 ngx_http_php_socket_send(ngx_http_request_t *r)
 {
-    /*size_t                              size;
-    ssize_t                             n;
-    ngx_event_t                         *wev;
+    ngx_int_t                           rc;
     ngx_connection_t                    *c;
-    ngx_buf_t                           *b;
-
+    ngx_http_php_ctx_t                  *ctx;
     ngx_http_php_socket_upstream_t      *u;
 
-    wev = c->write;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    b = u->request_bufs->buf;
+    u = ctx->upstream;
 
-    for (;;) {
-        size = b->last - b->pos;
-        n = c->send(c, b->pos, size);
+    if (u == NULL || u->peer.connection == NULL) {
 
-        if (n => 0) {
-            b->pos += n;
+    }
 
-            if (b->pos == b->last) {
+    c = u->peer.connection;
 
-                
-            }
-        }
-    }*/
+    if (c->tcp_nodelay) {
 
+    }
+
+    if (u->request != r) {
+
+    }
+
+    rc = ngx_http_php_socket_upstream_send(r, u);
+
+    ngx_php_debug("socket send returned %d", (int)rc);
+
+    if (rc == NGX_ERROR) {
+
+    }
+
+    if (rc == NGX_OK) {
+
+    }
+
+    /* rc == NGX_AGAIN */
+
+
+
+
+}
+
+void 
+ngx_http_php_socket_recv(ngx_http_request_t *r)
+{
 
 }
 

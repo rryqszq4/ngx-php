@@ -72,6 +72,8 @@ typedef struct {
     unsigned enabled_access_inline_compile:1;
     unsigned enabled_content_inline_compile:1;
     
+    ngx_flag_t log_socket_errors;
+
 } ngx_http_php_loc_conf_t;
 
 
