@@ -105,6 +105,27 @@ PHP_METHOD(ngx_socket, send)
 
 PHP_METHOD(ngx_socket, recv)
 {
+    ngx_http_request_t              *r;
+    ngx_http_php_ctx_t              *ctx;
+    ngx_http_php_socket_upstream_t  *u;
+    ngx_buf_t                       *b;
+
+    long size;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &size) == FAILURE){
+        RETURN_NULL();
+    }
+
+    r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    u = ctx->upstream;
+
+    b = &u->buffer;
+
+    ngx_http_php_socket_recv(r);
+
+    ZVAL_STRINGL(return_value, (char *)b->pos, b->last - b->pos);
 
 }
 
