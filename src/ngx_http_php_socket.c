@@ -490,7 +490,7 @@ ngx_http_php_socket_upstream_recv_handler(ngx_http_request_t *r,
 
 }
 
-void
+ngx_int_t 
 ngx_http_php_socket_connect(ngx_http_request_t *r)
 {
     ngx_http_php_ctx_t                  *ctx;
@@ -539,13 +539,13 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
             ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
                           "failed to parse host name \"%s\"", ctx->host.data);
         }
-        //return ;
+        return NGX_ERROR;
     }
 
     u->resolved = ngx_pcalloc(r->pool, sizeof(ngx_http_upstream_resolved_t));
     if (u->resolved == NULL) {
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_pcalloc resolved error. %s.", strerror(errno));
-        //return ;
+        return NGX_ERROR;
     }
 
     if (url.addrs && url.addrs[0].sockaddr) {
@@ -564,10 +564,10 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     if (u->resolved->sockaddr) {
         rc = ngx_http_php_socket_resolve_retval_handler(r, u);
         if (rc == NGX_AGAIN) {
-            return ;
+            return NGX_AGAIN;
         }
 
-        return ;
+        return rc;
     }
 
     clcf = ngx_http_get_module_loc_conf(r, ngx_http_core_module);
@@ -575,13 +575,15 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     temp.name = ctx->host;
     rctx = ngx_resolve_start(clcf->resolver, &temp);
     if (rctx == NULL) {
-        ngx_php_debug("failed to start the resolver.");
-        //return ;
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
+                      "failed to start the resolver");
+        return NGX_ERROR;
     }
 
     if (rctx == NGX_NO_RESOLVER) {
-        ngx_php_debug("no resolver defined to resolve \"%s\"", ctx->host.data);
-        //return ;
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
+                      "no resolver defined to resolve \"%s\"", ctx->host.data);
+        return NGX_ERROR;
     }
 
     rctx->name = ctx->host;
@@ -594,10 +596,10 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     if (ngx_resolve_name(rctx) != NGX_OK) {
         ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                        "php tcp socket fail to run resolver immediately");
-        //return ;
+        return NGX_ERROR;
     }
 
-    
+    return NGX_OK;   
 }
 
 void 
