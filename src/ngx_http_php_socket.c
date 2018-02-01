@@ -366,6 +366,8 @@ ngx_http_php_socket_upstream_send(ngx_http_request_t *r,
         return NGX_ERROR;
     }
 
+    /* n == NGX_AGAIN */
+
     ctx->phase_status = NGX_AGAIN;
 
     u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_send_handler;
@@ -627,7 +629,7 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
     return ;
 }
 
-void
+ngx_int_t 
 ngx_http_php_socket_send(ngx_http_request_t *r)
 {
     ngx_int_t                           rc;
@@ -641,6 +643,7 @@ ngx_http_php_socket_send(ngx_http_request_t *r)
 
     if (u == NULL || u->peer.connection == NULL) {
 
+        return NGX_ERROR;
     }
 
     c = u->peer.connection;
@@ -651,6 +654,7 @@ ngx_http_php_socket_send(ngx_http_request_t *r)
 
     if (u->request != r) {
 
+        return NGX_ERROR;
     }
 
     rc = ngx_http_php_socket_upstream_send(r, u);
@@ -659,17 +663,17 @@ ngx_http_php_socket_send(ngx_http_request_t *r)
 
     if (rc == NGX_ERROR) {
 
+        return NGX_ERROR;
     }
 
     if (rc == NGX_OK) {
 
+        return NGX_OK;
     }
 
     /* rc == NGX_AGAIN */
 
-
-
-
+    return NGX_AGAIN;
 }
 
 void 
