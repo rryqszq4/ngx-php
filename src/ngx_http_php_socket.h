@@ -61,7 +61,7 @@ ngx_int_t ngx_http_php_socket_connect(ngx_http_request_t *r);
 void ngx_http_php_socket_close(ngx_http_request_t *r);
 
 ngx_int_t ngx_http_php_socket_send(ngx_http_request_t *r);
-void ngx_http_php_socket_recv(ngx_http_request_t *r);
+ngx_int_t ngx_http_php_socket_recv(ngx_http_request_t *r);
 
 
 
