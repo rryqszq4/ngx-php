@@ -26,4 +26,6 @@ void ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_name);
 
 void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
 
+void ngx_http_php_zend_uthread_exit(ngx_http_request_t *r);
+
 #endif

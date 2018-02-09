@@ -264,17 +264,19 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
 {
     ngx_php_request = r;
 
+    ngx_http_php_ctx_t *ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ngx_php_debug("ctx: %p", ctx);
+
+    if (ctx == NULL) {
+        
+    }
+
     zend_try {
         zval *closure;
         zval func_next;
         zval func_valid;
         zval retval;
-
-        ngx_http_php_ctx_t *ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
-
-        if (ctx == NULL) {
-
-        }
 
         closure = ctx->generator_closure;
 
@@ -284,7 +286,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         */
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,"closure: %p", closure);
 
-        ngx_php_debug("r:%p, closure:%p, retval:%d", r, closure, Z_TYPE(retval));
+        //ngx_php_debug("r:%p, closure:%p, retval:%d", r, closure, Z_TYPE(retval));
 
         ZVAL_STRING(&func_valid, "valid");
 
@@ -303,10 +305,31 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
             ctx->phase_status = NGX_OK;
             ngx_http_core_run_phases(r);
             efree(ctx->generator_closure);
+            ctx->generator_closure = NULL;
         }
     }zend_catch {
 
     }zend_end_try();
 }
+
+void 
+ngx_http_php_zend_uthread_exit(ngx_http_request_t *r)
+{
+    ngx_http_php_ctx_t *ctx;
+
+    ngx_php_request = r;
+
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if (ctx == NULL) {
+
+    }
+
+    if (ctx->generator_closure) {
+        ngx_http_php_zend_uthread_resume(r);
+    }
+
+}
+
 
 
