@@ -49,11 +49,17 @@ ngx_http_php_socket_handler(ngx_event_t *ev)
     ngx_http_request_t                  *r;
     ngx_http_php_socket_upstream_t      *u;
 
-    ngx_php_debug("php socket handler, ev->data: %p", ev->data);
-
     c = ev->data;
     u = c->data;
     r = u->request;
+
+    ngx_php_debug("php socket handler, ev->data: %p, ev->write: %d, ev->read: %d", ev->data, ev->write, !ev->write);
+
+    if (ev->write) {
+        u->write_event_handler(r, u);
+    }else {
+        u->read_event_handler(r, u);
+    }
 
     ngx_http_php_zend_uthread_resume(r);
 
@@ -97,9 +103,9 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
     ur = u->resolved;
 
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0,
-                   "php socket resolve handler.");
+                   "php socket resolve handler");
 
-    ngx_php_debug("php socket resolve handler.");
+    ngx_php_debug("php socket resolve handler");
 
     if (ctx->state) {
 
@@ -308,13 +314,14 @@ ngx_http_php_socket_finalize(ngx_http_request_t *r,
     if (c) {
         ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                        "close http upstream connection: %d",
-                       u->peer.connection->fd);
+                       c->fd);
 
-        if (u->peer.connection->pool) {
-            ngx_destroy_pool(u->peer.connection->pool);
+        if (c->pool) {
+            ngx_destroy_pool(c->pool);
+            c->pool = NULL;
         }
 
-        ngx_close_connection(u->peer.connection);
+        ngx_close_connection(c);
     }
 
     ngx_php_debug("socket end");
@@ -329,7 +336,7 @@ static void
 ngx_http_php_socket_connected_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u)
 {
-    ngx_php_debug("php socket connected handler.");
+    ngx_php_debug("php socket connected handler");
 }
 
 static ngx_int_t 
@@ -376,7 +383,7 @@ ngx_http_php_socket_upstream_send(ngx_http_request_t *r,
                 u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_dummy_handler;
 
                 if (ngx_handle_write_event(c->write, 0) != NGX_OK) {
-
+                    
                     return NGX_ERROR;
                 }
 
@@ -589,10 +596,18 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
 
     ngx_http_php_socket_upstream_t      *u;
 
+    ngx_connection_t                    *c;
+
+    c = r->connection;
+
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     if (ctx->upstream == NULL){
         ctx->upstream = ngx_pcalloc(r->pool, sizeof(ngx_http_php_socket_upstream_t));
+    }
+
+    if (c->read->timer_set) {
+        ngx_del_timer(c->read);
     }
 
     r->keepalive = 0;

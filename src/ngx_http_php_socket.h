@@ -22,7 +22,7 @@ typedef struct ngx_http_php_socket_upstream_s
         ngx_http_php_socket_upstream_t;
 
 typedef void (*ngx_http_php_socket_upstream_handler_pt)(ngx_http_request_t *r, 
-    ngx_http_php_socket_upstream_t);
+    ngx_http_php_socket_upstream_t *u);
 
 struct ngx_http_php_socket_upstream_s {
 
