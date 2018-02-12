@@ -22,7 +22,7 @@ void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);
 
 void ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r);
 
-void ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_name);
+void ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix);
 
 void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
 

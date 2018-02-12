@@ -158,6 +158,7 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
 {
     ngx_http_php_ctx_t *ctx;
     ngx_http_php_loc_conf_t *plcf;
+    ngx_str_t inline_code;
 
     plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
@@ -167,12 +168,23 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
     ngx_php_request = r;
 
     ngx_php_set_request_status(NGX_DECLINED);
+
+    inline_code.data = ngx_pnalloc(r->pool, sizeof("function ngx_content_(){  }")-1 + strlen(plcf->content_inline_code->code.string) + 32);
+
+    inline_code.len = ngx_sprintf(inline_code.data, "function ngx_content_%V(){ %*s }", 
+                                        &(plcf->content_inline_code->code_id), 
+                                        strlen(plcf->content_inline_code->code.string),
+                                        plcf->content_inline_code->code.string
+                                    ) - inline_code.data;
+
+    ngx_php_debug("%*s, %d", (int)inline_code.len, inline_code.data, (int)inline_code.len);
+
     zend_first_try {
 
         if (!plcf->enabled_content_inline_compile){
             ngx_http_php_zend_eval_stringl_ex(
-                plcf->content_inline_code->code.string, 
-                strlen(plcf->content_inline_code->code.string), 
+                (char *)inline_code.data, 
+                inline_code.len, 
                 NULL, 
                 "ngx_php eval code", 
                 1
@@ -209,13 +221,15 @@ ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r)
 }
 
 void 
-ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_name)
+ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
 {
     zval func_main;
     zval func_next;
     zval func_valid;
     zval retval;
     ngx_http_php_ctx_t *ctx;
+    ngx_http_php_loc_conf_t *plcf;
+    ngx_str_t func_name;
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
@@ -224,7 +238,20 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_name)
     }
     
     ctx->generator_closure = (zval *)emalloc(sizeof(zval));
-    ZVAL_STRING(&func_main, func_name);
+
+    plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
+
+    //func_name.data = ngx_pnalloc(r->pool, strlen(func_prefix)+sizeof("_18446744073709551616")-1+NGX_TIME_T_LEN);
+    //func_name.len = ngx_sprintf(func_name.data, "%s_%V", func_prefix, &(plcf->content_inline_code->code_id)) - func_name.data;
+
+    func_name.data = ngx_pnalloc(r->pool, strlen(func_prefix) + 32);
+
+    func_name.len = ngx_sprintf(func_name.data, "%s_%V", func_prefix, &(plcf->content_inline_code->code_id)) - func_name.data;
+
+
+    ngx_php_debug("%*s", (int)func_name.len, func_name.data);
+
+    ZVAL_STRINGL(&func_main, (char *)func_name.data, func_name.len);
     call_user_function(EG(function_table), NULL, &func_main, ctx->generator_closure, 0, NULL);
     zval_ptr_dtor(&func_main);
 
