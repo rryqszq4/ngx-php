@@ -38,6 +38,19 @@ ngx_http_php_code_from_file(ngx_pool_t *pool, ngx_str_t *code_file_path)
         ngx_cpystrn(p, (u_char *)code_file_path->data, code_file_path->len + 1);
     }
     code->code_type = NGX_HTTP_PHP_CODE_TYPE_FILE;
+
+    //code->code_id.data = ngx_pnalloc(pool, sizeof("18446744073709551616")-1+NGX_TIME_T_LEN);
+    //code->code_id.len = ngx_sprintf(code->code_id.data, "%ul%T", ngx_random(), ngx_time()) - code->code_id.data;
+
+    code->code_id.len = 32;
+    code->code_id.data = ngx_pnalloc(pool, 32);
+    if (code->code_id.data == NULL) {
+        return NGX_CONF_UNSET_PTR;
+    }
+    ngx_sprintf(code->code_id.data, "%08xD%08xD%08xD%08xD",
+                (uint32_t) ngx_random(), (uint32_t) ngx_random(),
+                (uint32_t) ngx_random(), (uint32_t) ngx_random());
+
     return code;
 }
 
@@ -59,6 +72,19 @@ ngx_http_php_code_from_string(ngx_pool_t *pool, ngx_str_t *code_str)
     }
     ngx_cpystrn((u_char *)code->code.string, code_str->data, len + 1);
     code->code_type = NGX_HTTP_PHP_CODE_TYPE_STRING;
+
+    //code->code_id.data = ngx_pnalloc(pool, sizeof("18446744073709551616")-1+NGX_TIME_T_LEN);
+    //code->code_id.len = ngx_sprintf(code->code_id.data, "%ul%T", ngx_random(), ngx_time()) - code->code_id.data;
+
+    code->code_id.len = 32;
+    code->code_id.data = ngx_pnalloc(pool, 32);
+    if (code->code_id.data == NULL) {
+        return NGX_CONF_UNSET_PTR;
+    }
+    ngx_sprintf(code->code_id.data, "%08xD%08xD%08xD%08xD",
+                (uint32_t) ngx_random(), (uint32_t) ngx_random(),
+                (uint32_t) ngx_random(), (uint32_t) ngx_random());
+
     return code;
 }
 
