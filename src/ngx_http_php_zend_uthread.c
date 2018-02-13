@@ -94,6 +94,7 @@ ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)
 {
     ngx_http_php_ctx_t *ctx;
     ngx_http_php_loc_conf_t *plcf;
+    ngx_str_t inline_code;
 
     plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
@@ -103,12 +104,23 @@ ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)
     ngx_php_request = r;
 
     ngx_php_set_request_status(NGX_DECLINED);
+
+    inline_code.data = ngx_pnalloc(r->pool, sizeof("function ngx_rewrite_(){  }")-1 + ngx_strlen(plcf->rewrite_inline_code->code.string) + 32);
+
+    inline_code.len = ngx_sprintf(inline_code.data, "function ngx_rewrite_%V(){ %*s }", 
+                                        &(plcf->rewrite_inline_code->code_id), 
+                                        ngx_strlen(plcf->rewrite_inline_code->code.string),
+                                        plcf->rewrite_inline_code->code.string
+                                    ) - inline_code.data;
+
+    ngx_php_debug("%*s, %d", (int)inline_code.len, inline_code.data, (int)inline_code.len);
+
     zend_first_try {
 
         if (!plcf->enabled_rewrite_inline_compile){
             ngx_http_php_zend_eval_stringl_ex(
-                plcf->rewrite_inline_code->code.string, 
-                ngx_strlen(plcf->rewrite_inline_code->code.string), 
+                (char *)inline_code.data, 
+                inline_code.len, 
                 NULL, 
                 "ngx_php eval code", 
                 1
@@ -126,6 +138,7 @@ ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r)
 {
     ngx_http_php_ctx_t *ctx;
     ngx_http_php_loc_conf_t *plcf;
+    ngx_str_t inline_code;
 
     plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
@@ -135,12 +148,23 @@ ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r)
     ngx_php_request = r;
 
     ngx_php_set_request_status(NGX_DECLINED);
+
+    inline_code.data = ngx_pnalloc(r->pool, sizeof("function ngx_access_(){  }")-1 + ngx_strlen(plcf->access_inline_code->code.string) + 32);
+
+    inline_code.len = ngx_sprintf(inline_code.data, "function ngx_access_%V(){ %*s }", 
+                                        &(plcf->access_inline_code->code_id), 
+                                        ngx_strlen(plcf->access_inline_code->code.string),
+                                        plcf->access_inline_code->code.string
+                                    ) - inline_code.data;
+
+    ngx_php_debug("%*s, %d", (int)inline_code.len, inline_code.data, (int)inline_code.len);
+
     zend_first_try {
 
         if (!plcf->enabled_access_inline_compile){
             ngx_http_php_zend_eval_stringl_ex(
-                plcf->access_inline_code->code.string, 
-                ngx_strlen(plcf->access_inline_code->code.string), 
+                (char *)inline_code.data, 
+                inline_code.len, 
                 NULL, 
                 "ngx_php eval code", 
                 1
@@ -169,11 +193,11 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
 
     ngx_php_set_request_status(NGX_DECLINED);
 
-    inline_code.data = ngx_pnalloc(r->pool, sizeof("function ngx_content_(){  }")-1 + strlen(plcf->content_inline_code->code.string) + 32);
+    inline_code.data = ngx_pnalloc(r->pool, sizeof("function ngx_content_(){  }")-1 + ngx_strlen(plcf->content_inline_code->code.string) + 32);
 
     inline_code.len = ngx_sprintf(inline_code.data, "function ngx_content_%V(){ %*s }", 
                                         &(plcf->content_inline_code->code_id), 
-                                        strlen(plcf->content_inline_code->code.string),
+                                        ngx_strlen(plcf->content_inline_code->code.string),
                                         plcf->content_inline_code->code.string
                                     ) - inline_code.data;
 
