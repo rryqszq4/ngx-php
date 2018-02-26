@@ -42,7 +42,7 @@ $ export PHP_LIB=/path/to/php/lib
 $ ./configure --user=www --group=www \
 $             --prefix=/path/to/nginx \
 $             --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-$             --add-module=/path/to/ngx_php7/third-party/ngx_devel_kit \
+$             --add-module=/path/to/ngx_php7/third_party/ngx_devel_kit \
 $             --add-module=/path/to/ngx_php7
 ```
 

@@ -37,8 +37,8 @@ CORE_INCS="$CORE_INCS $PHP_INC $PHP_INC/main $PHP_INC/TSRM $PHP_INC/Zend $PHP_IN
 
 CORE_LIBS="$CORE_LIBS `$PHP_BIN/php-config --ldflags` -L$PHP_LIB -lphp7 `$PHP_BIN/php-config --libs` "
 
-#CORE_INCS="$CORE_INCS /disk4/local/php71/include/php /disk4/local/php71/include/php/main /disk4/local/php71/include/php/TSRM /disk4/local/php71/include/php/Zend /disk4/local/php71/include/php/ext /disk4/local/php71/include/php/ext/date/lib /disk4/local/php71/include/php/sapi/embed "
+#CORE_INCS="$CORE_INCS /usr/local/php72/include/php /usr/local/php72/include/php/main /usr/local/php72/include/php/TSRM /usr/local/php72/include/php/Zend /usr/local/php72/include/php/ext /usr/local/php72/include/php/ext/date/lib /usr/local/php72/include/php/sapi/embed "
 
-#CORE_LIBS="$CORE_LIBS `/disk4/local/php71/bin/php-config --ldflags` -L/disk4/local/php71/lib -lphp7 `/disk4/local/php71/bin/php-config --libs` "
+#CORE_LIBS="$CORE_LIBS `/usr/local/php72/bin/php-config --ldflags` -L/usr/local/php72/lib -lphp7 `/usr/local/php72/bin/php-config --libs` "
 
 have=NDK_SET_VAR . auto/have
