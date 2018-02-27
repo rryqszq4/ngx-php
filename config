@@ -7,6 +7,7 @@ NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_http_php_module.c \
                 $ngx_addon_dir/src/ngx_http_php_request.c \
                 $ngx_addon_dir/src/ngx_http_php_zend_uthread.c \
                 $ngx_addon_dir/src/ngx_http_php_sleep.c \
+                $ngx_addon_dir/src/ngx_http_php_socket.c \
                 $ngx_addon_dir/src/ngx_php_debug.c \
                 $ngx_addon_dir/src/php/impl/php_ngx.c \
                 $ngx_addon_dir/src/php/impl/php_ngx_test.c \
@@ -15,6 +16,7 @@ NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_http_php_module.c \
                 $ngx_addon_dir/src/php/impl/php_ngx_log.c \
                 $ngx_addon_dir/src/php/impl/php_ngx_request.c \
                 $ngx_addon_dir/src/php/impl/php_ngx_generator.c \
+                $ngx_addon_dir/src/php/impl/php_ngx_socket.c \
                 "
 NGX_ADDON_DEPS="$NGX_ADDON_DEPS $ngx_addon_dir/src/ngx_http_php_module.h \
                 $ngx_addon_dir/src/ngx_http_php_core.h \
@@ -23,6 +25,7 @@ NGX_ADDON_DEPS="$NGX_ADDON_DEPS $ngx_addon_dir/src/ngx_http_php_module.h \
                 $ngx_addon_dir/src/ngx_http_php_request.h \
                 $ngx_addon_dir/src/ngx_http_php_zend_uthread.h \
                 $ngx_addon_dir/src/ngx_http_php_sleep.h \
+                $ngx_addon_dir/src/ngx_http_php_socket.h \
                 $ngx_addon_dir/src/ngx_php_debug.h \
                 $ngx_addon_dir/src/php/impl/php_ngx.h \
                 $ngx_addon_dir/src/php/impl/php_ngx_test.h \
@@ -31,6 +34,7 @@ NGX_ADDON_DEPS="$NGX_ADDON_DEPS $ngx_addon_dir/src/ngx_http_php_module.h \
                 $ngx_addon_dir/src/php/impl/php_ngx_log.h \
                 $ngx_addon_dir/src/php/impl/php_ngx_request.h \
                 $ngx_addon_dir/src/php/impl/php_ngx_generator.h \
+                $ngx_addon_dir/src/php/impl/php_ngx_socket.h \
                 "
 
 CORE_INCS="$CORE_INCS $PHP_INC $PHP_INC/main $PHP_INC/TSRM $PHP_INC/Zend $PHP_INC/ext $PHP_INC/ext/date/lib $PHP_INC/sapi/embed "

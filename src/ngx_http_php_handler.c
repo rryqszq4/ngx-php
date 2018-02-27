@@ -8,6 +8,7 @@
 #include "ngx_http_php_handler.h"
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_request.h"
+#include "ngx_http_php_zend_uthread.h"
 //#include "ngx_http_php_subrequest.h"
 
 //#include "php/php_ngx_location.h"
@@ -15,13 +16,13 @@
 #include "php/impl/php_ngx.h"
 #include "php/impl/php_ngx_request.h"
 
-static void ngx_http_php_rewrite_inline_uthread_routine(void *data);
+//static void ngx_http_php_rewrite_inline_uthread_routine(void *data);
 static void ngx_http_php_rewrite_file_uthread_routine(void *data);
 
-static void ngx_http_php_access_inline_uthread_routine(void *data);
+//static void ngx_http_php_access_inline_uthread_routine(void *data);
 static void ngx_http_php_access_file_uthread_routine(void *data);
 
-static void ngx_http_php_content_inline_uthread_routine(void *data);
+//static void ngx_http_php_content_inline_uthread_routine(void *data);
 static void ngx_http_php_content_file_uthread_routine(void *data);
 
 ngx_int_t
@@ -80,6 +81,7 @@ ngx_http_php_rewrite_file_uthread_routine(void *data)
     }zend_end_try();
 }
 
+/*
 static void
 ngx_http_php_rewrite_inline_uthread_routine(void *data)
 {
@@ -105,6 +107,7 @@ ngx_http_php_rewrite_inline_uthread_routine(void *data)
     
     }zend_end_try();
 }
+*/
 
 ngx_int_t 
 ngx_http_php_rewrite_handler(ngx_http_request_t *r)
@@ -241,7 +244,9 @@ ngx_http_php_rewrite_inline_handler(ngx_http_request_t *r)
     ngx_php_request = r;
 
     if ( ctx->phase_status == NGX_DECLINED ) {
-        ngx_http_php_rewrite_inline_uthread_routine(r);
+        
+        //ngx_http_php_rewrite_inline_uthread_routine(r);
+        ngx_http_php_zend_uthread_rewrite_inline_routine(r);
     
         if ( ctx->phase_status == NGX_AGAIN ) {
 
@@ -346,6 +351,7 @@ ngx_http_php_access_file_uthread_routine(void *data)
     }zend_end_try();
 }
 
+/*
 static void
 ngx_http_php_access_inline_uthread_routine(void *data)
 {
@@ -370,6 +376,7 @@ ngx_http_php_access_inline_uthread_routine(void *data)
 
     }zend_end_try();
 }
+*/
 
 ngx_int_t 
 ngx_http_php_access_handler(ngx_http_request_t *r)
@@ -511,7 +518,8 @@ ngx_http_php_access_inline_handler(ngx_http_request_t *r)
 
     if (ctx->phase_status == NGX_DECLINED) {
 
-        ngx_http_php_access_inline_uthread_routine(r);
+        //ngx_http_php_access_inline_uthread_routine(r);
+        ngx_http_php_zend_uthread_access_inline_routine(r);
 
         if (ctx->phase_status == NGX_AGAIN) {
 
@@ -619,6 +627,7 @@ ngx_http_php_content_file_uthread_routine(void *data)
     }zend_end_try();
 }
 
+/*
 static void
 ngx_http_php_content_inline_uthread_routine(void *data)
 {
@@ -643,6 +652,7 @@ ngx_http_php_content_inline_uthread_routine(void *data)
 
     }zend_end_try();
 }
+*/
 
 ngx_int_t
 ngx_http_php_content_handler(ngx_http_request_t *r)
@@ -826,7 +836,8 @@ ngx_http_php_content_inline_handler(ngx_http_request_t *r)
 
     if (ctx->phase_status == NGX_DECLINED) {
 
-        ngx_http_php_content_inline_uthread_routine(r);
+        //ngx_http_php_content_inline_uthread_routine(r);
+        ngx_http_php_zend_uthread_content_inline_routine(r);
 
         if (ctx->phase_status == NGX_AGAIN) {
 
