@@ -85,7 +85,7 @@ static void
 ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
 {
     ngx_http_request_t              *r;
-    ngx_connection_t                *c;
+    //ngx_connection_t                *c;
     ngx_http_upstream_resolved_t    *ur;
     ngx_http_php_socket_upstream_t  *u;
     u_char                          *p;
@@ -99,10 +99,10 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
 
     u = ctx->data;
     r = u->request;
-    c = r->connection;
+    //c = r->connection;
     ur = u->resolved;
 
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, c->log, 0,
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                    "php socket resolve handler");
 
     ngx_php_debug("php socket resolve handler");
