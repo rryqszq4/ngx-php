@@ -32,6 +32,6 @@ env:
 install:
   - sudo cpanm -n Test::Nginx
 before_script:
-  - ./travis/compiler.sh
+  - ./.travis/compiler.sh
 script:
-  - ./travis/test.sh
+  - ./.travis/test.sh
