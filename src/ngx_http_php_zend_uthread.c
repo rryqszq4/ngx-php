@@ -7,6 +7,7 @@
 #include "ngx_php_debug.h"
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_zend_uthread.h"
+#include "ngx_http_php_util.h"
 
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name);
 static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *retval_ptr, char *string_name, int handle_exceptions);
@@ -200,6 +201,9 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
                                         ngx_strlen(plcf->content_inline_code->code.string),
                                         plcf->content_inline_code->code.string
                                     ) - inline_code.data;
+
+    inline_code.data = (u_char *)str_replace((char *)inline_code.data, "ngx::sleep", "yield;ngx::sleep");
+    inline_code.len = strlen((char *)inline_code.data);
 
     ngx_php_debug("%*s, %d", (int)inline_code.len, inline_code.data, (int)inline_code.len);
 
