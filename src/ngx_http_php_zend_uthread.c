@@ -202,14 +202,13 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
                                         plcf->content_inline_code->code.string
                                     ) - inline_code.data;
 
-    inline_code.data = (u_char *)str_replace((char *)inline_code.data, "ngx::sleep", "yield;ngx::sleep");
-    inline_code.len = strlen((char *)inline_code.data);
-
     ngx_php_debug("%*s, %d", (int)inline_code.len, inline_code.data, (int)inline_code.len);
 
     zend_first_try {
 
         if (!plcf->enabled_content_inline_compile){
+            inline_code.data = (u_char *)str_replace((char *)inline_code.data, "ngx::sleep", "yield ngx::sleep");
+            inline_code.len = strlen((char *)inline_code.data);
             ngx_http_php_zend_eval_stringl_ex(
                 (char *)inline_code.data, 
                 inline_code.len, 
@@ -252,7 +251,7 @@ void
 ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
 {
     zval func_main;
-    zval func_next;
+    //zval func_next;
     zval func_valid;
     zval retval;
     ngx_http_php_ctx_t *ctx;
@@ -296,13 +295,13 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
         ngx_php_debug("r:%p, closure:%p, retval:%d", r, ctx->generator_closure, Z_TYPE(retval));
 
         if (Z_TYPE(retval) == IS_TRUE){
+            /*
             ZVAL_STRING(&func_next, "next");
 
             call_user_function(NULL, ctx->generator_closure, &func_next, &retval, 0, NULL TSRMLS_CC);
 
             zval_ptr_dtor(&func_next);
-
-            //ctx->rewrite_phase = 0;
+            */
             ctx->phase_status = NGX_AGAIN;
         }else {
             ctx->phase_status = NGX_OK;
@@ -335,26 +334,17 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
 
         closure = ctx->generator_closure;
 
-        /*ZVAL_STRING(&func_next, "next");
+        ZVAL_STRING(&func_next, "next");
         call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC);
         zval_ptr_dtor(&func_next);
-        */
-        //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,"closure: %p", closure);
-
-        //ngx_php_debug("r:%p, closure:%p, retval:%d", r, closure, Z_TYPE(retval));
 
         ZVAL_STRING(&func_valid, "valid");
-
         call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC);
         zval_ptr_dtor(&func_valid);
 
-        //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,"closure: %p %d", closure, Z_TYPE(retval));
         ngx_php_debug("r:%p, closure:%p, retval:%d", r, closure, Z_TYPE(retval));
 
         if (Z_TYPE(retval) == IS_TRUE) {
-            ZVAL_STRING(&func_next, "next");
-            call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC);
-            zval_ptr_dtor(&func_next);
             ctx->phase_status = NGX_AGAIN;
         }else {
             ctx->phase_status = NGX_OK;
@@ -362,6 +352,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
             efree(ctx->generator_closure);
             ctx->generator_closure = NULL;
         }
+
     }zend_catch {
 
     }zend_end_try();
