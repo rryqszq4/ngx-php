@@ -34,9 +34,33 @@ void ngx_track_zend_op_array(zend_op_array *op_array);
 
 zend_op_array* ngx_compile_file(zend_file_handle* file_handle, int type TSRMLS_DC)
 {
+    zend_file_handle fake;
     zend_op_array *op_array;
+    char *filename;
+    char *bufptr;
+    size_t len;
 
-    op_array = ori_compile_file(file_handle, type TSRMLS_CC);
+    if (zend_stream_fixup(file_handle, &bufptr, &len) == FAILURE) {
+        return ori_compile_file(file_handle, type TSRMLS_CC);
+    }
+
+    //php_printf("%*s", len, bufptr);
+
+    filename = (char *)(file_handle->opened_path ? ZSTR_VAL(file_handle->opened_path) : file_handle->filename);
+
+    memset(&fake, 0, sizeof(fake));
+    fake.type = ZEND_HANDLE_MAPPED;
+    fake.handle.stream.mmap.buf = bufptr;
+    fake.handle.stream.mmap.len = len;
+    fake.free_filename = 0;
+    fake.filename = filename;
+    fake.opened_path = file_handle->opened_path;
+
+    op_array = ori_compile_file(&fake, type);
+
+    zend_file_handle_dtor(&fake);
+
+    //op_array = ori_compile_file(file_handle, type TSRMLS_CC);
 
     ngx_http_request_t *r = ngx_php_request;
     ngx_http_php_ctx_t *ctx;

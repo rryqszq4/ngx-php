@@ -207,8 +207,8 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
     zend_first_try {
 
         if (!plcf->enabled_content_inline_compile){
-            inline_code.data = (u_char *)str_replace((char *)inline_code.data, "ngx::sleep", "yield ngx::sleep");
-            inline_code.len = strlen((char *)inline_code.data);
+            //inline_code.data = (u_char *)str_replace((char *)inline_code.data, "ngx::sleep", "yield ngx::sleep");
+            //inline_code.len = strlen((char *)inline_code.data);
             ngx_http_php_zend_eval_stringl_ex(
                 (char *)inline_code.data, 
                 inline_code.len, 
