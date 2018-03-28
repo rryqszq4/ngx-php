@@ -372,7 +372,11 @@ ngx_http_php_zend_uthread_exit(ngx_http_request_t *r)
     }
 
     if (ctx->generator_closure) {
-        ngx_http_php_zend_uthread_resume(r);
+        //ngx_http_php_zend_uthread_resume(r);
+        ctx->phase_status = NGX_OK;
+        ngx_http_core_run_phases(r);
+        efree(ctx->generator_closure);
+        ctx->generator_closure = NULL;
     }
 
 }

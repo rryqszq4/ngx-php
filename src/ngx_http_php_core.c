@@ -7,6 +7,7 @@
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_request.h"
 #include "ngx_http_php_core.h"
+#include "ngx_http_php_zend_uthread.h"
 
 ngx_http_php_code_t *
 ngx_http_php_code_from_file(ngx_pool_t *pool, ngx_str_t *code_file_path)
@@ -247,8 +248,9 @@ ngx_php_error_cb(int type,
             r->headers_out.content_length_n += ns.len;
         }
 
-        //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php_error: %s %s", error_filename, buffer);
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, " %s: %s in %s on line %d \n", error_type_str, buffer, error_filename, error_lineno);
+
+        ngx_http_php_zend_uthread_exit(r);
 
         efree(buffer);
         zend_bailout();
