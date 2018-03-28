@@ -108,7 +108,7 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
     ngx_php_debug("php socket resolve handler");
 
     if (ctx->state) {
-
+        return ;
     }
 
     ur->naddrs = ctx->naddrs;
@@ -159,7 +159,7 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
 
     p = ngx_pnalloc(r->pool, NGX_SOCKADDR_STRLEN);
     if (p == NULL) {
-
+        return ;
     }
 
     len = ngx_sock_ntop(sockaddr, socklen, p, NGX_SOCKADDR_STRLEN, 1);
@@ -175,6 +175,7 @@ ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx)
 
     ngx_http_php_socket_resolve_retval_handler(r, u);
 
+    return ;
 }
 
 static int 
@@ -199,6 +200,8 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
         peer->sockaddr = ur->sockaddr;
         peer->socklen = ur->socklen;
         peer->name = &ur->host;
+    }else {
+        return NGX_ERROR;
     }
 
     peer->get = ngx_http_php_socket_get_peer;
@@ -213,11 +216,11 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     }
 
     if (rc == NGX_BUSY) {
-
+        return NGX_ERROR;
     }
 
     if (rc == NGX_DECLINED) {
-
+        return NGX_ERROR;
     }
 
     /* rc == NGX_OK || rc == NGX_AGAIN || rc == NGX_DONE */
@@ -242,7 +245,7 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
 
         c->pool = ngx_create_pool(128, r->connection->log);
         if (c->pool == NULL) {
-
+            return NGX_ERROR;
         }
     }
 
@@ -274,11 +277,11 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
         return NGX_OK;
     }
 
-    if (rc == NGX_AGAIN) {
-        ngx_add_timer(c->write, 5 * 1000);
-    }
-        
-    return NGX_OK;
+    // rc == NGX_AGAIN
+    
+    ngx_add_timer(c->write, 5 * 1000);
+
+    return NGX_AGAIN;
 }
 
 static void 
@@ -476,11 +479,11 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     b = &u->buffer;
 
     if (b->start == NULL) {
-        b->start = ngx_palloc(r->pool, 1024);
+        b->start = ngx_palloc(r->pool, 4096);
 
         b->pos = b->start;
         b->last = b->start;
-        b->end = b->start + 1024;
+        b->end = b->start + 4096;
         b->temporary = 1;
     }
 
@@ -660,6 +663,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
         u->resolved->port = (in_port_t) ctx->port;
     }
 
+    // Already real ip address, is not url and not resolve.
     if (u->resolved->sockaddr) {
         rc = ngx_http_php_socket_resolve_retval_handler(r, u);
         if (rc == NGX_AGAIN) {
@@ -721,7 +725,7 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
 
     }
 
-    r->connection->write->handler = ngx_http_php_socket_handler;
+    //r->connection->write->handler = ngx_http_php_socket_handler;
 
     ngx_php_debug("u->peer.connected: %p, r->connection: %p", u->peer.connection, r->connection);
 
