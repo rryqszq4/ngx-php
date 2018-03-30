@@ -11,8 +11,6 @@
 
 #include "../../ngx_http_php_module.h"
 
-#include "php_ngx_test.h"
-
 /* If you declare any globals in php_php_ngx.h uncomment this: */
 ZEND_DECLARE_MODULE_GLOBALS(php_ngx)
 
@@ -77,8 +75,6 @@ PHP_MINIT_FUNCTION(php_ngx)
     /* If you have INI entries, uncomment these lines
     REGISTER_INI_ENTRIES();
     */
-
-    ngx_test_init(module_number TSRMLS_CC);
 
     return SUCCESS;
 }

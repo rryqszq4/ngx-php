@@ -52,7 +52,7 @@ static const zend_function_entry php_ngx_test_generator_class_functions[] = {
 };
 
 void 
-ngx_test_init(int module_number TSRMLS_DC)
+php_impl_ngx_test_init(int module_number TSRMLS_DC)
 {
     zend_class_entry ngx_test_generator_class_entry;
     INIT_CLASS_ENTRY(ngx_test_generator_class_entry, "ngx_test_generator", php_ngx_test_generator_class_functions);

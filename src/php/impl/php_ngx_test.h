@@ -18,6 +18,6 @@ PHP_METHOD(ngx_test_generator, yield);
 PHP_METHOD(ngx_test_generator, send);
 PHP_METHOD(ngx_test_generator, receive);
 
-void ngx_test_init(int module_number TSRMLS_DC);
+void php_impl_ngx_test_init(int module_number TSRMLS_DC);
 
 #endif

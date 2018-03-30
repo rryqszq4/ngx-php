@@ -345,7 +345,7 @@ static const zend_function_entry php_ngx_request_class_functions[] = {
 };
 
 void
-ext_php_ngx_request_init(int module_number TSRMLS_DC)
+php_impl_ngx_request_init(int module_number TSRMLS_DC)
 {
     zend_class_entry ngx_request_class_entry;
     INIT_CLASS_ENTRY(ngx_request_class_entry, "ngx_request", php_ngx_request_class_functions);

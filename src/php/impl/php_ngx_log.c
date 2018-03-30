@@ -35,7 +35,7 @@ static const zend_function_entry php_ngx_log_class_functions[] = {
 };
 
 void 
-php_ngx_log_init(int module_number TSRMLS_DC)
+php_impl_ngx_log_init(int module_number TSRMLS_DC)
 {
     zend_class_entry ngx_log_class_entry;
     INIT_CLASS_ENTRY(ngx_log_class_entry, "ngx_log", php_ngx_log_class_functions);
