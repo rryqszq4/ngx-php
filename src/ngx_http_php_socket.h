@@ -40,6 +40,7 @@ struct ngx_http_php_socket_upstream_s {
     ngx_http_upstream_resolved_t    *resolved;
 
     ngx_buf_t       buffer;
+    size_t          buffer_size;
     off_t           length;
 
     ngx_chain_t     *bufs_in;

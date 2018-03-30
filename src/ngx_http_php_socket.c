@@ -479,11 +479,11 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     b = &u->buffer;
 
     if (b->start == NULL) {
-        b->start = ngx_palloc(r->pool, 4096);
+        b->start = ngx_palloc(r->pool, u->buffer_size);
 
         b->pos = b->start;
         b->last = b->start;
-        b->end = b->start + 4096;
+        b->end = b->start + u->buffer_size;
         b->temporary = 1;
     }
 

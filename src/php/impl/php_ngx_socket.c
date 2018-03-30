@@ -110,9 +110,9 @@ PHP_METHOD(ngx_socket, recv)
     ngx_http_php_socket_upstream_t  *u;
     ngx_buf_t                       *b;
 
-    long size;
+    long size = 1024;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &size) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &size) == FAILURE){
         RETURN_NULL();
     }
 
@@ -120,7 +120,7 @@ PHP_METHOD(ngx_socket, recv)
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     u = ctx->upstream;
-
+    u->buffer_size = size;
     b = &u->buffer;
 
     ngx_http_php_socket_recv(r);
