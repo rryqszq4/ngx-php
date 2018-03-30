@@ -150,7 +150,7 @@ static const zend_function_entry php_ngx_socket_class_functions[] = {
 };
 
 void
-ext_php_ngx_socket_init(int module_number TSRMLS_DC)
+php_impl_ngx_socket_init(int module_number TSRMLS_DC)
 {
     zend_class_entry ngx_socket_class_entry;
     INIT_CLASS_ENTRY(ngx_socket_class_entry, "ngx_socket", php_ngx_socket_class_functions);
