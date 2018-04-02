@@ -5,8 +5,8 @@ use Test::Nginx::Socket 'no_plan';
 run_tests();
 
 __DATA__
-=== TEST 1: ngx_request
-ngx_request
+=== TEST 1: ngx_log
+ngx_log
 --- config
 location = /ngx_log {
     content_by_php '
