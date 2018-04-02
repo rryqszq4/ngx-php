@@ -8,6 +8,7 @@ __DATA__
 === TEST 1: ngx_socket
 ngx_socket
 --- config
+resolver 8.8.8.8;
 location = /ngx_socket {
 	default_type 'application/json;charset=UTF-8';
     content_by_php '
