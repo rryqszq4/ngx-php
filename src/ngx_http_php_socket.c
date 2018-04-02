@@ -617,6 +617,8 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
 
     u = ctx->upstream;
 
+    u->enabled_receive = 0;
+
     u->request = r;
 
     peer = &u->peer;
@@ -721,6 +723,8 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
         return ;
     }
 
+    u->enabled_receive = 0;
+
     if (u->request != r) {
 
     }
@@ -750,6 +754,8 @@ ngx_http_php_socket_send(ngx_http_request_t *r)
 
         return NGX_ERROR;
     }
+
+    u->enabled_receive = 0;
 
     c = u->peer.connection;
 
@@ -807,6 +813,15 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
     }
 
     rc = ngx_http_php_socket_upstream_recv(r, u);
+
+    ngx_php_debug("%d", u->enabled_receive);
+
+    if (u->enabled_receive == 0) {
+        u->enabled_receive = 1;
+    }else {
+        ctx->delay_time = 1;
+        ngx_http_php_sleep(r);
+    }
 
     if (rc == NGX_AGAIN) {
         
