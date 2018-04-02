@@ -18,6 +18,11 @@ location = /ngx_socket {
         yield ngx_socket::close();
         $ret = explode("\r\n",$ret);
         var_dump($ret[0]);
+		var_dump($ret[1]);
+		var_dump($ret[2]);
+		var_dump($ret[3]);
+		var_dump($ret[4]);
+		var_dump(explode("=",$ret[6])[0]);
     ';
 }
 --- request
