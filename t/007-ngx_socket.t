@@ -19,7 +19,7 @@ location = /ngx_socket {
         $ret = explode("\r\n",$ret);
         var_dump($ret[0]);
 		var_dump($ret[1]);
-		var_dump(explode(":",$ret[2])[0]." ??");
+		var_dump(explode(":",$ret[2])[0].": 7?");
 		var_dump($ret[3]);
 		var_dump($ret[4]);
 		var_dump(explode("=",$ret[6])[0]);
@@ -30,7 +30,7 @@ GET /ngx_socket
 --- response_body
 string(15) "HTTP/1.1 200 OK"
 string(23) "Cache-Control: no-cache"
-string(18) "Content-Length: ??"
+string(18) "Content-Length: 7?"
 string(22) "Connection: Keep-Alive"
 string(49) "Content-Type: application/javascript; charset=GBK"
 string(21) "var hq_str_s_sh000001"
