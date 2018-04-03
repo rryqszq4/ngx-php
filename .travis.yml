@@ -23,11 +23,11 @@ compiler:
 cache:
   - apt
 env:
-  - PHP_SRC_VERSION=7.0.26
+  - PHP_SRC_VERSION=7.0.29
     NGINX_SRC_VERSION=1.10.3
-  - PHP_SRC_VERSION=7.1.12
+  - PHP_SRC_VERSION=7.1.16
     NGINX_SRC_VERSION=1.10.3
-  - PHP_SRC_VERSION=7.2.0
+  - PHP_SRC_VERSION=7.2.4
     NGINX_SRC_VERSION=1.10.3
 install:
   - sudo cpanm -n Test::Nginx
