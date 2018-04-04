@@ -64,6 +64,7 @@ typedef struct ngx_http_php_ctx_t {
     size_t body_length;
     ngx_str_t request_body_ctx;
     unsigned request_body_more : 1;
+    unsigned read_request_body_done : 1;
 
     unsigned enable_async : 1;
     unsigned enable_thread : 1;

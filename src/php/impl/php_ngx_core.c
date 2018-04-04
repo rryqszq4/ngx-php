@@ -4,6 +4,7 @@
  *
  */
 
+#include "../../ngx_php_debug.h"
 #include "php_ngx_core.h"
 #include "../../ngx_http_php_module.h"
 #include "../../ngx_http_php_sleep.h"
@@ -15,6 +16,10 @@ ZEND_BEGIN_ARG_INFO_EX(ngx_exit_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(ngx_query_args_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_post_args_arginfo, 0, 0, 1)
     ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
 
@@ -81,7 +86,81 @@ PHP_METHOD(ngx, query_args)
     }
 
     if (parsing_value){
-        php_printf("%.*s", buf-p, p);
+        //php_printf("%.*s", buf-p, p);
+        add_index_stringl(return_value, idx, (char *)p, buf-p);
+        idx++;
+    }
+
+    ngx_pfree(r->pool, buf);
+
+
+}
+
+PHP_METHOD(ngx, post_args)
+{
+    ngx_http_request_t *r;
+    u_char *buf, *p;
+    size_t len;
+    ngx_chain_t *cl;
+    u_char *last;
+    int idx;
+    unsigned parsing_value = 0;
+
+    r = ngx_php_request;
+
+    if (r->discard_body || r->request_body == NULL || 
+        r->request_body->temp_file || r->request_body->bufs == NULL) {
+        RETURN_NULL();
+    }
+
+    len = 0;
+    for (cl = r->request_body->bufs; cl; cl = cl->next) {
+        len += cl->buf->last - cl->buf->pos;
+    }
+
+    if (len == 0) {
+        RETURN_NULL();
+    }
+
+    array_init(return_value);
+    idx = 0;
+
+    buf = ngx_palloc(r->pool, len);
+    p = buf;
+    for (cl = r->request_body->bufs; cl; cl = cl->next) {
+        p = ngx_copy(p, cl->buf->pos, cl->buf->last - cl->buf->pos);
+    }
+
+    ngx_php_debug("post body: %.*s", (int)len, buf);
+
+    last = buf + len;
+
+    p = buf;
+    parsing_value = 0;
+
+    while (buf != last) {
+        if (*buf == '=') {
+            //php_printf("%d, %.*s\n", buf-p,buf-p, p);
+            buf++;
+            p = buf;
+            parsing_value = 1;
+        }else if (*buf == '&') {
+            //php_printf("%.*s", buf-p, p);
+            add_index_stringl(return_value, idx, (char *)p, buf-p);
+            idx++;
+
+            buf++;
+            p = buf;
+            parsing_value = 0;
+        }
+        
+        if (buf != last){
+            buf++;
+        }
+    }
+
+    if (parsing_value){
+        //php_printf("%.*s", buf-p, p);
         add_index_stringl(return_value, idx, (char *)p, buf-p);
         idx++;
     }
@@ -117,6 +196,7 @@ PHP_METHOD(ngx, sleep)
 static const zend_function_entry php_ngx_class_functions[] = {
     PHP_ME(ngx, _exit, ngx_exit_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx, query_args, ngx_query_args_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(ngx, post_args, ngx_post_args_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(ngx, sleep, ngx_sleep_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     {NULL, NULL, NULL, 0, 0}
 };
