@@ -10,7 +10,7 @@ ngx_query_args
 --- config
 location = /ngx_query_args {
     content_by_php '
-        echo "ngx::query_args();\n";
+        echo "ngx::query_args()\n";
         var_dump(ngx::query_args());
     ';
 }
