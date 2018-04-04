@@ -44,6 +44,7 @@ PHP_METHOD(ngx, query_args)
 {
     ngx_http_request_t *r;
     u_char *buf, *p;
+    u_char *query_key=NULL;
     u_char *last;
     int idx;
     unsigned parsing_value = 0;
@@ -66,13 +67,16 @@ PHP_METHOD(ngx, query_args)
 
     while (buf != last) {
         if (*buf == '=') {
+            query_key = ngx_pnalloc(r->pool, buf-p);
+            ngx_sprintf(query_key, "%*s", buf-p, p);
             //php_printf("%d, %.*s\n", buf-p,buf-p, p);
             buf++;
             p = buf;
             parsing_value = 1;
         }else if (*buf == '&') {
             //php_printf("%.*s", buf-p, p);
-            add_index_stringl(return_value, idx, (char *)p, buf-p);
+            add_assoc_stringl(return_value, (char *)query_key, (char *)p, buf-p);
+            //add_index_stringl(return_value, idx, (char *)p, buf-p);
             idx++;
 
             buf++;
@@ -87,7 +91,8 @@ PHP_METHOD(ngx, query_args)
 
     if (parsing_value){
         //php_printf("%.*s", buf-p, p);
-        add_index_stringl(return_value, idx, (char *)p, buf-p);
+        add_assoc_stringl(return_value, (char *)query_key, (char *)p, buf-p);
+        //add_index_stringl(return_value, idx, (char *)p, buf-p);
         idx++;
     }
 
@@ -100,6 +105,7 @@ PHP_METHOD(ngx, post_args)
 {
     ngx_http_request_t *r;
     u_char *buf, *p;
+    u_char *post_key=NULL;
     size_t len;
     ngx_chain_t *cl;
     u_char *last;
@@ -140,13 +146,16 @@ PHP_METHOD(ngx, post_args)
 
     while (buf != last) {
         if (*buf == '=') {
+            post_key = ngx_pnalloc(r->pool, buf-p);
+            ngx_sprintf(post_key, "%*s", buf-p, p);
             //php_printf("%d, %.*s\n", buf-p,buf-p, p);
             buf++;
             p = buf;
             parsing_value = 1;
         }else if (*buf == '&') {
             //php_printf("%.*s", buf-p, p);
-            add_index_stringl(return_value, idx, (char *)p, buf-p);
+            add_assoc_stringl(return_value, (char *)post_key, (char *)p, buf-p);
+            //add_index_stringl(return_value, idx, (char *)p, buf-p);
             idx++;
 
             buf++;
@@ -161,7 +170,8 @@ PHP_METHOD(ngx, post_args)
 
     if (parsing_value){
         //php_printf("%.*s", buf-p, p);
-        add_index_stringl(return_value, idx, (char *)p, buf-p);
+        add_assoc_stringl(return_value, (char *)post_key, (char *)p, buf-p);
+        //add_index_stringl(return_value, idx, (char *)p, buf-p);
         idx++;
     }
 
