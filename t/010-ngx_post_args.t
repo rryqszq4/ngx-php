@@ -14,9 +14,9 @@ location = /ngx_post_args {
         var_dump(ngx::post_args());
     ';
 }
---- request
 --- more_headers
 Content-type: application/x-www-form-urlencoded
+--- request
 POST /ngx_post_args
 a=1&b=2
 --- response_body
