@@ -1,5 +1,6 @@
 language: c
 sudo: required
+dist: trusty
 addons:
   apt:
     packages:
@@ -18,6 +19,9 @@ addons:
       - libxpm-dev
       - libt1-dev
       - cpanminus
+      - openssl
+      - libssl-dev
+      - libbz2-dev
 compiler:
   - gcc
 cache:
