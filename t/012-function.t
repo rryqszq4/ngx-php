@@ -12,7 +12,9 @@ location = /internal-functions {
     content_by_php '
         $func = get_defined_functions();
         foreach ($func["internal"] as $v) {
-        	echo "{$v}\n";
+        	if (strncmp($v, "openssl_", 8)) {
+            	echo "{$v}\n";
+            }
         }
     ';
 }
@@ -129,61 +131,6 @@ libxml_clear_errors
 libxml_get_errors
 libxml_disable_entity_loader
 libxml_set_external_entity_loader
-openssl_get_cert_locations
-openssl_spki_new
-openssl_spki_verify
-openssl_spki_export
-openssl_spki_export_challenge
-openssl_pkey_free
-openssl_pkey_new
-openssl_pkey_export
-openssl_pkey_export_to_file
-openssl_pkey_get_private
-openssl_pkey_get_public
-openssl_pkey_get_details
-openssl_free_key
-openssl_get_privatekey
-openssl_get_publickey
-openssl_x509_read
-openssl_x509_free
-openssl_x509_parse
-openssl_x509_checkpurpose
-openssl_x509_check_private_key
-openssl_x509_export
-openssl_x509_fingerprint
-openssl_x509_export_to_file
-openssl_pkcs12_export
-openssl_pkcs12_export_to_file
-openssl_pkcs12_read
-openssl_csr_new
-openssl_csr_export
-openssl_csr_export_to_file
-openssl_csr_sign
-openssl_csr_get_subject
-openssl_csr_get_public_key
-openssl_digest
-openssl_encrypt
-openssl_decrypt
-openssl_cipher_iv_length
-openssl_sign
-openssl_verify
-openssl_seal
-openssl_open
-openssl_pbkdf2
-openssl_pkcs7_verify
-openssl_pkcs7_decrypt
-openssl_pkcs7_sign
-openssl_pkcs7_encrypt
-openssl_private_encrypt
-openssl_private_decrypt
-openssl_public_encrypt
-openssl_public_decrypt
-openssl_get_md_methods
-openssl_get_cipher_methods
-openssl_get_curve_names
-openssl_dh_compute_key
-openssl_random_pseudo_bytes
-openssl_error_string
 preg_match
 preg_match_all
 preg_replace
