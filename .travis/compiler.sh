@@ -34,6 +34,7 @@ echo "php install ..."
 --enable-sockets \
 --with-xmlrpc \
 --enable-zip \
+--with-bz2 \
 --enable-soap \
 --without-pear  \
 --disable-cli \
