@@ -14,7 +14,9 @@ location = /internal-functions {
         foreach ($func["internal"] as $v) {
         	if (strncmp($v, "openssl_", 8) && strncmp($v, "curl_", 5) && 
         	$v != "hash_hkdf" &&
-        	$v != "readline_on_new_line") {
+        	$v != "readline_on_new_line" && 
+        	$v != "inflate_get_status" && 
+        	$v != "inflate_get_read_len") {
             	echo "{$v}\n";
             }
         }
@@ -240,7 +242,6 @@ hash_copy
 hash_algos
 hash_pbkdf2
 hash_equals
-hash_hkdf
 mhash_keygen_s2k
 mhash_get_block_size
 mhash_get_hash_name
