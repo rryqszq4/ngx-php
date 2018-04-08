@@ -19,7 +19,11 @@ location = /internal-functions {
         	$v != "inflate_get_status" && 
         	$v != "inflate_get_read_len" && 
         	$v != "hash_hmac_algos" && 
-        	$v != "pcntl_signal_get_handler") {
+        	$v != "pcntl_signal_get_handler" && 
+        	$v != "pcntl_async_signals" && 
+        	$v != "mb_ord" && 
+        	$v != "mb_chr" && 
+        	$v != "mb_scrub") {
             	echo "{$v}\n";
             }
         }
@@ -491,7 +495,6 @@ pcntl_sigprocmask
 pcntl_sigwaitinfo
 pcntl_sigtimedwait
 pcntl_wifcontinued
-pcntl_async_signals
 spl_classes
 spl_autoload
 spl_autoload_extensions

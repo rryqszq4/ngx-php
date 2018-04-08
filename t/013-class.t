@@ -12,7 +12,8 @@ location = /declared_classes {
     content_by_php '
         $class = get_declared_classes();
         foreach ($class as $v){
-        	if ($v != "HashContext" && $v != "ArgumentCountError"){
+        	if ($v != "HashContext" && $v != "ArgumentCountError" && 
+        	$v != "ReflectionNamedType"){
         		echo "{$v}\n";
         	}
         }
@@ -144,7 +145,6 @@ ReflectionFunction
 ReflectionGenerator
 ReflectionParameter
 ReflectionType
-ReflectionNamedType
 ReflectionMethod
 ReflectionClass
 ReflectionObject
