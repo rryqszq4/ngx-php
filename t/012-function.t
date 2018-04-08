@@ -12,30 +12,34 @@ location = /internal-functions {
     content_by_php '
         $func = get_defined_functions();
         foreach ($func["internal"] as $v) {
-        	if (strncmp($v, "openssl_", 8) && strncmp($v, "curl_", 5) && 
-        	strncmp($v, "xmlrpc_", 7) && strncmp($v, "mcrypt_", 7) && 
-        	strncmp($v, "mdecrypt_", 9) && 
-        	$v != "hash_hkdf" &&
-        	$v != "readline_on_new_line" && 
-        	$v != "inflate_get_status" && 
-        	$v != "inflate_get_read_len" && 
-        	$v != "hash_hmac_algos" && 
-        	$v != "pcntl_signal_get_handler" && 
-        	$v != "pcntl_async_signals" && 
-        	$v != "mb_ord" && 
-        	$v != "mb_chr" && 
-        	$v != "mb_scrub" && 
-        	$v != "session_create_id" && 
-        	$v != "session_gc" && 
-        	$v != "is_iterable" && 
-        	$v != "spl_object_id" && 
-        	$v != "socket_addrinfo_lookup" && 
-        	$v != "socket_addrinfo_connect" && 
-        	$v != "socket_addrinfo_bind" && 
-        	$v != "socket_addrinfo_explain" && 
-        	$v != "utf8_encode" && 
-			$v != "utf8_decode" && 
-			$v != "stream_isatty" ) {
+        	if (strncmp($v, "openssl_", 8) && 
+                strncmp($v, "curl_", 5) && 
+            	strncmp($v, "xmlrpc_", 7) && 
+                strncmp($v, "mcrypt_", 7) && 
+            	strncmp($v, "mdecrypt_", 9) && 
+                strncmp($v, "ngx_", 4) && 
+            	$v != "hash_hkdf" && 
+            	$v != "readline_on_new_line" && 
+            	$v != "inflate_get_status" && 
+            	$v != "inflate_get_read_len" && 
+            	$v != "hash_hmac_algos" && 
+            	$v != "pcntl_signal_get_handler" && 
+            	$v != "pcntl_async_signals" && 
+            	$v != "mb_ord" && 
+            	$v != "mb_chr" && 
+            	$v != "mb_scrub" && 
+            	$v != "session_create_id" && 
+            	$v != "session_gc" && 
+            	$v != "is_iterable" && 
+            	$v != "spl_object_id" && 
+            	$v != "socket_addrinfo_lookup" && 
+            	$v != "socket_addrinfo_connect" && 
+            	$v != "socket_addrinfo_bind" && 
+            	$v != "socket_addrinfo_explain" && 
+            	$v != "utf8_encode" && 
+    			$v != "utf8_decode" && 
+    			$v != "stream_isatty" ) 
+            {
             	echo "{$v}\n";
             }
         }
