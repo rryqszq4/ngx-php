@@ -26,7 +26,9 @@ location = /internal-functions {
         	$v != "mb_chr" && 
         	$v != "mb_scrub" && 
         	$v != "session_create_id" && 
-        	$v != "session_gc") {
+        	$v != "session_gc" && 
+        	$v != "is_iterable" && 
+        	$v != "spl_object_id") {
             	echo "{$v}\n";
             }
         }
@@ -884,7 +886,6 @@ is_array
 is_object
 is_scalar
 is_callable
-is_iterable
 pclose
 popen
 readfile
