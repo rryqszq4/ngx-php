@@ -28,7 +28,11 @@ location = /internal-functions {
         	$v != "session_create_id" && 
         	$v != "session_gc" && 
         	$v != "is_iterable" && 
-        	$v != "spl_object_id") {
+        	$v != "spl_object_id" && 
+        	$v != "socket_addrinfo_lookup" && 
+        	$v != "socket_addrinfo_connect" && 
+        	$v != "socket_addrinfo_bind" && 
+        	$v != "socket_addrinfo_explain" ) {
             	echo "{$v}\n";
             }
         }
