@@ -32,7 +32,9 @@ location = /internal-functions {
         	$v != "socket_addrinfo_lookup" && 
         	$v != "socket_addrinfo_connect" && 
         	$v != "socket_addrinfo_bind" && 
-        	$v != "socket_addrinfo_explain" ) {
+        	$v != "socket_addrinfo_explain" && 
+        	$v != "utf8_encode" && 
+			$v != "utf8_decode" ) {
             	echo "{$v}\n";
             }
         }
@@ -1169,8 +1171,6 @@ xml_get_current_byte_index
 xml_parser_free
 xml_parser_set_option
 xml_parser_get_option
-utf8_encode
-utf8_decode
 xmlwriter_open_uri
 xmlwriter_open_memory
 xmlwriter_set_indent
