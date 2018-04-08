@@ -12,7 +12,9 @@ location = /internal-functions {
     content_by_php '
         $func = get_defined_functions();
         foreach ($func["internal"] as $v) {
-        	if (strncmp($v, "openssl_", 8) && strncmp($v, "curl_", 5)) {
+        	if (strncmp($v, "openssl_", 8) && strncmp($v, "curl_", 5) && 
+        	$v != "hash_hkdf" &&
+        	$v != "readline_on_new_line") {
             	echo "{$v}\n";
             }
         }
@@ -551,7 +553,6 @@ readline_callback_handler_install
 readline_callback_read_char
 readline_callback_handler_remove
 readline_redisplay
-readline_on_new_line
 session_name
 session_module_name
 session_save_path
