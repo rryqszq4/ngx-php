@@ -12,7 +12,9 @@ location = /declared_classes {
     content_by_php '
         $class = get_declared_classes();
         foreach ($class as $v){
-        	echo "{$v}\n";
+        	if ($v != "HashContext"){
+        		echo "{$v}\n";
+        	}
         }
     ';
 }

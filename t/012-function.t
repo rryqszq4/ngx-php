@@ -16,7 +16,8 @@ location = /internal-functions {
         	$v != "hash_hkdf" &&
         	$v != "readline_on_new_line" && 
         	$v != "inflate_get_status" && 
-        	$v != "inflate_get_read_len") {
+        	$v != "inflate_get_read_len" && 
+        	$v != "hash_hmac_algos") {
             	echo "{$v}\n";
             }
         }

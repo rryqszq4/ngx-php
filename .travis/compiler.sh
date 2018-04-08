@@ -24,6 +24,8 @@ echo "php install ..."
 --enable-bcmath \
 --enable-shmop \
 --enable-sysvsem \
+--enable-sysvmsg \
+--enable-sysvshm \
 --with-curl \
 --enable-mbregex \
 --enable-mbstring \
