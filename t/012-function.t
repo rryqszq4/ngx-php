@@ -13,7 +13,8 @@ location = /internal-functions {
         $func = get_defined_functions();
         foreach ($func["internal"] as $v) {
         	if (strncmp($v, "openssl_", 8) && strncmp($v, "curl_", 5) && 
-        	strncmp($v, "xmlrpc_", 7) && 
+        	strncmp($v, "xmlrpc_", 7) && strncmp($v, "mcrypt_", 7) && 
+        	strncmp($v, "mdecrypt_", 9) && 
         	$v != "hash_hkdf" &&
         	$v != "readline_on_new_line" && 
         	$v != "inflate_get_status" && 
@@ -23,7 +24,9 @@ location = /internal-functions {
         	$v != "pcntl_async_signals" && 
         	$v != "mb_ord" && 
         	$v != "mb_chr" && 
-        	$v != "mb_scrub") {
+        	$v != "mb_scrub" && 
+        	$v != "session_create_id" && 
+        	$v != "session_gc") {
             	echo "{$v}\n";
             }
         }
@@ -337,38 +340,6 @@ mbereg_search_init
 mbereg_search_getregs
 mbereg_search_getpos
 mbereg_search_setpos
-mcrypt_get_key_size
-mcrypt_get_block_size
-mcrypt_get_cipher_name
-mcrypt_create_iv
-mcrypt_list_algorithms
-mcrypt_list_modes
-mcrypt_get_iv_size
-mcrypt_encrypt
-mcrypt_decrypt
-mcrypt_module_open
-mcrypt_generic_init
-mcrypt_generic
-mdecrypt_generic
-mcrypt_generic_deinit
-mcrypt_enc_self_test
-mcrypt_enc_is_block_algorithm_mode
-mcrypt_enc_is_block_algorithm
-mcrypt_enc_is_block_mode
-mcrypt_enc_get_block_size
-mcrypt_enc_get_key_size
-mcrypt_enc_get_supported_key_sizes
-mcrypt_enc_get_iv_size
-mcrypt_enc_get_algorithms_name
-mcrypt_enc_get_modes_name
-mcrypt_module_self_test
-mcrypt_module_is_block_algorithm_mode
-mcrypt_module_is_block_algorithm
-mcrypt_module_is_block_mode
-mcrypt_module_get_algo_block_size
-mcrypt_module_get_algo_key_size
-mcrypt_module_get_supported_key_sizes
-mcrypt_module_close
 mysqli_affected_rows
 mysqli_autocommit
 mysqli_begin_transaction
@@ -563,14 +534,12 @@ session_name
 session_module_name
 session_save_path
 session_id
-session_create_id
 session_regenerate_id
 session_decode
 session_encode
 session_start
 session_destroy
 session_unset
-session_gc
 session_set_save_handler
 session_cache_limiter
 session_cache_expire

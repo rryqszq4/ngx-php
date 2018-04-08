@@ -13,7 +13,8 @@ location = /declared_classes {
         $class = get_declared_classes();
         foreach ($class as $v){
         	if ($v != "HashContext" && $v != "ArgumentCountError" && 
-        	$v != "ReflectionNamedType"){
+        	$v != "ReflectionNamedType" && 
+        	$v != "ReflectionClassConstant"){
         		echo "{$v}\n";
         	}
         }
@@ -149,7 +150,6 @@ ReflectionMethod
 ReflectionClass
 ReflectionObject
 ReflectionProperty
-ReflectionClassConstant
 ReflectionExtension
 ReflectionZendExtension
 SimpleXMLElement
