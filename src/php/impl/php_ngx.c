@@ -35,7 +35,7 @@ PHP_INI_END()
 /* Every user-visible function in PHP should document itself in the source */
 /* {{{ proto string confirm_php_ngx_compiled(string arg)
    Return a string to confirm that the module is compiled in */
-PHP_FUNCTION(confirm_php_ngx_compiled)
+/*PHP_FUNCTION(confirm_php_ngx_compiled)
 {
     char *arg = NULL;
     size_t arg_len;
@@ -48,7 +48,7 @@ PHP_FUNCTION(confirm_php_ngx_compiled)
     strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "php_ngx", arg);
 
     RETURN_STR(strg);
-}
+}*/
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and
    unfold functions in source code. See the corresponding marks just before
@@ -134,7 +134,7 @@ PHP_MINFO_FUNCTION(php_ngx)
  * Every user visible function must have an entry in php_ngx_functions[].
  */
 const zend_function_entry php_ngx_functions[] = {
-    PHP_FE(confirm_php_ngx_compiled,    NULL)       /* For testing, remove later. */
+    //PHP_FE(confirm_php_ngx_compiled,    NULL)       /* For testing, remove later. */
     PHP_FE_END  /* Must be the last line in php_ngx_functions[] */
 };
 /* }}} */

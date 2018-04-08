@@ -1225,4 +1225,3 @@ zip_entry_name
 zip_entry_compressedsize
 zip_entry_compressionmethod
 dl
-confirm_php_ngx_compiled
