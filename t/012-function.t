@@ -13,11 +13,13 @@ location = /internal-functions {
         $func = get_defined_functions();
         foreach ($func["internal"] as $v) {
         	if (strncmp($v, "openssl_", 8) && strncmp($v, "curl_", 5) && 
+        	strncmp($v, "xmlrpc_", 7) && 
         	$v != "hash_hkdf" &&
         	$v != "readline_on_new_line" && 
         	$v != "inflate_get_status" && 
         	$v != "inflate_get_read_len" && 
-        	$v != "hash_hmac_algos") {
+        	$v != "hash_hmac_algos" && 
+        	$v != "pcntl_signal_get_handler") {
             	echo "{$v}\n";
             }
         }
@@ -471,7 +473,6 @@ pcntl_fork
 pcntl_waitpid
 pcntl_wait
 pcntl_signal
-pcntl_signal_get_handler
 pcntl_signal_dispatch
 pcntl_wifexited
 pcntl_wifstopped

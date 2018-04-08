@@ -12,7 +12,7 @@ location = /declared_classes {
     content_by_php '
         $class = get_declared_classes();
         foreach ($class as $v){
-        	if ($v != "HashContext"){
+        	if ($v != "HashContext" && $v != "ArgumentCountError"){
         		echo "{$v}\n";
         	}
         }
@@ -27,7 +27,6 @@ ErrorException
 Error
 ParseError
 TypeError
-ArgumentCountError
 ArithmeticError
 DivisionByZeroError
 Closure
