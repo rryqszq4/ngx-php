@@ -36,6 +36,7 @@ echo "php install ..."
 --enable-zip \
 --with-bz2 \
 --with-gettext \
+--with-readline \
 --enable-soap \
 --without-pear  \
 --disable-cli \
