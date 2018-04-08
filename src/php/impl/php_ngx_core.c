@@ -27,6 +27,29 @@ ZEND_BEGIN_ARG_INFO_EX(ngx_sleep_arginfo, 0, 0, 1)
     ZEND_ARG_INFO(0, time)
 ZEND_END_ARG_INFO()
 
+PHP_FUNCTION(ngx_sleep)
+{
+    ngx_http_request_t *r;
+    ngx_http_php_ctx_t *ctx;
+    long time;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &time) == FAILURE) {
+        RETURN_NULL();
+    }
+
+    r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if (ctx == NULL) {
+
+    }
+
+    ctx->delay_time = time * 1000;
+
+    ngx_http_php_sleep(r);
+
+}
+
 PHP_METHOD(ngx, _exit)
 {
     long status = 0;

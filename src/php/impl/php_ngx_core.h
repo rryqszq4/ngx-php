@@ -13,6 +13,8 @@
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
+PHP_FUNCTION(ngx_sleep);
+
 PHP_METHOD(ngx, _exit);
 PHP_METHOD(ngx, query_args);
 PHP_METHOD(ngx, post_args);

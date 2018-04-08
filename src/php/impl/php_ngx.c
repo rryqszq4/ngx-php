@@ -8,6 +8,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_ngx.h"
+#include "php_ngx_core.h"
 
 #include "../../ngx_http_php_module.h"
 
@@ -135,6 +136,7 @@ PHP_MINFO_FUNCTION(php_ngx)
  */
 const zend_function_entry php_ngx_functions[] = {
     //PHP_FE(confirm_php_ngx_compiled,    NULL)       /* For testing, remove later. */
+    PHP_FE(ngx_sleep, NULL)
     PHP_FE_END  /* Must be the last line in php_ngx_functions[] */
 };
 /* }}} */
