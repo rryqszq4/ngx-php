@@ -34,7 +34,8 @@ location = /internal-functions {
         	$v != "socket_addrinfo_bind" && 
         	$v != "socket_addrinfo_explain" && 
         	$v != "utf8_encode" && 
-			$v != "utf8_decode" ) {
+			$v != "utf8_decode" && 
+			$v != "stream_isatty" ) {
             	echo "{$v}\n";
             }
         }
