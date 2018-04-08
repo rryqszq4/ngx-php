@@ -12,7 +12,7 @@ location = /internal-functions {
     content_by_php '
         $func = get_defined_functions();
         foreach ($func["internal"] as $v) {
-        	if (strncmp($v, "openssl_", 8)) {
+        	if (strncmp($v, "openssl_", 8) && strncmp($v, "curl_", 5)) {
             	echo "{$v}\n";
             }
         }
@@ -201,38 +201,6 @@ ctype_punct
 ctype_space
 ctype_upper
 ctype_xdigit
-curl_init
-curl_copy_handle
-curl_version
-curl_setopt
-curl_setopt_array
-curl_exec
-curl_getinfo
-curl_error
-curl_errno
-curl_close
-curl_strerror
-curl_multi_strerror
-curl_share_strerror
-curl_reset
-curl_escape
-curl_unescape
-curl_pause
-curl_multi_init
-curl_multi_add_handle
-curl_multi_remove_handle
-curl_multi_select
-curl_multi_exec
-curl_multi_getcontent
-curl_multi_info_read
-curl_multi_close
-curl_multi_errno
-curl_multi_setopt
-curl_share_init
-curl_share_close
-curl_share_setopt
-curl_share_errno
-curl_file_create
 dom_import_simplexml
 finfo_open
 finfo_close
