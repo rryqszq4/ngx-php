@@ -464,12 +464,12 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 
     zend_execute_internal = ngx_execute_internal;
 
+    php_ngx_request_init(TSRMLS_C);
+    
     php_impl_ngx_core_init(0 TSRMLS_CC);
     php_impl_ngx_log_init(0 TSRMLS_CC);
     php_impl_ngx_request_init(0 TSRMLS_CC);
     php_impl_ngx_socket_init(0 TSRMLS_CC);
-
-    php_ngx_request_init(TSRMLS_C);
     
     return NGX_OK;
 }
