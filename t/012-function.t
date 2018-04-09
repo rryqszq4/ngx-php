@@ -1229,3 +1229,4 @@ zip_entry_name
 zip_entry_compressedsize
 zip_entry_compressionmethod
 dl
+ngx_sleep
