@@ -17,7 +17,7 @@ location = /internal-functions {
             	strncmp($v, "xmlrpc_", 7) && 
                 strncmp($v, "mcrypt_", 7) && 
             	strncmp($v, "mdecrypt_", 9) && 
-                strncmp($v, "ngx_", 4) && 
+                $v != "confirm_php_ngx_compiled" && 
             	$v != "hash_hkdf" && 
             	$v != "readline_on_new_line" && 
             	$v != "inflate_get_status" && 
