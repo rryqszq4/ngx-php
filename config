@@ -1,5 +1,5 @@
-ngx_addon_name=ngx_http_php_module
-HTTP_MODULES="$HTTP_MODULES ngx_http_php_module"
+ngx_addon_name=ngx_http_php7_module
+HTTP_MODULES="$HTTP_MODULES ngx_http_php7_module"
 NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_http_php_module.c \
                 $ngx_addon_dir/src/ngx_http_php_core.c \
                 $ngx_addon_dir/src/ngx_http_php_directive.c \
@@ -43,8 +43,10 @@ CORE_INCS="$CORE_INCS $PHP_INC $PHP_INC/main $PHP_INC/TSRM $PHP_INC/Zend $PHP_IN
 
 CORE_LIBS="$CORE_LIBS `$PHP_BIN/php-config --ldflags` -L$PHP_LIB -lphp7 `$PHP_BIN/php-config --libs` "
 
-#CORE_INCS="$CORE_INCS /usr/local/php72/include/php /usr/local/php72/include/php/main /usr/local/php72/include/php/TSRM /usr/local/php72/include/php/Zend /usr/local/php72/include/php/ext /usr/local/php72/include/php/ext/date/lib /usr/local/php72/include/php/sapi/embed "
+PHP_ROOT="/disk4/local/php71"
 
-#CORE_LIBS="$CORE_LIBS `/usr/local/php72/bin/php-config --ldflags` -L/usr/local/php72/lib -lphp7 `/usr/local/php72/bin/php-config --libs` "
+#CORE_INCS="$CORE_INCS $PHP_ROOT/include/php $PHP_ROOT/include/php/main $PHP_ROOT/include/php/TSRM $PHP_ROOT/include/php/Zend $PHP_ROOT/include/php/ext $PHP_ROOT/include/php/ext/date/lib $PHP_ROOT/include/php/sapi/embed "
+
+#CORE_LIBS="$CORE_LIBS `$PHP_ROOT/bin/php-config --ldflags` -L$PHP_ROOT/lib -lphp7 `$PHP_ROOT/bin/php-config --libs` "
 
 have=NDK_SET_VAR . auto/have

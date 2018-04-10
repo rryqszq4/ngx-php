@@ -3,6 +3,7 @@
 </div>
 
 [![Build Status](https://travis-ci.org/rryqszq4/ngx_php7.svg?branch=master)](https://travis-ci.org/rryqszq4/ngx_php7)
+[![GitHub release](https://img.shields.io/github/release/rryqszq4/ngx_php7.svg?style=plastic)](https://github.com/rryqszq4/ngx_php7/releases/latest)
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php7/blob/master/LICENSE)
 [![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx_php7)
 
@@ -80,6 +81,7 @@ http {
             ';
         }
 
+        # curl /ngx_get?a=1&b=2
         location = /ngx_get {
             content_by_php '
                 echo "ngx::query_args()\n";
@@ -87,6 +89,7 @@ http {
             ';
         }
 
+        # curl -d 'a=1&b=2' /ngx_post
         location = /ngx_post {
             content_by_php '
                 echo "ngx::post_args()\n";
@@ -106,7 +109,8 @@ http {
             default_type 'application/json;charset=UTF-8';
             content_by_php '
                 yield ngx_socket::connect("hq.sinajs.cn", 80);
-                yield ngx_socket::send("GET /list=s_sh000001 HTTP/1.0\r\nHost: hq.sinajs.cn\r\nConnection: close\r\n\r\n");
+                yield ngx_socket::send("GET /list=s_sh000001 HTTP/1.0\r\n
+                                        Host: hq.sinajs.cn\r\nConnection: close\r\n\r\n");
                 yield $ret = ngx_socket::recv(1024);
                 yield ngx_socket::close();
                 
