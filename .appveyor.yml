@@ -1,0 +1,39 @@
+
+version: "{branch}.build.{build}"
+
+image: Visual Studio 2017
+
+branches:
+	only:
+	  - master
+
+environment:
+    PHP_BUILD_CACHE_BASE_DIR: c:\build-cache  
+    PHP_BUILD_OBJ_DIR: c:\obj
+    PHP_BUILD_CACHE_SDK_DIR: c:\build-cache\sdk
+    PHP_BUILD_SDK_BRANCH: php-sdk-2.1.3
+    PHP_BUILD_CRT: vc15
+
+platform:
+    - x86
+
+build: false
+
+install:
+	- echo start
+	- cd %APPVEYOR_BUILD_FOLDER%
+	- echo download php
+	- ps: (new-object net.webclient).DownloadFile('https://windows.php.net/downloads/releases/archives/php-7.1.15-Win32-VC14-x86.zip', ${env:APPVEYOR_BUILD_FOLDER} + '\..\php.zip')
+	- cd ..
+	- 'mkdir php && mv php.zip php\php.zip && cd php'
+	- 7z.exe x php.zip | FIND /V "ing "
+	- cd ..
+
+	- echo download nginx 
+	- ps: (new-object net.webclient).DownloadFile('http://nginx.org/download/nginx-1.10.3.zip', ${env:APPVEYOR_BUILD_FOLDER} + '\..\nginx.zip')
+	- cd ..
+	- 'mkdir nginx && mv nginx.zip nginx\nginx.zip && cd nginx'
+	- 7z.exe x nginx.zip | FIND /V "ing "
+	- cd ..
+
+test: off
