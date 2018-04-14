@@ -20,16 +20,16 @@ build: false
 
 install:
     - echo start
-    - cd %SRC_BUILD_FOLDER%
+    - cd %APPVEYOR_BUILD_FOLDER%
     - echo download php
-    - ps: (new-object net.webclient).DownloadFile('https://windows.php.net/downloads/releases/archives/php-7.1.15-Win32-VC14-x86.zip', ${env:SRC_BUILD_FOLDER} + '\..\php.zip')
+    - ps: (new-object net.webclient).DownloadFile('https://windows.php.net/downloads/releases/archives/php-7.1.15-Win32-VC14-x86.zip', ${env:APPVEYOR_BUILD_FOLDER} + '\..\php.zip')
     - cd ..
     - 'mkdir php && mv php.zip php\php.zip && cd php'
     - 7z.exe x php.zip | FIND /V "ing "
     - cd ..
 
     - echo download nginx 
-    - ps: (new-object net.webclient).DownloadFile('http://nginx.org/download/nginx-1.10.3.zip', ${env:SRC_BUILD_FOLDER} + '\..\nginx.zip')
+    - ps: (new-object net.webclient).DownloadFile('http://nginx.org/download/nginx-1.10.3.zip', ${env:APPVEYOR_BUILD_FOLDER} + '\..\nginx.zip')
     - cd ..
     - 'mkdir nginx && mv nginx.zip nginx\nginx.zip && cd nginx'
     - 7z.exe x nginx.zip | FIND /V "ing "
