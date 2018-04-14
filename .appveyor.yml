@@ -4,8 +4,8 @@ version: "{branch}.build.{build}"
 image: Visual Studio 2017
 
 branches:
-	only:
-	  - master
+  only:
+	- master
 
 environment:
     PHP_BUILD_CACHE_BASE_DIR: c:\build-cache  
