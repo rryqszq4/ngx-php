@@ -26,6 +26,7 @@ ngx_http_php_var_get(const char *z_name, size_t z_len)
 	if (var == NULL || var->not_found) {
 		return NULL;
 	}else {
+		ngx_php_debug("%*s", (int)var->len, var->data);
 		return var;
 	}
 }
@@ -93,7 +94,7 @@ ngx_http_php_var_set(char *z_k, size_t z_k_len, char *z_v, size_t z_v_len)
 
 			return 0;
 		}
-	
+
 	}
 
 	return 1;
