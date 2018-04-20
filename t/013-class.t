@@ -173,3 +173,4 @@ ngx
 ngx_log
 ngx_request
 ngx_socket
+ngx_var
