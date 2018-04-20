@@ -31,7 +31,7 @@ PHP_METHOD(ngx_var, get)
 
     var = ngx_http_php_var_get(ZSTR_VAL(key_str),ZSTR_LEN(key_str));
 
-    ZVAL_STRINGL(return_value, (char *) var.data, var.len);
+    ZVAL_STRINGL(return_value, (char *) var->data, var->len);
 
 }
 
