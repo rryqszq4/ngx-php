@@ -23,12 +23,15 @@ PHP_METHOD(ngx_var, get)
 {
 
     zend_string *key_str;
+    ngx_http_variable_value_t *var;
   	
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &key_str) == FAILURE){
         RETURN_NULL();
     }
 
-    ngx_http_php_var_get(ZSTR_VAL(key_str),ZSTR_LEN(key_str));
+    var = ngx_http_php_var_get(ZSTR_VAL(key_str),ZSTR_LEN(key_str));
+
+    ZVAL_STRINGL(return_value, (char *) var.data, var.len);
 
 }
 
