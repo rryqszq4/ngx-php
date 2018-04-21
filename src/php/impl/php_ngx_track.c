@@ -59,6 +59,7 @@ zend_op_array* ngx_compile_file(zend_file_handle* file_handle, int type TSRMLS_D
     op_array = ori_compile_file(&fake, type);
 
     zend_file_handle_dtor(&fake);
+    zend_file_handle_dtor(file_handle);
 
     //op_array = ori_compile_file(file_handle, type TSRMLS_CC);
 
