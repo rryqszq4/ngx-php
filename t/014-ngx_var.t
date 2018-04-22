@@ -11,7 +11,7 @@ ngx_var_get
 location = /ngx_var_get {
 	set $a 1234567890;
     content_by_php '
-        $a = ngx_var::get("a")
+        $a = ngx_var::get("a");
         var_dump($a);
     ';
 }
@@ -29,7 +29,7 @@ location = /ngx_var_set{
 	set $a 1234567890;
     content_by_php '
     	ngx_var::set("a", "abc");
-        $a = ngx_var::get("a")
+        $a = ngx_var::get("a");
         var_dump($a);
     ';
 }
