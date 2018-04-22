@@ -273,8 +273,15 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
 
     func_name.data = ngx_pnalloc(r->pool, strlen(func_prefix) + 32);
 
-    func_name.len = ngx_sprintf(func_name.data, "%s_%V", func_prefix, &(plcf->content_inline_code->code_id)) - func_name.data;
-
+    if (strcmp(func_prefix, "ngx_rewrite") == 0) {
+        func_name.len = ngx_sprintf(func_name.data, "%s_%V", func_prefix, &(plcf->rewrite_inline_code->code_id)) - func_name.data;
+    }else if (strcmp(func_prefix, "ngx_access") == 0) {
+        func_name.len = ngx_sprintf(func_name.data, "%s_%V", func_prefix, &(plcf->access_inline_code->code_id)) - func_name.data;
+    }else if (strcmp(func_prefix, "ngx_content") == 0) {
+        func_name.len = ngx_sprintf(func_name.data, "%s_%V", func_prefix, &(plcf->content_inline_code->code_id)) - func_name.data;
+    }else {
+        func_name.len = 0;
+    }
 
     ngx_php_debug("%*s", (int)func_name.len, func_name.data);
 
