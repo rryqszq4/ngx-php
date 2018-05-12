@@ -7,6 +7,8 @@
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php7/blob/master/LICENSE)
 [![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx_php7)
 
+![](https://raw.githubusercontent.com/rryqszq4/ngx_php7/master/docs/hello_world_performance.png)
+
 [ngx_php7](https://github.com/rryqszq4/ngx_php7) - Embedded php7 programming language for nginx-module.  
 [ngx_php](https://github.com/rryqszq4/ngx_php) - Embedded php5 script language for nginx-module.  
 
@@ -115,6 +117,14 @@ http {
                 yield ngx_socket::close();
                 
                 var_dump($ret);
+            ';
+        }
+
+        location = /ngx_var {
+            set $a 1234567890;
+            content_by_php '
+                $a = ngx_var::get("a");
+                var_dump($a);
             ';
         }
 
