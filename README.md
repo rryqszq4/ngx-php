@@ -132,6 +132,63 @@ http {
 }
 ```
 
+Test
+----
+Using the perl of [Test::Nginx](https://github.com/openresty/test-nginx) module to testing, searching and finding out problem in ngx_php7.
+```sh
+ngx_php7 test ...
+nginx version: nginx/1.10.3
+built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
+configure arguments: --prefix=/home/travis/build/rryqszq4/ngx_php7/build/nginx --with-ld-opt=-Wl,-rpath,/home/travis/build/rryqszq4/ngx_php7/build/php/lib --add-module=../../../ngx_php7/third_party/ngx_devel_kit --add-module=../../../ngx_php7
+t/001-hello.t ........... ok
+t/002-ini.t ............. ok
+t/004-ngx_request.t ..... ok
+t/005-ngx_log.t ......... ok
+t/006-ngx_sleep.t ....... ok
+t/007-ngx_socket.t ...... ok
+t/008-ngx_exit.t ........ ok
+t/009-ngx_query_args.t .. ok
+t/010-ngx_post_args.t ... ok
+t/011-ngx_constants.t ... ok
+t/012-function.t ........ ok
+t/013-class.t ........... ok
+t/014-ngx_var.t ......... ok
+All tests successful.
+Files=13, Tests=28,  5 wallclock secs ( 0.05 usr  0.02 sys +  1.26 cusr  0.22 csys =  1.55 CPU)
+Result: PASS
+```
+
+Directives
+----------
+* [php_ini_path](#php_ini_path)
+* [rewrite_by_php](#rewrite_by_php)
+* [access_by_php](#access_by_php)
+* [content_by_php](#content_by_php)
+
+php_ini_path
+------------
+* **syntax:** `php_ini_path`_`<php.ini file path>`_
+* **context:** `http`
+* **phase:** `loading-config`
+
+rewrite_by_php
+--------------
+* **syntax:** `rewrite_by_php`_`<php script code>`_
+* **context:** `http, server, location, location if`
+* **phase:** `rewrite`
+
+access_by_php
+-------------
+* **syntax:** `access_by_php`_`<php script code>`_
+* **context:** `http, server, location, location if`
+* **phase:** `access`
+
+content_by_php
+--------------
+* **syntax:** `content_by_php`_`<php script code>`_
+* **context:** `http, server, location, location if`
+* **phase:** `content`
+
 Copyright and License
 ---------------------
 ```
