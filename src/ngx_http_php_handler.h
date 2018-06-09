@@ -45,4 +45,8 @@ void *ngx_http_php_async_inline_thread(void *arg);
 ngx_int_t ngx_http_php_content_sync_inline_handler(ngx_http_request_t *r);
 void *ngx_http_php_sync_inline_thread(void *arg);*/
 
+ngx_int_t ngx_http_php_log_handler(ngx_http_request_t *r);
+ngx_int_t ngx_http_php_log_file_handler(ngx_http_request_t *r);
+ngx_int_t ngx_http_php_log_inline_handler(ngx_http_request_t *r);
+
 #endif

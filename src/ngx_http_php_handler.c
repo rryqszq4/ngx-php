@@ -1233,6 +1233,27 @@ ngx_http_php_stack_inline_handler(ngx_http_request_t *r)
 }
 
 ngx_int_t 
+ngx_http_php_log_handler(ngx_http_request_t *r)
+{
+    ngx_http_php_loc_conf_t *plcf;
+    plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
+    if (plcf->log_handler == NULL){
+        return NGX_DECLINED;
+    }
+    return plcf->log_handler(r);
+}
+
+ngx_int_t 
+ngx_http_php_log_inline_handler(ngx_http_request_t *r)
+{
+    ngx_php_request = r;
+
+    ngx_http_php_zend_uthread_log_inline_routine(r);
+
+    return NGX_OK;
+}
+
+ngx_int_t 
 ngx_http_php_content_post_handler(ngx_http_request_t *r)
 {
     ngx_http_php_main_conf_t *pmcf = ngx_http_get_module_main_conf(r, ngx_http_php_module);

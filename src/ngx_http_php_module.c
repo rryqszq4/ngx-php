@@ -134,6 +134,15 @@ static ngx_command_t ngx_http_php_commands[] = {
      ngx_http_php_stack_inline_handler
     },
 
+    {ngx_string("log_by_php"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_log_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_log_inline_handler
+    },
+
  /*   {ngx_string("content_async_by_php"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
@@ -317,6 +326,15 @@ ngx_http_php_handler_init(ngx_http_core_main_conf_t *cmcf, ngx_http_php_main_con
                     *h = ngx_http_php_content_async_handler;
                 }*/
                 break;
+            case NGX_HTTP_LOG_PHASE:
+                if (pmcf->enabled_log_handler) {
+                    h = ngx_array_push(&cmcf->phases[phase].handlers);
+                    if (h == NULL) {
+                        return NGX_ERROR;
+                    }
+                    *h = ngx_http_php_log_handler;
+                }
+                break;
             default:
                 break;
         }
@@ -377,15 +395,19 @@ ngx_http_php_create_loc_conf(ngx_conf_t *cf)
     plcf->content_code = NGX_CONF_UNSET_PTR;
     plcf->content_inline_code = NGX_CONF_UNSET_PTR;
 
-    plcf->content_async_inline_code = NGX_CONF_UNSET_PTR;
+    //plcf->content_async_inline_code = NGX_CONF_UNSET_PTR;
 
     plcf->opcode_inline_code = NGX_CONF_UNSET_PTR;
 
     plcf->stack_inline_code = NGX_CONF_UNSET_PTR;
 
+    plcf->log_code = NGX_CONF_UNSET_PTR;
+    plcf->log_inline_code = NGX_CONF_UNSET_PTR;
+
     plcf->enabled_rewrite_inline_compile = 0;
     plcf->enabled_access_inline_compile = 0;
     plcf->enabled_content_inline_compile = 0;
+    plcf->enabled_log_inline_compile = 0;
 
     return plcf;
 }
@@ -411,15 +433,19 @@ ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     prev->content_code = conf->content_code;
     prev->content_inline_code = conf->content_inline_code;
 
-    prev->content_async_inline_code = conf->content_async_inline_code;
+    //prev->content_async_inline_code = conf->content_async_inline_code;
 
     prev->opcode_inline_code = conf->opcode_inline_code;
 
     prev->stack_inline_code = conf->stack_inline_code;
 
+    prev->log_code = conf->log_code;
+    prev->log_inline_code = conf->log_inline_code;
+
     prev->enabled_rewrite_inline_compile = conf->enabled_rewrite_inline_compile;
     prev->enabled_access_inline_compile = conf->enabled_access_inline_compile;
     prev->enabled_content_inline_compile = conf->enabled_content_inline_compile;
+    prev->enabled_log_inline_compile = conf->enabled_log_inline_compile;
 
     return NGX_CONF_OK;
 }
@@ -479,7 +505,7 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 static void 
 ngx_http_php_exit_worker(ngx_cycle_t *cycle)
 {
-    TSRMLS_FETCH();
+    //TSRMLS_FETCH();
     php_ngx_request_shutdown(TSRMLS_C);
     php_ngx_module_shutdown(TSRMLS_C);
 }
