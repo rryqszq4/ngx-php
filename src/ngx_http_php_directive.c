@@ -704,7 +704,7 @@ ngx_http_php_header_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void
     }
 
     plcf->header_filter_inline_code = code;
-    plcf->hander_filter_handler = cmd->post;
+    plcf->header_filter_handler = cmd->post;
     pmcf->enabled_header_filter = 1;
 
     return NGX_CONF_OK;
