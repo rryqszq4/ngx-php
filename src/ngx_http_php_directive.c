@@ -691,6 +691,7 @@ ngx_http_php_header_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void
     }
 
     pmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_php_module);
+    plcf = conf;
 
     if (plcf->header_filter_handler != NULL) {
         return "is duplicated";
@@ -723,6 +724,7 @@ ngx_http_php_body_filter_inline_pahse(ngx_conf_t *cf, ngx_command_t *cmd, void *
     }
 
     pmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_php_module);
+    plcf = conf;
 
     if (plcf->header_filter_handler != NULL) {
         return "is duplicated";
