@@ -39,6 +39,6 @@ char *ngx_http_php_set_run_file(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 #endif
 
 char *ngx_http_php_header_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
-char *ngx_http_php_body_filter_inline_pahse(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+char *ngx_http_php_body_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 #endif

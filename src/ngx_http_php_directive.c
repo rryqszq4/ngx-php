@@ -712,7 +712,7 @@ ngx_http_php_header_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void
 }
 
 char *
-ngx_http_php_body_filter_inline_pahse(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+ngx_http_php_body_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_http_php_main_conf_t *pmcf;
     ngx_http_php_loc_conf_t *plcf;
