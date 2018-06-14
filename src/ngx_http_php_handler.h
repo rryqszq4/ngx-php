@@ -49,4 +49,10 @@ ngx_int_t ngx_http_php_log_handler(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_log_file_handler(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_log_inline_handler(ngx_http_request_t *r);
 
+ngx_int_t ngx_http_php_header_filter(ngx_http_request_t *r);
+ngx_int_t ngx_http_php_header_filter_inline_handler(ngx_http_request_t *r);
+
+ngx_int_t ngx_http_php_body_filter(ngx_http_request_t *r, ngx_chain_t *in);
+ngx_int_t ngx_http_php_body_filter_inline_handler(ngx_http_request_t *r, ngx_chain_t *in);
+
 #endif
