@@ -1,7 +1,5 @@
-<div align="left">
-<a href="https://github.com/rryqszq4/ngx_php7"><img width="320" src="https://raw.githubusercontent.com/rryqszq4/ngx_php7/master/docs/ngx_php7_logo_v0.2.png"></a>
-</div>
-
+ngx_php7
+========
 [![Build Status](https://travis-ci.org/rryqszq4/ngx_php7.svg?branch=master)](https://travis-ci.org/rryqszq4/ngx_php7)
 [![GitHub release](https://img.shields.io/github/release/rryqszq4/ngx_php7.svg)](https://github.com/rryqszq4/ngx_php7/releases/latest)
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php7/blob/master/LICENSE)
