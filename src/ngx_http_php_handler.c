@@ -28,6 +28,9 @@ static void ngx_http_php_content_file_uthread_routine(void *data);
 
 static void ngx_http_php_read_request_body_callback(ngx_http_request_t *r);
 
+static ngx_http_output_header_filter_pt ngx_http_next_header_filter;
+static ngx_http_output_body_filter_pt ngx_http_next_body_filter;
+
 ngx_int_t
 ngx_http_php_post_read_handler(ngx_http_request_t *r)
 {
@@ -999,7 +1002,7 @@ set_output:
 
         ngx_http_output_filter(r, chain->out);
 
-        ngx_http_set_ctx(r, NULL, ngx_http_php_module);
+        //ngx_http_set_ctx(r, NULL, ngx_http_php_module);
 
         return NGX_OK;
 
@@ -1249,6 +1252,73 @@ ngx_http_php_log_inline_handler(ngx_http_request_t *r)
     ngx_php_request = r;
 
     ngx_http_php_zend_uthread_log_inline_routine(r);
+
+    return NGX_OK;
+} 
+
+void
+ngx_http_php_header_filter_init(void)
+{
+    ngx_http_next_header_filter = ngx_http_top_header_filter;
+    ngx_http_top_header_filter = ngx_http_php_header_filter;
+}
+
+void
+ngx_http_php_body_filter_init(void)
+{
+    ngx_http_next_body_filter = ngx_http_top_body_filter;
+    ngx_http_top_body_filter = ngx_http_php_body_filter;
+}
+
+ngx_int_t 
+ngx_http_php_header_filter(ngx_http_request_t *r)
+{
+    ngx_http_php_loc_conf_t *plcf;
+    //ngx_int_t               rc;
+
+    plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
+
+    if (plcf->header_filter_handler == NULL) {
+        return ngx_http_next_header_filter(r);
+    }
+
+    plcf->header_filter_handler(r);
+
+    return ngx_http_next_header_filter(r);
+}
+
+ngx_int_t 
+ngx_http_php_header_filter_inline_handler(ngx_http_request_t *r)
+{
+    ngx_php_request = r;
+
+    ngx_http_php_zend_uthread_header_filter_inline_routine(r);
+
+    return NGX_OK;
+}
+
+ngx_int_t 
+ngx_http_php_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
+{
+    ngx_http_php_loc_conf_t *plcf;
+
+    plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
+
+    if (plcf->body_filter_handler == NULL) {
+        return ngx_http_next_body_filter(r, in);
+    }
+
+    plcf->body_filter_handler(r, in);
+
+    return ngx_http_next_body_filter(r, in);
+}
+
+ngx_int_t 
+ngx_http_php_body_filter_inline_handler(ngx_http_request_t *r, ngx_chain_t *in)
+{
+    ngx_php_request = r;
+
+    ngx_http_php_zend_uthread_body_filter_inline_routine(r);
 
     return NGX_OK;
 }

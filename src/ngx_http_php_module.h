@@ -90,7 +90,4 @@ typedef struct ngx_http_php_loc_conf_s {
 
 } ngx_http_php_loc_conf_t;
 
-ngx_http_output_header_filter_pt ngx_http_next_header_filter;
-ngx_http_output_body_filter_pt ngx_http_next_body_filter;
-
 #endif
