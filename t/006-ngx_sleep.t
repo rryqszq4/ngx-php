@@ -20,3 +20,22 @@ GET /ngx_sleep
 --- response_body
 ngx_sleep start
 ngx_sleep end
+
+
+
+=== TEST 2: sleep function
+sleep function
+--- config
+location =/nginx_sleep {
+	content_by_php '
+		require_once "/home/travis/build/rryqszq4/ngx_php7/t/lib/sleep.php";
+		echo "ngx_sleep start\n";
+        yield from nginx_sleep();
+        echo "ngx_sleep end\n";
+	';
+}
+--- request
+GET /nginx_sleep
+--- response_body
+ngx_sleep start
+ngx_sleep end
