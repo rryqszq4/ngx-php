@@ -162,6 +162,9 @@ Directives
 * [rewrite_by_php](#rewrite_by_php)
 * [access_by_php](#access_by_php)
 * [content_by_php](#content_by_php)
+* [log_by_php](#log_by_php)
+* [header_filter_by_php](#header_filter_by_php)
+* [body_filter_by_php](#body_filter_by_php)
 
 php_ini_path
 ------------
@@ -186,6 +189,25 @@ content_by_php
 * **syntax:** `content_by_php`_`<php script code>`_
 * **context:** `http, server, location, location if`
 * **phase:** `content`
+
+log_by_php
+----------
+* **syntax:** `log_by_php`_`<php script code>`_
+* **context:** `http, server, location, location if`
+* **phase:** `log`
+
+header_filter_by_php
+--------------------
+* **syntax:** `header_filter_by_php`_`<php script code>`_
+* **context:** `http, server, location, location if`
+* **phase:** `output-header-filter`
+
+body_filter_by_php
+------------------
+* **syntax:** `body_filter_by_php`_`<php script code>`_
+* **context:** `http, server, location, location if`
+* **phase:** `output-body-filter`
+
 
 Copyright and License
 ---------------------
