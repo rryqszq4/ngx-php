@@ -159,6 +159,7 @@ Result: PASS
 Directives
 ----------
 * [php_ini_path](#php_ini_path)
+* [init_worker_by_php](#init_worker_by_php)
 * [rewrite_by_php](#rewrite_by_php)
 * [access_by_php](#access_by_php)
 * [content_by_php](#content_by_php)
@@ -171,6 +172,12 @@ php_ini_path
 * **syntax:** `php_ini_path`_`<php.ini file path>`_
 * **context:** `http`
 * **phase:** `loading-config`
+
+init_worker_by_php
+------------------
+* **syntax:** `init_worker_by_php`_`<php script code>`_
+* **context:** `http`
+* **phase:** `starting-worker`
 
 rewrite_by_php
 --------------
