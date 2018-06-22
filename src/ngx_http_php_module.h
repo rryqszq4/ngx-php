@@ -30,6 +30,10 @@ typedef struct ngx_http_php_main_conf_s {
     ngx_http_php_code_t *init_code;
     ngx_http_php_code_t *init_inline_code;
 
+    ngx_http_php_code_t *init_worker_inline_code;
+
+    unsigned enabled_init_worker_handler:1;
+
     unsigned enabled_rewrite_handler:1;
     unsigned enabled_access_handler:1;
     unsigned enabled_content_handler:1;

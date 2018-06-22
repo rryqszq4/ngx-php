@@ -46,18 +46,26 @@ static ngx_command_t ngx_http_php_commands[] = {
      0,
      NULL
     },
-
+/*
     {ngx_string("init_by_php"),
      NGX_HTTP_MAIN_CONF|NGX_CONF_TAKE1,
      ngx_http_php_init_inline_phase,
      NGX_HTTP_MAIN_CONF_OFFSET,
      0,
-     NULL
+     ngx_http_php_init_inline_handler
     },
 
     {ngx_string("init_by_php_file"),
      NGX_HTTP_MAIN_CONF|NGX_CONF_TAKE1,
      ngx_http_php_init_file_phase,
+     NGX_HTTP_MAIN_CONF_OFFSET,
+     0,
+     NULL
+    },
+*/
+    {ngx_string("init_worker_by_php"),
+     NGX_HTTP_MAIN_CONF|NGX_CONF_TAKE1,
+     ngx_http_php_init_worker_inline_phase,
      NGX_HTTP_MAIN_CONF_OFFSET,
      0,
      NULL
@@ -519,6 +527,21 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     zend_startup_module(&php_ngx_module_entry);
 #endif
 
+    php_ngx_request_init(TSRMLS_C);
+
+    if (pmcf->enabled_init_worker_handler) {
+        zend_first_try {
+            pmcf = ngx_http_cycle_get_module_main_conf(cycle, ngx_http_php_module);
+            zend_eval_stringl_ex(
+                pmcf->init_worker_inline_code->code.string,
+                ngx_strlen(pmcf->init_worker_inline_code->code.string), 
+                NULL, 
+                "ngx_php eval code", 
+                1
+            );
+        } zend_end_try();
+    }
+
     old_zend_error_cb = zend_error_cb;
     zend_error_cb = ngx_php_error_cb;
     
@@ -532,15 +555,13 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     zend_execute_ex = ngx_execute_ex;
 
     zend_execute_internal = ngx_execute_internal;
-
-    php_ngx_request_init(TSRMLS_C);
     
     php_impl_ngx_core_init(0 TSRMLS_CC);
     php_impl_ngx_log_init(0 TSRMLS_CC);
     php_impl_ngx_request_init(0 TSRMLS_CC);
     php_impl_ngx_socket_init(0 TSRMLS_CC);
     php_impl_ngx_var_init(0 TSRMLS_CC);
-    
+
     return NGX_OK;
 }
 
