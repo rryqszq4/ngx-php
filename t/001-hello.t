@@ -2,6 +2,8 @@
 
 use Test::Nginx::Socket 'no_plan';
 
+$ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
+
 run_tests();
 
 __DATA__
@@ -26,7 +28,7 @@ include hello
 --- config
 location =/include {
 	content_by_php '
-		include "/home/travis/build/rryqszq4/ngx_php7/t/lib/hello.php";
+		include "$TEST_NGINX_BUILD_DIR/t/lib/hello.php";
 	';
 }
 --- request

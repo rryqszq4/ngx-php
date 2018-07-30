@@ -33,6 +33,9 @@ env:
     NGINX_SRC_VERSION=1.10.3
   - PHP_SRC_VERSION=7.2.7
     NGINX_SRC_VERSION=1.10.3
+  - PHP_SRC_VERSION=7.2.7
+    NGINX_SRC_VERSION=1.10.3
+    NGINX_MODULE=DYNAMIC
 install:
   - sudo cpanm -n Test::Nginx
 before_script:

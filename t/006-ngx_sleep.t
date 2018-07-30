@@ -2,6 +2,8 @@
 
 use Test::Nginx::Socket 'no_plan';
 
+$ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
+
 run_tests();
 
 __DATA__
@@ -28,7 +30,7 @@ sleep function
 --- config
 location =/nginx_sleep {
 	content_by_php '
-		require_once "/home/travis/build/rryqszq4/ngx_php7/t/lib/sleep.php";
+		require_once "$TEST_NGINX_BUILD_DIR/t/lib/sleep.php";
 		echo "ngx_sleep start\n";
         yield from nginx_sleep();
         echo "ngx_sleep end\n";
