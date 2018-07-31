@@ -3,13 +3,15 @@
 
 use Test::Nginx::Socket 'no_plan';
 
+$ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
+
 run_tests();
 
 __DATA__
 === TEST 1: ini file
 ini file
 --- http_config
-php_ini_path /home/travis/build/rryqszq4/ngx_php7/build/php/php.ini;
+php_ini_path $TEST_NGINX_BUILD_DIR/build/php/php.ini;
 --- config
 location = /ini {
     content_by_php '
@@ -18,5 +20,5 @@ location = /ini {
 }
 --- request
 GET /ini
---- response_body
-/home/travis/build/rryqszq4/ngx_php7/build/php/php.ini
+--- response_body eval
+$ENV{'TEST_NGINX_BUILD_DIR'} . "/build/php/php.ini"

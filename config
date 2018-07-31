@@ -1,56 +1,74 @@
 ngx_addon_name=ngx_http_php7_module
-HTTP_AUX_FILTER_MODULES="$HTTP_AUX_FILTER_MODULES ngx_http_php_module"
-NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_http_php_module.c \
-                $ngx_addon_dir/src/ngx_http_php_core.c \
-                $ngx_addon_dir/src/ngx_http_php_directive.c \
-                $ngx_addon_dir/src/ngx_http_php_handler.c \
-                $ngx_addon_dir/src/ngx_http_php_request.c \
-                $ngx_addon_dir/src/ngx_http_php_zend_uthread.c \
-                $ngx_addon_dir/src/ngx_http_php_sleep.c \
-                $ngx_addon_dir/src/ngx_http_php_socket.c \
-                $ngx_addon_dir/src/ngx_http_php_util.c \
-                $ngx_addon_dir/src/ngx_http_php_variable.c \
-                $ngx_addon_dir/src/ngx_php_debug.c \
-                $ngx_addon_dir/src/php/impl/php_ngx.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_test.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_track.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_core.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_log.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_request.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_generator.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_socket.c \
-                $ngx_addon_dir/src/php/impl/php_ngx_var.c \
-                "
-NGX_ADDON_DEPS="$NGX_ADDON_DEPS $ngx_addon_dir/src/ngx_http_php_module.h \
-                $ngx_addon_dir/src/ngx_http_php_core.h \
-                $ngx_addon_dir/src/ngx_http_php_directive.h \
-                $ngx_addon_dir/src/ngx_http_php_handler.h \
-                $ngx_addon_dir/src/ngx_http_php_request.h \
-                $ngx_addon_dir/src/ngx_http_php_zend_uthread.h \
-                $ngx_addon_dir/src/ngx_http_php_sleep.h \
-                $ngx_addon_dir/src/ngx_http_php_socket.h \
-                $ngx_addon_dir/src/ngx_http_php_util.h \
-                $ngx_addon_dir/src/ngx_http_php_variable.h \
-                $ngx_addon_dir/src/ngx_php_debug.h \
-                $ngx_addon_dir/src/php/impl/php_ngx.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_test.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_track.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_core.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_log.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_request.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_generator.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_socket.h \
-                $ngx_addon_dir/src/php/impl/php_ngx_var.h \
-                "
 
-CORE_INCS="$CORE_INCS $PHP_INC $PHP_INC/main $PHP_INC/TSRM $PHP_INC/Zend $PHP_INC/ext $PHP_INC/ext/date/lib $PHP_INC/sapi/embed "
+NGX_PHP_SRCS="$ngx_addon_dir/src/ngx_http_php_module.c \
+              $ngx_addon_dir/src/ngx_http_php_core.c \
+              $ngx_addon_dir/src/ngx_http_php_directive.c \
+              $ngx_addon_dir/src/ngx_http_php_handler.c \
+              $ngx_addon_dir/src/ngx_http_php_request.c \
+              $ngx_addon_dir/src/ngx_http_php_zend_uthread.c \
+              $ngx_addon_dir/src/ngx_http_php_sleep.c \
+              $ngx_addon_dir/src/ngx_http_php_socket.c \
+              $ngx_addon_dir/src/ngx_http_php_util.c \
+              $ngx_addon_dir/src/ngx_http_php_variable.c \
+              $ngx_addon_dir/src/ngx_php_debug.c \
+              $ngx_addon_dir/src/php/impl/php_ngx.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_test.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_track.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_core.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_log.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_request.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_generator.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_socket.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_var.c \
+              "
+NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_module.h \
+              $ngx_addon_dir/src/ngx_http_php_core.h \
+              $ngx_addon_dir/src/ngx_http_php_directive.h \
+              $ngx_addon_dir/src/ngx_http_php_handler.h \
+              $ngx_addon_dir/src/ngx_http_php_request.h \
+              $ngx_addon_dir/src/ngx_http_php_zend_uthread.h \
+              $ngx_addon_dir/src/ngx_http_php_sleep.h \
+              $ngx_addon_dir/src/ngx_http_php_socket.h \
+              $ngx_addon_dir/src/ngx_http_php_util.h \
+              $ngx_addon_dir/src/ngx_http_php_variable.h \
+              $ngx_addon_dir/src/ngx_php_debug.h \
+              $ngx_addon_dir/src/php/impl/php_ngx.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_test.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_track.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_core.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_log.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_request.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_generator.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_socket.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_var.h \
+              "
 
-CORE_LIBS="$CORE_LIBS `$PHP_BIN/php-config --ldflags` -L$PHP_LIB -lphp7 `$PHP_BIN/php-config --libs` "
+if [ -z "$PHP_CONFIG" ]; then
+  PHP_CONFIG=`which php-config`
+fi
 
-PHP_ROOT="/disk4/local/php71"
+if [ -z "$NGX_PHP_INCS" ]; then
+  NGX_PHP_INCS="`$PHP_CONFIG --includes | sed 's/-I//g'` `$PHP_CONFIG --include-dir`/sapi/embed "
+fi
+if [ -z "$NGX_PHP_LIBS" ]; then
+  NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -lphp7 "
+fi
 
-#CORE_INCS="$CORE_INCS $PHP_ROOT/include/php $PHP_ROOT/include/php/main $PHP_ROOT/include/php/TSRM $PHP_ROOT/include/php/Zend $PHP_ROOT/include/php/ext $PHP_ROOT/include/php/ext/date/lib $PHP_ROOT/include/php/sapi/embed "
+if [ $ngx_module_link = DYNAMIC ] ; then
+  ngx_module_type=HTTP_AUX_FILTER
+  ngx_module_name="ngx_http_php_module"
+  ngx_module_srcs="$NGX_PHP_SRCS"
+  ngx_module_deps="$NGX_PHP_DEPS"
+  ngx_module_incs="$NGX_PHP_INCS"
+  ngx_module_libs="$NGX_PHP_LIBS"
 
-#CORE_LIBS="$CORE_LIBS `$PHP_ROOT/bin/php-config --ldflags` -L$PHP_ROOT/lib -lphp7 `$PHP_ROOT/bin/php-config --libs` "
+  . auto/module
+else
+  HTTP_AUX_FILTER_MODULES="$HTTP_AUX_FILTER_MODULES ngx_http_php_module"
+  NGX_ADDON_SRCS="$NGX_ADDON_SRCS $NGX_PHP_SRCS"
+  NGX_ADDON_DEPS="$NGX_ADDON_DEPS $NGX_PHP_DEPS"
+  CORE_INCS="$CORE_INCS $NGX_PHP_INCS "
+  CORE_LIBS="$CORE_LIBS $NGX_PHP_LIBS "
+fi
 
 have=NDK_SET_VAR . auto/have
