@@ -1,3 +1,12 @@
+ngx_php7 0.0.13 changes:                                                            15 Sep 2018
+    * Add directive header_filter_by_php, body_filter_by_php, init_worker_by_php, log_by_php.
+
+    * Add php impl ngx_var::get, ngx_var::set.
+
+    * Supports dynamic module by kjdev.
+
+    * Hello world test performance.
+
 ngx_php7 0.0.12 changes:                                                            10 Apr 2018
     * Add php impl ngx_socket::connect, ngx_socket::send, ngx_socket::recv, ngx_socket::close.
     
