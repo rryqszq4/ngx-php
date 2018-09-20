@@ -8,6 +8,8 @@
 #include "../../ngx_http_php_module.h"
 #include "../../ngx_http_php_socket.h"
 
+static int le_socket;
+#define le_socket_name php_ngx_sockets_le_socket_name
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_create, 0, 0, 0)
 	ZEND_ARG_INFO(0, domain)
@@ -40,6 +42,14 @@ ZEND_END_ARG_INFO()
 PHP_FUNCTION(ngx_socket_create)
 {
 	zend_long arg1, arg2, arg3;
+	arg1 = AF_INET;
+	arg2 = SOCK_STREAM;
+	arg3 = SOL_TCP;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "|lll", &arg1, &arg2, &arg3) == FAILURE) {
+		return ;
+	}
+
 }
 
 PHP_FUNCTION(ngx_socket_connect)
