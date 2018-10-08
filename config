@@ -50,8 +50,9 @@ fi
 if [ -z "$NGX_PHP_INCS" ]; then
   NGX_PHP_INCS="`$PHP_CONFIG --includes | sed 's/-I//g'` `$PHP_CONFIG --include-dir`/sapi/embed "
 fi
+
 if [ -z "$NGX_PHP_LIBS" ]; then
-  NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -lphp7 "
+  NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp7 "
 fi
 
 if [ $ngx_module_link = DYNAMIC ] ; then
