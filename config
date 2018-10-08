@@ -12,12 +12,10 @@ NGX_PHP_SRCS="$ngx_addon_dir/src/ngx_http_php_module.c \
               $ngx_addon_dir/src/ngx_http_php_variable.c \
               $ngx_addon_dir/src/ngx_php_debug.c \
               $ngx_addon_dir/src/php/impl/php_ngx.c \
-              $ngx_addon_dir/src/php/impl/php_ngx_test.c \
               $ngx_addon_dir/src/php/impl/php_ngx_track.c \
               $ngx_addon_dir/src/php/impl/php_ngx_core.c \
               $ngx_addon_dir/src/php/impl/php_ngx_log.c \
               $ngx_addon_dir/src/php/impl/php_ngx_request.c \
-              $ngx_addon_dir/src/php/impl/php_ngx_generator.c \
               $ngx_addon_dir/src/php/impl/php_ngx_socket.c \
               $ngx_addon_dir/src/php/impl/php_ngx_var.c \
               "
@@ -33,12 +31,10 @@ NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_module.h \
               $ngx_addon_dir/src/ngx_http_php_variable.h \
               $ngx_addon_dir/src/ngx_php_debug.h \
               $ngx_addon_dir/src/php/impl/php_ngx.h \
-              $ngx_addon_dir/src/php/impl/php_ngx_test.h \
               $ngx_addon_dir/src/php/impl/php_ngx_track.h \
               $ngx_addon_dir/src/php/impl/php_ngx_core.h \
               $ngx_addon_dir/src/php/impl/php_ngx_log.h \
               $ngx_addon_dir/src/php/impl/php_ngx_request.h \
-              $ngx_addon_dir/src/php/impl/php_ngx_generator.h \
               $ngx_addon_dir/src/php/impl/php_ngx_socket.h \
               $ngx_addon_dir/src/php/impl/php_ngx_var.h \
               "
