@@ -15,7 +15,6 @@
 #include "php/impl/php_ngx_core.h"
 #include "php/impl/php_ngx_log.h"
 #include "php/impl/php_ngx_request.h"
-#include "php/impl/php_ngx_generator.h"
 #include "php/impl/php_ngx_socket.h"
 #include "php/impl/php_ngx_var.h"
 
