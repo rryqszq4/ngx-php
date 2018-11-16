@@ -33,7 +33,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_send, 0, 0, 3)
 	ZEND_ARG_INFO(0, len)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recv, 0, 0, 0, 3)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recv, 0, 0, 3)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_INFO(0, buf)
 	ZEND_ARG_INFO(0, len)
@@ -165,12 +165,94 @@ PHP_FUNCTION(ngx_socket_close)
 
 PHP_FUNCTION(ngx_socket_send)
 {
+	zval 							*arg1;
+	php_ngx_socket 					*ngx_sock;
+	size_t 							buf_len, retval;
+	zend_long 						len;
+	char 							*buf;
 
+	ngx_http_request_t 				*r;
+    ngx_http_php_ctx_t 				*ctx;
+    ngx_http_php_socket_upstream_t  *u;
+    ngx_str_t                       ns;
+    ngx_buf_t                       *b;
+    ngx_chain_t                     *cl;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rsll", $arg1, &buf, &buf_len, &len) == FAILURE) {
+		return ;
+	}
+
+	if (len < 0) {
+		php_error_docref(NULL, E_WARNING, "Length cannot be negative");
+		RETURN_FALSE;
+	}
+
+	if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
+		RETURN_FALSE;
+	}
+
+	r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ns.data = (u_char *)buf;
+    ns.len = buf_len;
+
+    b = ngx_create_temp_buf(r->pool, ns.len + 1);
+
+    cl = ngx_alloc_chain_link(r->pool);
+
+    cl->buf = b;
+    cl->next = NULL;
+
+    u = ctx->upstream;
+    u->request_bufs = cl;
+
+    b->last = ngx_copy(b->last, ns.data, ns.len);
+
+    retval = ngx_http_php_socket_send(r);
+
+    RETURN_LONG(retval);
 }
 
 PHP_FUNCTION(ngx_socket_recv)
 {
+	zval 							*arg1, *buf;
+	zend_string 					*recv_buf;
+	php_ngx_socket 					*ngx_sock;
+	int 							retval;
+	zend_long 						len;
 
+	ngx_http_request_t              *r;
+    ngx_http_php_ctx_t              *ctx;
+    ngx_http_php_socket_upstream_t  *u;
+    ngx_buf_t                       *b;
+    long 							size = 1024;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rz/l", &arg1, &buf, &len) == FAILURE) {
+		return ;
+	}
+
+	if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
+		RETURN_FALSE;
+	}
+
+	r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    u = ctx->upstream;
+    u->buffer_size = size;
+    b = &u->buffer;
+
+    retval = ngx_http_php_socket_recv(r);
+
+    ZVAL_STRINGL(buf, (char *)b->pos, b->last - b->pos);
+
+    if (retval != NGX_OK) {
+		php_error_docref(NULL, E_WARNING, "unable to read from socket");
+		RETURN_FALSE;
+	}
+
+	RETURN_LONG(retval);
 }
 
 void php_impl_ngx_sockets_init(int module_number TSRMLS_DC)
