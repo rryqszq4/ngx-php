@@ -51,7 +51,7 @@ static void php_ngx_socket_destroy(zend_resource *rsrc)
 PHP_FUNCTION(ngx_socket_create)
 {
     zend_long       arg1, arg2, arg3;
-    php_ngx_socket 	*ngx_sock;
+    php_ngx_socket  *ngx_sock;
 
     arg1 = AF_INET;
     arg2 = SOCK_STREAM;

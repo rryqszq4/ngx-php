@@ -233,35 +233,35 @@ static void php_ngx_register_variables(zval *track_vars_array TSRMLS_DC)
 }*/
 
 sapi_module_struct php_ngx_module = {
-    "php7-ngx",                       /* name */
-    "PHP Embedded Library for nginx-module",        /* pretty name */
+    "php7-ngx",                                         /* name */
+    "PHP Embedded Library for nginx-module",            /* pretty name */
 
-    php_ngx_startup,              /* startup */
-    php_module_shutdown_wrapper,   /* shutdown */
+    php_ngx_startup,                                    /* startup */
+    php_module_shutdown_wrapper,                        /* shutdown */
 
-    NULL,                          /* activate */
-    php_ngx_deactivate,           /* deactivate */
+    NULL,                                               /* activate */
+    php_ngx_deactivate,                                 /* deactivate */
 
-    php_ngx_ub_write,             /* unbuffered write */
-    php_ngx_flush,                /* flush */
-    NULL,                          /* get uid */
-    NULL,                          /* getenv */
+    php_ngx_ub_write,                                   /* unbuffered write */
+    php_ngx_flush,                                      /* flush */
+    NULL,                                               /* get uid */
+    NULL,                                               /* getenv */
 
-    php_error,                     /* error handler */
+    php_error,                                          /* error handler */
 
-    php_ngx_header_handler,                          /* header handler */
-    NULL,                          /* send headers handler */
-    NULL,          /* send header handler */
+    php_ngx_header_handler,                             /* header handler */
+    NULL,                                               /* send headers handler */
+    NULL,                                               /* send header handler */
 
-    php_ngx_read_post,                          /* read POST data */
-    php_ngx_read_cookies,         /* read Cookies */
+    php_ngx_read_post,                                  /* read POST data */
+    php_ngx_read_cookies,                               /* read Cookies */
 
-    php_ngx_register_variables,   /* register server variables */
-    NULL,          /* Log message */
-    NULL,                           /* Get request time */
-    NULL,                           /* Child terminate */
+    php_ngx_register_variables,                         /* register server variables */
+    NULL,                                               /* Log message */
+    NULL,                                               /* Get request time */
+    NULL,                                               /* Child terminate */
 
-    "",                             /* php_ini_path_override */
+    "",                                                 /* php_ini_path_override */
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
     NULL,
@@ -301,13 +301,13 @@ ZEND_END_ARG_INFO()
 
 static const zend_function_entry additional_functions[] = {
     ZEND_FE(dl, arginfo_dl)
-    PHP_FE(ngx_sleep, ngx_sleep_arginfo)
+    PHP_FE(ngx_sleep,           ngx_sleep_arginfo)
 
-    PHP_FE(ngx_socket_create, arginfo_ngx_socket_create)
-    PHP_FE(ngx_socket_connect, arginfo_ngx_socket_connect)
-    PHP_FE(ngx_socket_close, arginfo_ngx_socket_close)
-    PHP_FE(ngx_socket_send, arginfo_ngx_socket_send)
-    PHP_FE(ngx_socket_recv, arginfo_ngx_socket_recv)
+    PHP_FE(ngx_socket_create,   arginfo_ngx_socket_create)
+    PHP_FE(ngx_socket_connect,  arginfo_ngx_socket_connect)
+    PHP_FE(ngx_socket_close,    arginfo_ngx_socket_close)
+    PHP_FE(ngx_socket_send,     arginfo_ngx_socket_send)
+    PHP_FE(ngx_socket_recv,     arginfo_ngx_socket_recv)
 
     {NULL, NULL, NULL, 0, 0}
 };
@@ -347,7 +347,7 @@ int php_ngx_module_init()
 #endif
 
 #ifdef PHP_WIN32
-  _fmode = _O_BINARY;           /*sets default for file streams to binary */
+  _fmode = _O_BINARY;                       /*sets default for file streams to binary */
   setmode(_fileno(stdin), O_BINARY);        /* make the stdio mode be binary */
   setmode(_fileno(stdout), O_BINARY);       /* make the stdio mode be binary */
   setmode(_fileno(stderr), O_BINARY);       /* make the stdio mode be binary */
