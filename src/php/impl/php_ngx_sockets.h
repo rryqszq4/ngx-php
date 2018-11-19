@@ -45,7 +45,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_send, 0, 0, 3)
 	ZEND_ARG_INFO(0, len)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recv, 0, 0, 3)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recv, 0, 0, 2)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_INFO(1, buf)
 	ZEND_ARG_INFO(0, len)

@@ -74,7 +74,7 @@ PHP_FUNCTION(ngx_socket_connect)
     char                *addr;
     size_t              addr_len;
     zend_long           port = 0;
-    int                 retval;
+    //int                 retval;
 
     ngx_http_request_t  *r;
     ngx_http_php_ctx_t  *ctx;
@@ -99,8 +99,7 @@ PHP_FUNCTION(ngx_socket_connect)
             ctx->host.data[addr_len] = '\0';
 
             ctx->port = port;
-
-            retval = ngx_http_php_socket_connect(r);
+            ngx_http_php_socket_connect(r);
             break;
         }
 
@@ -109,10 +108,10 @@ PHP_FUNCTION(ngx_socket_connect)
             RETURN_FALSE;
     }
 
-    if (retval != NGX_OK) {
+    /*if (retval != NGX_OK) {
         php_error_docref(NULL, E_WARNING, "unable to connect");
         RETURN_FALSE;
-    }
+    }*/
 
     RETURN_TRUE;
 }
@@ -204,7 +203,7 @@ PHP_FUNCTION(ngx_socket_recv)
     ngx_buf_t                       *b;
     long                            size = 1024;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "rz/l", &arg1, &buf, &len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "rz/|l", &arg1, &buf, &len) == FAILURE) {
         return ;
     }
 
@@ -223,10 +222,10 @@ PHP_FUNCTION(ngx_socket_recv)
 
     ZVAL_STRINGL(buf, (char *)b->pos, b->last - b->pos);
 
-    if (retval != NGX_OK) {
+    /*if (retval != NGX_OK) {
         php_error_docref(NULL, E_WARNING, "unable to read from socket");
         RETURN_FALSE;
-    }
+    }*/
 
     RETURN_LONG(retval);
 }
