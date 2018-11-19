@@ -118,6 +118,22 @@ http {
             ';
         }
 
+        location = /ngx_socket2 {
+            default_type 'application/json;charset=UTF-8';
+            content_by_php '
+                $fd = ngx_socket_create();
+                var_dump($fd);
+                yield ngx_socket_connect($fd, "hq.sinajs.cn", 80);
+                $send_buf = "GET /list=s_sh000001 HTTP/1.0\r\n
+                                            Host: hq.sinajs.cn\r\nConnection: close\r\n\r\n";
+                yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
+                $recv_buf = "";
+                yield ngx_socket_recv($fd, $recv_buf);
+                var_dump($recv_buf);
+                yield ngx_socket_close($fd);
+            ';
+        }
+
         location = /ngx_var {
             set $a 1234567890;
             content_by_php '
@@ -214,6 +230,16 @@ body_filter_by_php
 * **syntax:** `body_filter_by_php`_`<php script code>`_
 * **context:** `http, server, location, location if`
 * **phase:** `output-body-filter`
+
+
+Nginx API for php
+-----------------
+* [ngx_sleep](#ngx_sleep)
+* [ngx_socket_create](#ngx_socket_create)
+* [ngx_socket_connect](#ngx_socket_connect)
+* [ngx_socket_close](#ngx_socket_close)
+* [ngx_socket_send](#ngx_socket_send)
+* [ngx_socket_recv](#ngx_socket_recv)
 
 
 Copyright and License
