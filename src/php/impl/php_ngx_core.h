@@ -13,6 +13,22 @@
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_exit_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, status)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_query_args_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_post_args_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_sleep_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, time)
+ZEND_END_ARG_INFO()
+
 PHP_FUNCTION(ngx_sleep);
 
 PHP_METHOD(ngx, _exit);

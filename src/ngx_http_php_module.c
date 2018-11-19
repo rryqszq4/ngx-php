@@ -17,6 +17,7 @@
 #include "php/impl/php_ngx_request.h"
 #include "php/impl/php_ngx_socket.h"
 #include "php/impl/php_ngx_var.h"
+#include "php/impl/php_ngx_sockets.h"
 
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_directive.h"
@@ -560,6 +561,7 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     php_impl_ngx_request_init(0 TSRMLS_CC);
     php_impl_ngx_socket_init(0 TSRMLS_CC);
     php_impl_ngx_var_init(0 TSRMLS_CC);
+    php_impl_ngx_sockets_init(0 TSRMLS_CC);
 
     return NGX_OK;
 }

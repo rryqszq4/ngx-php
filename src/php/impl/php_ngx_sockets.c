@@ -11,47 +11,23 @@
 static int le_socket;
 #define le_socket_name php_ngx_sockets_le_socket_name
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_create, 0, 0, 0)
-	ZEND_ARG_INFO(0, domain)
-	ZEND_ARG_INFO(0, type)
-	ZEND_ARG_INFO(0, protocol)
-ZEND_END_ARG_INFO()
+//static int php_ngx_socket_le_socket(void);
+static php_ngx_socket *php_ngx_socket_create(void);
+static void php_ngx_socket_destroy(zend_resource *rsrc);
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_connect, 0, 0, 2)
-	ZEND_ARG_INFO(0, socket)
-	ZEND_ARG_INFO(0, addr)
-	ZEND_ARG_INFO(0, port)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_close, 0, 0, 1)
-	ZEND_ARG_INFO(0, socket)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_send, 0, 0, 3)
-	ZEND_ARG_INFO(0, socket)
-	ZEND_ARG_INFO(0, buf)
-	ZEND_ARG_INFO(0, len)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recv, 0, 0, 3)
-	ZEND_ARG_INFO(0, socket)
-	ZEND_ARG_INFO(1, buf)
-	ZEND_ARG_INFO(0, len)
-ZEND_END_ARG_INFO()
-
-static int php_ngx_socket_le_socket(void)
+/*static int php_ngx_socket_le_socket(void)
 {
 	return le_socket;
-}
+}*/
 
-static php_ngx_socket  php_ngx_socket_create(void)
+static php_ngx_socket *php_ngx_socket_create(void)
 {
 	ngx_http_request_t              *r;
     ngx_http_php_ctx_t              *ctx;
     ngx_http_php_socket_upstream_t  *u;
     php_ngx_socket 					*ngx_sock;
 
-	ngx_sock = 	emalloc(sizeof(php_ngx_socket));
+	ngx_sock = emalloc(sizeof(php_ngx_socket));
 	r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
@@ -178,7 +154,7 @@ PHP_FUNCTION(ngx_socket_send)
     ngx_buf_t                       *b;
     ngx_chain_t                     *cl;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rsll", $arg1, &buf, &buf_len, &len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rsll", &arg1, &buf, &buf_len, &len) == FAILURE) {
 		return ;
 	}
 
@@ -217,7 +193,7 @@ PHP_FUNCTION(ngx_socket_send)
 PHP_FUNCTION(ngx_socket_recv)
 {
 	zval 							*arg1, *buf;
-	zend_string 					*recv_buf;
+	//zend_string 					*recv_buf;
 	php_ngx_socket 					*ngx_sock;
 	int 							retval;
 	zend_long 						len;
