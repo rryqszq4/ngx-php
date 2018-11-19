@@ -154,7 +154,7 @@ PHP_FUNCTION(ngx_socket_send)
     ngx_buf_t                       *b;
     ngx_chain_t                     *cl;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rsll", &arg1, &buf, &buf_len, &len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "rsl", &arg1, &buf, &buf_len, &len) == FAILURE) {
 		return ;
 	}
 

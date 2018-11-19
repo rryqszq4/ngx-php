@@ -1230,3 +1230,8 @@ zip_entry_compressedsize
 zip_entry_compressionmethod
 dl
 ngx_sleep
+ngx_socket_create
+ngx_socket_connect
+ngx_socket_close
+ngx_socket_send
+ngx_socket_recv
