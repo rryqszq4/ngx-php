@@ -29,6 +29,9 @@ ZEND_BEGIN_ARG_INFO_EX(ngx_sleep_arginfo, 0, 0, 1)
     ZEND_ARG_INFO(0, time)
 ZEND_END_ARG_INFO()
 
+PHP_FUNCTION(ngx_exit);
+PHP_FUNCTION(ngx_query_args);
+PHP_FUNCTION(ngx_post_args);
 PHP_FUNCTION(ngx_sleep);
 
 PHP_METHOD(ngx, _exit);
