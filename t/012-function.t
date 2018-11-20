@@ -1229,6 +1229,9 @@ zip_entry_name
 zip_entry_compressedsize
 zip_entry_compressionmethod
 dl
+ngx_exit
+ngx_query_args
+ngx_post_args
 ngx_sleep
 ngx_socket_create
 ngx_socket_connect

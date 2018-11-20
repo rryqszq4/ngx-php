@@ -234,6 +234,9 @@ body_filter_by_php
 
 Nginx API for php
 -----------------
+* [ngx_exit](#ngx_exit)
+* [ngx_query_args](#ngx_query_args)
+* [ngx_post_args](#ngx_post_args)
 * [ngx_sleep](#ngx_sleep)
 * [ngx_socket_create](#ngx_socket_create)
 * [ngx_socket_connect](#ngx_socket_connect)
