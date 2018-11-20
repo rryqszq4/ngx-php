@@ -13,6 +13,18 @@
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_var_get_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_var_set_arginfo, 0, 0, 2)
+    ZEND_ARG_INFO(0, key)
+    ZEND_ARG_INFO(0, value)
+ZEND_END_ARG_INFO()
+
+PHP_FUNCTION(ngx_var_get);
+PHP_FUNCTION(ngx_var_set);
+
 PHP_METHOD(ngx_var, get);
 PHP_METHOD(ngx_var, set);
 

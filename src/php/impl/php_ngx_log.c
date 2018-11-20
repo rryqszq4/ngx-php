@@ -9,16 +9,26 @@
 
 static zend_class_entry *php_ngx_log_class_entry;
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_log_error_arginfo, 0, 0, 2)
-    ZEND_ARG_INFO(0, level)
-    ZEND_ARG_INFO(0, log)
-ZEND_END_ARG_INFO()
+PHP_FUNCTION(ngx_log_error)
+{
+    long                level;
+    zend_string         *log_str;
+    ngx_http_request_t  *r;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lS", &level, &log_str) == FAILURE){
+        RETURN_NULL();
+    }
+
+    r = ngx_php_request;
+
+    ngx_log_error((ngx_uint_t)level, r->connection->log, 0, "%*s", ZSTR_LEN(log_str), ZSTR_VAL(log_str));
+}
 
 PHP_METHOD(ngx_log, error)
 {
-    long level;
-    zend_string *log_str;
-    ngx_http_request_t *r;
+    long                level;
+    zend_string         *log_str;
+    ngx_http_request_t  *r;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lS", &level, &log_str) == FAILURE){
         RETURN_NULL();
