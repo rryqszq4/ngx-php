@@ -1233,8 +1233,11 @@ ngx_exit
 ngx_query_args
 ngx_post_args
 ngx_sleep
+ngx_log_error
 ngx_socket_create
 ngx_socket_connect
 ngx_socket_close
 ngx_socket_send
 ngx_socket_recv
+ngx_var_get
+ngx_var_set

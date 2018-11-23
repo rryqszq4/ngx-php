@@ -9,7 +9,9 @@
 #include "ext/standard/info.h"
 #include "php_ngx.h"
 #include "php_ngx_core.h"
+#include "php_ngx_log.h"
 #include "php_ngx_sockets.h"
+#include "php_ngx_var.h"
 
 #include "../../ngx_http_php_module.h"
 
@@ -307,11 +309,16 @@ static const zend_function_entry additional_functions[] = {
     PHP_FE(ngx_post_args,       ngx_post_args_arginfo)
     PHP_FE(ngx_sleep,           ngx_sleep_arginfo)
 
+    PHP_FE(ngx_log_error,       ngx_log_error_arginfo)
+
     PHP_FE(ngx_socket_create,   arginfo_ngx_socket_create)
     PHP_FE(ngx_socket_connect,  arginfo_ngx_socket_connect)
     PHP_FE(ngx_socket_close,    arginfo_ngx_socket_close)
     PHP_FE(ngx_socket_send,     arginfo_ngx_socket_send)
     PHP_FE(ngx_socket_recv,     arginfo_ngx_socket_recv)
+
+    PHP_FE(ngx_var_get,         ngx_var_get_arginfo)
+    PHP_FE(ngx_var_set,         ngx_var_set_arginfo)
 
     {NULL, NULL, NULL, 0, 0}
 };
