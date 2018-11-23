@@ -10,6 +10,7 @@
 #include "php_ngx.h"
 #include "php_ngx_core.h"
 #include "php_ngx_log.h"
+#include "php_ngx_request.h"
 #include "php_ngx_sockets.h"
 #include "php_ngx_var.h"
 
@@ -302,23 +303,38 @@ ZEND_END_ARG_INFO()
 /* }}} */
 
 static const zend_function_entry additional_functions[] = {
-    ZEND_FE(dl,                 arginfo_dl)
+    ZEND_FE(dl,                             arginfo_dl)
 
-    PHP_FE(ngx_exit,            ngx_exit_arginfo)
-    PHP_FE(ngx_query_args,      ngx_query_args_arginfo)
-    PHP_FE(ngx_post_args,       ngx_post_args_arginfo)
-    PHP_FE(ngx_sleep,           ngx_sleep_arginfo)
+    PHP_FE(ngx_exit,                        ngx_exit_arginfo)
+    PHP_FE(ngx_query_args,                  ngx_query_args_arginfo)
+    PHP_FE(ngx_post_args,                   ngx_post_args_arginfo)
+    PHP_FE(ngx_sleep,                       ngx_sleep_arginfo)
 
-    PHP_FE(ngx_log_error,       ngx_log_error_arginfo)
+    PHP_FE(ngx_log_error,                   ngx_log_error_arginfo)
 
-    PHP_FE(ngx_socket_create,   arginfo_ngx_socket_create)
-    PHP_FE(ngx_socket_connect,  arginfo_ngx_socket_connect)
-    PHP_FE(ngx_socket_close,    arginfo_ngx_socket_close)
-    PHP_FE(ngx_socket_send,     arginfo_ngx_socket_send)
-    PHP_FE(ngx_socket_recv,     arginfo_ngx_socket_recv)
+    PHP_FE(ngx_request_method,              ngx_request_method_arginfo)
+    PHP_FE(ngx_request_document_root,       ngx_request_document_root_arginfo)
+    PHP_FE(ngx_request_document_uri,        ngx_request_document_uri_arginfo)
+    PHP_FE(ngx_request_script_name,         ngx_request_script_name_arginfo)
+    PHP_FE(ngx_request_script_filename,     ngx_request_script_filename_arginfo)
+    PHP_FE(ngx_request_query_string,        ngx_request_query_string_arginfo)
+    PHP_FE(ngx_request_uri,                 ngx_request_request_uri_arginfo)
+    PHP_FE(ngx_request_server_protocol,     ngx_request_server_protocol_arginfo)
+    PHP_FE(ngx_request_remote_addr,         ngx_request_remote_addr_arginfo)
+    PHP_FE(ngx_request_server_addr,         ngx_request_server_addr_arginfo)
+    PHP_FE(ngx_request_remote_port,         ngx_request_remote_port_arginfo)
+    PHP_FE(ngx_request_server_port,         ngx_request_server_port_arginfo)
+    PHP_FE(ngx_request_server_name,         ngx_request_server_name_arginfo)
+    PHP_FE(ngx_request_headers,             ngx_request_headers_arginfo)
 
-    PHP_FE(ngx_var_get,         ngx_var_get_arginfo)
-    PHP_FE(ngx_var_set,         ngx_var_set_arginfo)
+    PHP_FE(ngx_socket_create,               arginfo_ngx_socket_create)
+    PHP_FE(ngx_socket_connect,              arginfo_ngx_socket_connect)
+    PHP_FE(ngx_socket_close,                arginfo_ngx_socket_close)
+    PHP_FE(ngx_socket_send,                 arginfo_ngx_socket_send)
+    PHP_FE(ngx_socket_recv,                 arginfo_ngx_socket_recv)
+
+    PHP_FE(ngx_var_get,                     ngx_var_get_arginfo)
+    PHP_FE(ngx_var_set,                     ngx_var_set_arginfo)
 
     {NULL, NULL, NULL, 0, 0}
 };

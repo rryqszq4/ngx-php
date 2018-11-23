@@ -246,6 +246,20 @@ Nginx API for php
 * [ngx_socket_recv](#ngx_socket_recv)
 * [ngx_var_get](#ngx_var_get)
 * [ngx_var_set](#ngx_var_set)
+* [ngx_request_method](#ngx_request_method)
+* [ngx_request_document_root](#ngx_request_document_root)
+* [ngx_request_document_uri](#ngx_request_document_uri)
+* [ngx_request_script_name](#ngx_request_script_name)
+* [ngx_request_script_filename](#ngx_request_script_filename)
+* [ngx_request_query_string](#ngx_request_query_string)
+* [ngx_request_uri](#ngx_request_uri)
+* [ngx_request_server_protocol](#ngx_request_server_protocol)
+* [ngx_request_remote_addr](#ngx_request_remote_addr)
+* [ngx_request_server_addr](#ngx_request_server_addr)
+* [ngx_request_remote_port](#ngx_request_remote_port)
+* [ngx_request_server_port](#ngx_request_server_port)
+* [ngx_request_server_name](#ngx_request_server_name)
+* [ngx_request_headers](#ngx_request_headers)
 
 
 Copyright and License
