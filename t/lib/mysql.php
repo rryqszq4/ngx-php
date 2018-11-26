@@ -19,7 +19,7 @@ $fd = ngx_socket_create();
 var_dump($fd);
 yield ngx_socket_connect($fd, "127.0.0.1", 3306);
 
-yield ngx_sleep(1);
+//yield ngx_sleep(1);
 
 $result = "";
 yield ngx_socket_recv($fd, $result);

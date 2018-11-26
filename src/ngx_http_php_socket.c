@@ -507,7 +507,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
 
         n = c->recv(c, b->last, size);
 
-        ngx_php_debug("recv: %s, %d, %d", b->pos, (int)n, (int) size);
+        //ngx_php_debug("recv: %s, %d, %d", b->pos, (int)n, (int) size);
         
         if (n == NGX_ERROR) {
             ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
@@ -523,8 +523,8 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         }
 
         if (n == NGX_AGAIN) {
-
-            break;
+            continue;
+            //break;
         }
 
         if (n == NGX_OK) {
@@ -581,7 +581,7 @@ ngx_http_php_socket_upstream_recv_handler(ngx_http_request_t *r,
     ngx_php_debug("php socket receive handler.");
 
     if (u->buffer.start != NULL) {
-        ngx_http_php_socket_upstream_recv(r, u);
+        (void) ngx_http_php_socket_upstream_recv(r, u);
     }
 
 }
