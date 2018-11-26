@@ -31,6 +31,7 @@ $ wget 'http://nginx.org/download/nginx-1.10.3.tar.gz'
 $ tar -zxvf nginx-1.10.3.tar.gz
 $ cd nginx-1.10.3
 
+$ export PHP_CONFIG=/path/to/php/bin/php-config
 $ export PHP_BIN=/path/to/php/bin
 $ export PHP_INC=/path/to/php/include/php
 $ export PHP_LIB=/path/to/php/lib
