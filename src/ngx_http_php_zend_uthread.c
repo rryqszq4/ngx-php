@@ -479,7 +479,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC);
         zval_ptr_dtor(&func_valid);
 
-        ngx_php_debug("r:%p, closure:%p, retval:%d", r, closure, Z_TYPE(retval));
+        ngx_php_debug("r:%p, closure:%p, retval:%d,%d", r, closure, Z_TYPE(retval), IS_TRUE);
 
         if (Z_TYPE(retval) == IS_TRUE) {
             ctx->phase_status = NGX_AGAIN;
