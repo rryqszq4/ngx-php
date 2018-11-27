@@ -461,7 +461,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         
     }
 
-    ngx_php_debug("ctx: %p %d", ctx, ctx->upstream->enabled_receive);
+    ngx_php_debug("ctx: %p", ctx);
 
     zend_try {
         zval *closure;
@@ -471,7 +471,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
 
         closure = ctx->generator_closure;
 
-        if (ctx->upstream->enabled_receive == 1) {
+        if (ctx->upstream && ctx->upstream->enabled_receive == 1) {
             ngx_php_debug("buf write in php var.");
             ZVAL_STRINGL(ctx->recv_buf, (char *)ctx->upstream->buffer.pos, ctx->upstream->buffer.last - ctx->upstream->buffer.pos);
         }

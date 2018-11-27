@@ -3,7 +3,7 @@
  *  Copyright(c) 2017-2018 rryqszq4 rryqszq@gmail.com
  */
 
-namespace ngx\php\memcached;
+namespace ngx\php;
 
 class memcached {
     
