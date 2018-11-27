@@ -105,6 +105,8 @@ typedef struct ngx_http_php_ctx_s {
     ngx_str_t   host;
     in_port_t   port;
 
+    zval *recv_buf;
+
 } ngx_http_php_ctx_t;
 
 

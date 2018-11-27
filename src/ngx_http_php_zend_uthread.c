@@ -457,11 +457,11 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
 
     ngx_http_php_ctx_t *ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    ngx_php_debug("ctx: %p", ctx);
-
     if (ctx == NULL) {
         
     }
+
+    ngx_php_debug("ctx: %p %d", ctx, ctx->upstream->enabled_receive);
 
     zend_try {
         zval *closure;
@@ -470,6 +470,11 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         zval retval;
 
         closure = ctx->generator_closure;
+
+        if (ctx->upstream->enabled_receive == 1) {
+            ngx_php_debug("buf write in php var.");
+            ZVAL_STRINGL(ctx->recv_buf, (char *)ctx->upstream->buffer.pos, ctx->upstream->buffer.last - ctx->upstream->buffer.pos);
+        }
 
         ZVAL_STRING(&func_next, "next");
         call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC);

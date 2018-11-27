@@ -200,7 +200,7 @@ PHP_FUNCTION(ngx_socket_recv)
     ngx_http_request_t              *r;
     ngx_http_php_ctx_t              *ctx;
     ngx_http_php_socket_upstream_t  *u;
-    ngx_buf_t                       *b;
+    //ngx_buf_t                       *b;
     long                            size = 1024;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "rz/|l", &arg1, &buf, &len) == FAILURE) {
@@ -216,11 +216,13 @@ PHP_FUNCTION(ngx_socket_recv)
 
     u = ctx->upstream;
     u->buffer_size = size;
-    b = &u->buffer;
+    //b = &u->buffer;
+
+    ctx->recv_buf = buf;
 
     retval = ngx_http_php_socket_recv(r);
 
-    ZVAL_STRINGL(buf, (char *)b->pos, b->last - b->pos);
+    //ZVAL_STRINGL(buf, (char *)b->pos, b->last - b->pos);
 
     /*if (retval != NGX_OK) {
         php_error_docref(NULL, E_WARNING, "unable to read from socket");
