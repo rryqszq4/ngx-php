@@ -127,6 +127,7 @@ PHP_METHOD(ngx_socket, recv)
 
     ZVAL_STRINGL(return_value, (char *)b->pos, b->last - b->pos);
 
+    u->enabled_receive = 0;
 }
 
 PHP_METHOD(ngx_socket, close)
