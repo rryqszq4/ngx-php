@@ -43,62 +43,88 @@ $protocol_ver = ord(substr($data, 0, 1));
 
 var_dump("protocol version: ".$protocol_ver);
 
-var_dump("server version: ".substr($data, 1, $protocol_ver));
+var_dump(strpos($data, "\0", 2));
 
-$thread_id = unpack("V", substr($data, 1+$protocol_ver+1, 4));
+var_dump("server version: ".substr($data, 1, strpos($data, "\0", 2)-1));
+
+$pos = strpos($data, "\0", 2)+1;
+
+$thread_id = unpack("V", substr($data, $pos, 4));
 $thread_id = $thread_id[1];
 var_dump("thread id: ".$thread_id);
 
-$scramble = substr($data, 1+$protocol_ver+1+4, 8);
+$pos += 4;
+var_dump($pos);
+
+$scramble = substr($data, $pos, 8);
 
 var_dump($scramble);
 
 #$pos = 1+$protocol_ver+4 + 9;
 
-$capabilities = unpack('v', substr($data, 1+$protocol_ver+1+4+9, 2));
+$capabilities = unpack('v', substr($data, $pos+9, 2));
 $capabilities = $capabilities[1];
 var_dump("server capabilities: ".$capabilities);
 
-$server_lang = ord(substr($data, 1+$protocol_ver+1+4+9+2,1));
-var_dump("server lang: ".$server_lang);   
+$server_lang = ord(substr($data, $pos+9+2,1));
+var_dump("server lang: ".$server_lang);
 
-$server_status = unpack('v', substr($data, 1+$protocol_ver+1+4+9+2+1, 2));
+$server_status = unpack('v', substr($data, $pos+9+2+1, 2));
 $server_status = $server_status[1];
 var_dump("server status: ".$server_status);
 
-$more_capabilites = unpack('v', substr($data, 1+$protocol_ver+1+4+9+2+1+2,2));
+$more_capabilites = unpack('v', substr($data, $pos+9+2+1+2,2));
 $more_capabilites = $more_capabilites[1];
 var_dump("more capabilities: ".$more_capabilites);
 
 $capabilities = $capabilities | ($more_capabilites << 16);
 var_dump("server capabilities: ".$capabilities);
 
-$scramble_2 = substr($data, 1+$protocol_ver+1+4+9+2+1+2+2+1+10, 21-8-1);
+$scramble_2 = substr($data, $pos+9+2+1+2+2+1+10, 21-8-1);
 var_dump($scramble_2);
 
 $scramble = $scramble.$scramble_2;
-var_dump($scramble);
+var_dump("scramble: ".$scramble);
+var_dump(strlen($scramble));
 
 #$data = substr($data, $pos);
 
 #$data = substr($data, 1, $protocol_ver+1);
 
-for ($i = 0; $i < strlen($result);$i++) {
+$hex_arr="";
+$bin_arr="";
+for ($i = 0,$j=1; $i < strlen($result);$i++,$j++) {
         $bytes[] = ord($result[$i]);
-                #var_dump(bin2hex(chr($bytes[$i])).'   '.chr($bytes[$i]));
+        $hex_arr .= bin2hex(chr($bytes[$i]))." ";
+        if ( in_array($bytes[$i], array(0,10)) ) {
+            $bin_arr .= '.';
+        }else {
+            $bin_arr .= chr($bytes[$i]);
+        }
+
+        if ($j == strlen($result)) {
+            echo "{$hex_arr}   {$bin_arr}\n";
+        }
+
+        if ($j % 8 == 0) {
+            echo "{$hex_arr}   {$bin_arr}\n";
+            $hex_arr="";
+            $bin_arr="";
+        }
+        //var_dump(bin2hex(chr($bytes[$i])).'   '.chr($bytes[$i]));
 }
 //var_dump($bytes);
 
 #client 
 $client_flags = 0x3f7cf;
-$database = "";
+$database = "sakila";
 $user = "root";
 $password = "";
 $stage1 = sha1($password,1);
 $stage2 = sha1($stage1,1);
 $stage3 = sha1($scramble.$stage2,1);
-/*$n = strlen($stage1);
-$bytes = array();
+$n = strlen($stage1);
+/*$bytes = array();
 for ($i = 0; $i < $n; $i++) {
     $bytes[] = ord($stage3[$i]) ^ ord($stage1[$i]);
 }
@@ -113,7 +139,7 @@ $token = $stage1 ^ $stage3;
 
 $req = set_byte4($client_flags)
         .set_byte4(1024*1024)
-        ."\0"
+        .chr(0)
         .str_repeat("\0", 23)
         .$user."\0"
         .chr(strlen($token)).$token
@@ -123,7 +149,7 @@ var_dump($req);
 $pack_len = 4 + 4 + 1 + 23 + strlen($user) + 1 + strlen($token) + 1 + strlen($database) + 1;
 var_dump($pack_len);
 
-#var_dump(set_byte3($pack_len).chr(1));
+var_dump(set_byte3($pack_len).chr(1));
 
 $pack = substr_replace(pack("V", $pack_len), chr(1), 3, 1).$req;
 var_dump($pack);
@@ -134,11 +160,12 @@ yield ngx_socket_recv($fd, $result);
 var_dump("receive: ".$result);
 
 $len = unpack('v',substr($result, 0,4));
+var_dump($len);
 $len = $len[1];
 $data = substr($result, 4, $len);
 //var_dump(ord($data));
 
-$query = "SELECT * FROM mysql.user limit 0, 200;";
+$query = "select * from city limit 10;";
 #$query = "select sleep(1);";
 $req = chr(0x03).$query;
 $pack_len = strlen($query) + 1;
@@ -152,18 +179,18 @@ yield ngx_socket_recv($fd, $result);
 var_dump("receive: ".$result);
 
 
-
-$len = unpack('v',substr($result, 0,4));
-$len = $len[1];
-$data = substr($result, 4, $len);
-//var_dump(ord($data));
-
-
+/*
+    $len = unpack('v',substr($result, 0,4));
+    $len = $len[1];
+    $data = substr($result, 4, $len);
+    //var_dump(ord($data));
 
 
 
-var_dump(123);
 
+
+    var_dump(123);
+*/
 #$result1 = $tcpsock->receive();
 #var_dump($result1);
 
