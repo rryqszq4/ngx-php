@@ -34,23 +34,19 @@ class mysql {
         //yield ngx_sleep(1);
 
         $result = "";
-        yield ngx_socket_recv($this->socket, $result);
-        echo "<br />";
+        yield ngx_socket_recv($this->socket, $result, 4);
+        
         var_dump("receive: ".$result);
-        echo "<br />";echo "<br />";echo "<br />";
+        
         $bytes = array();
 
         $len = unpack('v',substr($result,0,4));
         $len = $len[1];
-        $num = substr($result,3,1);
-        $num = ord($num);
+        
+        yield ngx_socket_recv($this->socket, $data, $len);
 
         var_dump("packet length: ".$len);
 
-        $data = substr($result, 4, $len);
-        echo "<br />";
-        //var_dump(strlen($data));
-        echo "<br />";
         $protocol_ver = ord(substr($data, 0, 1));
 
         var_dump("protocol version: ".$protocol_ver);
@@ -168,14 +164,15 @@ class mysql {
 
         yield ngx_socket_send($this->socket, $pack, strlen($pack));
 
-        yield ngx_socket_recv($this->socket, $result);
+        yield ngx_socket_recv($this->socket, $result, 4);
         var_dump("receive: ".$result);
 
         $len = unpack('v',substr($result, 0,4));
         var_dump($len);
         $len = $len[1];
-        $data = substr($result, 4, $len);
-        //var_dump(ord($data));
+        yield ngx_socket_recv($this->socket, $data, $len);
+
+        var_dump($data);
 
         $query = "select * from city limit 10;";
         #$query = "select sleep(1);";

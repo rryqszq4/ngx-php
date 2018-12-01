@@ -195,13 +195,13 @@ PHP_FUNCTION(ngx_socket_recv)
     //zend_string                   *recv_buf;
     php_ngx_socket                  *ngx_sock;
     int                             retval;
-    zend_long                       len;
+    zend_long                       len = 1024;
 
     ngx_http_request_t              *r;
     ngx_http_php_ctx_t              *ctx;
     ngx_http_php_socket_upstream_t  *u;
     //ngx_buf_t                       *b;
-    long                            size = 1024;
+    //long                            size = 1024;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "rz/|l", &arg1, &buf, &len) == FAILURE) {
         return ;
@@ -215,7 +215,7 @@ PHP_FUNCTION(ngx_socket_recv)
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     u = ctx->upstream;
-    u->buffer_size = size;
+    u->buffer_size = len;
     //b = &u->buffer;
 
     ctx->recv_buf = buf;
