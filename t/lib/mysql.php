@@ -11,6 +11,8 @@ class mysql {
 
     private $socket = null;
 
+    private $packet_data = null;
+
     public function __construct() {
         $this->socket = ngx_socket_create();
     }
@@ -28,22 +30,70 @@ class mysql {
                 .chr(($n>>24)&0xff);
     }
 
-    public function connect() {
-        yield ngx_socket_connect($this->socket, "127.0.0.1", 3306);
+    private function print_bin($result) {
+        $hex_arr="";
+        $bin_arr="";
+        for ($i = 0,$j=1; $i < strlen($result);$i++,$j++) {
+                $bytes[] = ord($result[$i]);
+                if ($j % 8 == 0) {
+                    $hex_arr .= bin2hex(chr($bytes[$i]))."   ";
+                }else {
+                    $hex_arr .= bin2hex(chr($bytes[$i]))." ";
+                }
+                if ( in_array($bytes[$i], array(0,10)) ) {
+                    $bin_arr .= '.';
+                }else {
+                    $bin_arr .= chr($bytes[$i]);
+                }
 
-        //yield ngx_sleep(1);
+                if ($j == strlen($result)) {
+                    echo "{$hex_arr}   {$bin_arr}\n";
+                }
 
-        $result = "";
+                if ($j % 16 == 0) {
+                    echo "{$hex_arr}   {$bin_arr}\n";
+                    $hex_arr="";
+                    $bin_arr="";
+                }
+                //var_dump(bin2hex(chr($bytes[$i])).'   '.chr($bytes[$i]));
+        }
+        //var_dump($bytes);
+    }
+
+    private function write_packet($data, $len, $chr=1) {
+        $pack = $this->set_byte3($len).chr($chr).$data;
+        var_dump("pack: ".$pack);
+
+        //$pack = substr_replace(pack("V", $len), chr(1), 3, 1).$data;
+        //var_dump(($pack == $pack1));
+
+        $this->print_bin($pack);
+
+        yield ngx_socket_send($this->socket, $pack, strlen($pack));
+    }
+
+    private function read_packet() {
         yield ngx_socket_recv($this->socket, $result, 4);
-        
-        var_dump("receive: ".$result);
-        
-        $bytes = array();
-
-        $len = unpack('v',substr($result,0,4));
+        $this->print_bin($result);
+        $len = unpack('v',substr($result, 0, 3));
+        var_dump($len);
         $len = $len[1];
+        if ($len == 0x00) {
+            yield ngx_socket_recv($this->socket, $data);
+        }else {
+            yield ngx_socket_recv($this->socket, $data, $len);
+        }
         
-        yield ngx_socket_recv($this->socket, $data, $len);
+        $this->print_bin($data);
+
+        $this->packet_data = $data;
+    }
+
+    public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
+        yield ngx_socket_connect($this->socket, $host, $port);
+
+        yield from $this->read_packet();
+        $data = $this->packet_data;
 
         var_dump("packet length: ".$len);
 
@@ -99,35 +149,14 @@ class mysql {
 
         #$data = substr($data, 1, $protocol_ver+1);
 
-        $hex_arr="";
-        $bin_arr="";
-        for ($i = 0,$j=1; $i < strlen($result);$i++,$j++) {
-                $bytes[] = ord($result[$i]);
-                $hex_arr .= bin2hex(chr($bytes[$i]))." ";
-                if ( in_array($bytes[$i], array(0,10)) ) {
-                    $bin_arr .= '.';
-                }else {
-                    $bin_arr .= chr($bytes[$i]);
-                }
 
-                if ($j == strlen($result)) {
-                    echo "{$hex_arr}   {$bin_arr}\n";
-                }
-
-                if ($j % 8 == 0) {
-                    echo "{$hex_arr}   {$bin_arr}\n";
-                    $hex_arr="";
-                    $bin_arr="";
-                }
-                //var_dump(bin2hex(chr($bytes[$i])).'   '.chr($bytes[$i]));
-        }
-        //var_dump($bytes);
+        //$this->print_bin($result.$data);
 
         #client 
         $client_flags = 0x3f7cf;
         $database = "sakila";
         $user = "root";
-        $password = "\0";
+        $password = "123456";
         $stage1 = sha1($password,1);
         $stage2 = sha1($stage1,1);
         $stage3 = sha1($scramble.$stage2,1);
@@ -157,35 +186,25 @@ class mysql {
         $pack_len = 4 + 4 + 1 + 23 + strlen($user) + 1 + strlen($token) + 1 + strlen($database) + 1;
         var_dump($pack_len);
 
-        var_dump($this->set_byte3($pack_len).chr(1));
+        yield from $this->write_packet($req, $pack_len);
 
-        $pack = substr_replace(pack("V", $pack_len), chr(1), 3, 1).$req;
-        var_dump($pack);
-
-        yield ngx_socket_send($this->socket, $pack, strlen($pack));
-
-        yield ngx_socket_recv($this->socket, $result, 4);
-        var_dump("receive: ".$result);
-
-        $len = unpack('v',substr($result, 0,4));
-        var_dump($len);
-        $len = $len[1];
-        yield ngx_socket_recv($this->socket, $data, $len);
-
+        yield from $this->read_packet();
+        $data = $this->packet_data;
         var_dump($data);
 
         $query = "select * from city limit 10;";
         #$query = "select sleep(1);";
         $req = chr(0x03).$query;
         $pack_len = strlen($query) + 1;
-        $pack = $this->set_byte3($pack_len).chr(0).$req;
+        
+        yield from $this->write_packet($req, $pack_len, 0);
 
-        yield ngx_socket_send($this->socket, $pack, strlen($pack));
+        yield from $this->read_packet();
+        $data = $this->packet_data;
+        var_dump($data);
 
-        yield ngx_socket_recv($this->socket, $result);
+        $this->print_bin($data);
 
-
-        var_dump("receive: ".$result);
     }
 
     public function close() {
