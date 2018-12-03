@@ -72,21 +72,43 @@ class mysql {
         yield ngx_socket_send($this->socket, $pack, strlen($pack));
     }
 
-    private function read_packet() {
+    private function read_packet($idx=0) {
         yield ngx_socket_recv($this->socket, $result, 4);
-        $this->print_bin($result);
-        $len = unpack('v',substr($result, 0, 3));
+        
+        $len = unpack('v',substr($result, $idx, 3));
         var_dump($len);
         $len = $len[1];
+        $data = '';
         if ($len == 0x00) {
-            yield ngx_socket_recv($this->socket, $data);
+            yield from $this->result_set_packet();
         }else {
             yield ngx_socket_recv($this->socket, $data, $len);
         }
-        
-        $this->print_bin($data);
+
+        $this->print_bin($result.$data);
 
         $this->packet_data = $data;
+    }
+
+    private function handshake_packet() {
+
+    }
+
+    private function auth_packet() {
+
+    }
+
+    private function result_set_packet() {
+        yield ngx_socket_recv($this->socket, $result, 4);
+        $len = ord(substr($result, 0, 1));
+        var_dump($len);
+        $len = ord(substr($result, 1, 2));
+        var_dump($len);
+        $this->print_bin($result);
+
+        yield ngx_socket_recv($this->socket, $result, $len+1);
+        $this->print_bin($result);
+        
     }
 
     public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
@@ -199,7 +221,7 @@ class mysql {
         
         yield from $this->write_packet($req, $pack_len, 0);
 
-        yield from $this->read_packet();
+        yield from $this->read_packet(1);
         $data = $this->packet_data;
         var_dump($data);
 
