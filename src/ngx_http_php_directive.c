@@ -4,9 +4,9 @@
  *
  */
 
-#include "ngx_http_php_directive.h"
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_core.h"
+#include "ngx_http_php_directive.h"
 
 
 char *

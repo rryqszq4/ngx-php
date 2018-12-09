@@ -7,11 +7,10 @@
 #ifndef _PHP_NGX_SOCKETS_H_
 #define _PHP_NGX_SOCKETS_H_
 
-#include <ngx_http.h>
-
 #include <php.h>
 #include <php_ini.h>
 #include <ext/standard/info.h>
+#include <ngx_http.h>
 
 #include "../../ngx_http_php_socket.h"
 

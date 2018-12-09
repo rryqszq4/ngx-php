@@ -7,11 +7,10 @@
 #ifndef _PHP_NGX_REQUEST_H_
 #define _PHP_NGX_REQUEST_H_
 
-#include <ngx_http.h>
-
 #include <php.h>
 #include <php_ini.h>
 #include <ext/standard/info.h>
+#include <ngx_http.h>
 
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_method_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()

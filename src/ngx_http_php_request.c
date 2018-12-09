@@ -5,9 +5,9 @@
  *
  */
 
+#include "ngx_http_php_module.h"
 #include "ngx_http_php_request.h"
 #include "ngx_http_php_core.h"
-#include "ngx_http_php_module.h"
 #include "ngx_http_php_handler.h"
 
 int 

@@ -4,10 +4,10 @@
  *
  */
 
-#include "ngx_php_debug.h"
+//#include "ngx_php_debug.h"
+#include "ngx_http_php_module.h"
 #include "ngx_http_php_core.h"
 #include "ngx_http_php_handler.h"
-#include "ngx_http_php_module.h"
 #include "ngx_http_php_request.h"
 #include "ngx_http_php_zend_uthread.h"
 //#include "ngx_http_php_subrequest.h"

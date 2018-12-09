@@ -4,7 +4,6 @@
  *
  */
 
-#include "ngx_php_debug.h"
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_zend_uthread.h"
 #include "ngx_http_php_util.h"

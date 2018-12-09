@@ -4,12 +4,6 @@
  *
  */
 
-//#include "ngx_php_debug.h"
-#include <ngx_core.h>
-#include <ngx_http.h>
-#include <ngx_conf_file.h>
-#include <nginx.h>
-
 #include "php/impl/php_ngx.h"
 #include "php/impl/php_ngx_core.h"
 #include "php/impl/php_ngx_log.h"
@@ -17,6 +11,11 @@
 #include "php/impl/php_ngx_socket.h"
 #include "php/impl/php_ngx_var.h"
 #include "php/impl/php_ngx_sockets.h"
+
+#include <ngx_core.h>
+#include <ngx_http.h>
+#include <ngx_conf_file.h>
+#include <nginx.h>
 
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_directive.h"

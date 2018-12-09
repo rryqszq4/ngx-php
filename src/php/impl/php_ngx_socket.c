@@ -4,9 +4,9 @@
  *
  */
 
-#include "php_ngx_socket.h"
 #include "../../ngx_http_php_module.h"
 #include "../../ngx_http_php_socket.h"
+#include "php_ngx_socket.h"
 
 static zend_class_entry *php_ngx_socket_class_entry;
 

@@ -7,11 +7,10 @@
 #ifndef _PHP_NGX_CORE_H_
 #define _PHP_NGX_CORE_H_
 
-#include <ngx_http.h>
-
 #include <php.h>
 #include <php_ini.h>
 #include <ext/standard/info.h>
+#include <ngx_http.h>
 
 ZEND_BEGIN_ARG_INFO_EX(ngx_exit_arginfo, 0, 0, 1)
     ZEND_ARG_INFO(0, status)

@@ -4,7 +4,6 @@
  *
  */
 
-#include "../../ngx_php_debug.h"
 #include "php_ngx_core.h"
 #include "../../ngx_http_php_module.h"
 #include "../../ngx_http_php_sleep.h"

@@ -4,7 +4,6 @@
  *
  */
 
-#include "ngx_php_debug.h"
 #include "ngx_http_php_variable.h"
 
 ngx_http_variable_value_t *

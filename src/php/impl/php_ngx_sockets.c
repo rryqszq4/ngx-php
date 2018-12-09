@@ -4,9 +4,9 @@
  *
  */
 
-#include "php_ngx_sockets.h"
 #include "../../ngx_http_php_module.h"
 #include "../../ngx_http_php_socket.h"
+#include "php_ngx_sockets.h"
 
 static int le_socket;
 #define le_socket_name php_ngx_sockets_le_socket_name
