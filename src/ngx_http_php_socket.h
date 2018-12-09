@@ -7,7 +7,6 @@
 #ifndef NGX_HTTP_PHP_SOCKET_H
 #define NGX_HTTP_PHP_SOCKET_H
 
-#include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_event.h>
 #include <ngx_event_connect.h>

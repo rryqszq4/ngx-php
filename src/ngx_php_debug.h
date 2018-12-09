@@ -7,7 +7,6 @@
 #ifndef NGX_PHP_DEBUG_H
 #define NGX_PHP_DEBUG_H
 
-#include <ngx_config.h>
 #include <nginx.h>
 #include <ngx_core.h>
 

@@ -7,7 +7,6 @@
 #ifndef NGX_HTTP_PHP_DIRECTIVE_H
 #define NGX_HTTP_PHP_DIRECTIVE_H
 
-#include <ngx_config.h>
 #include <ngx_conf_file.h>
 #include <nginx.h>
 
