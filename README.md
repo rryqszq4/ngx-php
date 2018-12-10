@@ -13,7 +13,7 @@ ngx_php7
 Requirement
 -----------
 - PHP-7.0.* ~ PHP-7.2.*
-- nginx-1.4.7 ~ nginx-1.10.3
+- nginx-1.4.7 ~ nginx-1.14.2 and mainline 1.15.7
 
 Installation
 -------
