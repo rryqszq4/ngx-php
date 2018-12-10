@@ -145,14 +145,14 @@ http {
         }
         
         # run a php file
-        location = /php   
+        location = /php {
             content_by_php '
                 include "name_of_php_file.php";
             ';
         }
         
         # run any php file in root
-        location = /   
+        location = / {
             content_by_php '
                 include ngx_var::get("uri");
             ';
