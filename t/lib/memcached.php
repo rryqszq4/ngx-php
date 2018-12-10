@@ -22,18 +22,19 @@ class memcached {
     public function connect($host = "127.0.0.1", $port = 11211) {
         if (!$this->socket) {
             throw new Exception("Socket not initialized on connect.");
-        } else {
-            yield ngx_socket_connect($this->socket, $host, $port);
         }
+        
+        yield ngx_socket_connect($this->socket, $host, $port);
+        
         return $this;
     }
 
     public function close() {
         if (!$this->socket) {
             throw new Exception("Socket not initialized on close.");
-        } else {
-            yield ngx_socket_close($this->socket);
         }
+        
+        yield ngx_socket_close($this->socket);  
     }
 
     public function add($key = '', $value = '', $expire = 0) {
@@ -92,7 +93,7 @@ class memcached {
             return false;
         }
         $data = explode("\r\n", $data);
-        return isset($data[1]) ? $data[1] : null;
+        return $data[1] ?? null;
     }
 
     public function delete($key = '') {
@@ -119,7 +120,7 @@ class memcached {
             return 0;
         }
         $data = explode("\r\n", $data);
-        return isset($data[0]) ? intval($data[0]) : 0;
+        return intval( $data[0] ?? 0 );
     }
 
     public function decr($key = '', $value = 0) {
@@ -133,7 +134,7 @@ class memcached {
             return 0;
         }
         $data = explode("\r\n", $data);
-        return isset($data[0]) ? intval($data[0]) : 0;
+        return intval( $data[0] ?? 0 );
     }
 
     public function flush_all($time = 0) {
@@ -161,7 +162,7 @@ class memcached {
         yield ngx_socket_send($this->socket, $req, strlen($req));
         yield ngx_socket_recv($this->socket, $data);
         if (preg_match("/^VERSION (.+)\r\n$/", $data, $match) > 0) {
-            return isset($match[1]) ? $match[1] : null;
+            return $match[1] ?? null;
         }
         return null;
     }
@@ -184,7 +185,7 @@ class memcached {
         $new_data = array();
         foreach ($data as $key => $value) {
             $value = explode(" ", $value);
-            if (isset($value[1]) && isset($value[2])) {
+            if (isset($value[1], $value[2])) {
                 $new_data[$value[1]] = $value[2];
             }
         }
