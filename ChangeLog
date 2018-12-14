@@ -1,3 +1,13 @@
+ngx_php7 0.0.14 changes:                                                            14 Dec 2018
+    * Add php function ngx_socket_*, ngx_request_*, ngx_var_*, ngx_log_*, ngx_query_args,
+    ngx_post_args and so on.
+
+    * Fixed ngx_socket api to support full fuplex socket.
+
+    * Fixed compiled on ubuntu of 16.04 version.
+
+    * Pass FrameworkBenchmarks test.
+
 ngx_php7 0.0.13 changes:                                                            15 Sep 2018
     * Add directive header_filter_by_php, body_filter_by_php, init_worker_by_php, log_by_php.
 
