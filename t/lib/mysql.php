@@ -74,18 +74,31 @@ class mysql {
 
     private function read_packet($idx=0) {
         yield ngx_socket_recv($this->socket, $result, 4);
-        
+        $this->print_bin($result);
         $len = unpack('v',substr($result, $idx, 3));
         var_dump($len);
-        $len = $len[1];
+        $len1 = $len = $len[1];
         $data = '';
+        yield ngx_socket_recv($this->socket, $data, $len);
+        $len = ord($data[0]);
         if ($len == 0x00) {
-            yield from $this->result_set_packet();
-        }else {
-            yield ngx_socket_recv($this->socket, $data, $len);
+            var_dump("OK packet");
+            //yield from $this->result_set_packet();
+        }else if ($len == 0xff){
+            var_dump("Error packet");
+        }else if ($len == 0xfe) {
+            var_dump("EOF packet");
+        }else{
+            var_dump("Data packet");
+            if ($len1 == 1) {
+                yield from $this->result_set_packet();
+                yield from $this->result_set_packet();
+                yield from $this->result_set_packet();
+                yield from $this->result_set_packet();
+            }
         }
 
-        $this->print_bin($result.$data);
+        //$this->print_bin($result.$data);
 
         $this->packet_data = $data;
     }
@@ -100,15 +113,12 @@ class mysql {
 
     private function result_set_packet() {
         yield ngx_socket_recv($this->socket, $result, 4);
-        $len = ord(substr($result, 0, 1));
-        var_dump($len);
-        $len = ord(substr($result, 1, 2));
-        var_dump($len);
+        $this->print_bin($result);
+        $len = unpack('v',substr($result, 0, 3));
+        $len = $len[1];
+        yield ngx_socket_recv($this->socket, $result, $len);
         $this->print_bin($result);
 
-        yield ngx_socket_recv($this->socket, $result, $len+1);
-        $this->print_bin($result);
-        
     }
 
     public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
@@ -214,14 +224,14 @@ class mysql {
         $data = $this->packet_data;
         var_dump($data);
 
-        $query = "select * from city limit 10;";
+        $query = "select * from sakila.city limit 1;";
         #$query = "select sleep(1);";
         $req = chr(0x03).$query;
         $pack_len = strlen($query) + 1;
         
         yield from $this->write_packet($req, $pack_len, 0);
 
-        yield from $this->read_packet(1);
+        yield from $this->read_packet(0);
         $data = $this->packet_data;
         var_dump($data);
 
