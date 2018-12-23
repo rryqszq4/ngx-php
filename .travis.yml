@@ -24,6 +24,7 @@ addons:
       - libbz2-dev
 compiler:
   - gcc
+  - clang
 cache:
   - apt
 env:
