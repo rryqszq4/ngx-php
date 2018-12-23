@@ -213,13 +213,13 @@ static void ngx_track_znode(unsigned int node_type, znode_op node, zend_op_array
             ngx_track_zval(*RT_CONSTANT_EX(op_array->literals, node));
             break;
         case IS_TMP_VAR:
-            php_printf("~%-15d", EX_VAR_TO_NUM(node.var));
+            php_printf("~%-15d", (uint32_t)(node.var));
             break;
         case IS_VAR:
-            php_printf("$%-15d", EX_VAR_TO_NUM(node.var));
+            php_printf("$%-15d", (uint32_t)(node.var));
             break;
         case IS_CV:
-            php_printf("!%-15d", EX_VAR_TO_NUM(node.var));
+            php_printf("!%-15d", (uint32_t)(node.var));
             break;
         default:
             php_printf("%-16s", " ");
@@ -510,7 +510,7 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
         php_printf("|.func = %p\n", execute_data->func);
         if (execute_data->func) {
         php_printf("|    .type = %d\n", execute_data->func->type,execute_data->func->type);
-            if (&execute_data->func->common) {
+            if ((uintptr_t)NULL != (uintptr_t)&execute_data->func->common) {
         php_printf("|    .common = %p\n", execute_data->func->common);
             fbc = execute_data->func;
         php_printf("|        .type = %d\n", fbc->common.type);
@@ -522,7 +522,7 @@ ngx_track_zend_execute_data(zend_execute_data *execute_data)
         php_printf("|        .required_num_args = %p\n", fbc->common.required_num_args);    
         php_printf("|        .arg_info = %p\n", fbc->common.arg_info);
             }
-            if (&execute_data->func->op_array) {
+            if ((uintptr_t)NULL != (uintptr_t)&execute_data->func->op_array) {
         php_printf("|    .op_array = %p\n", execute_data->func->op_array);
                 op_array = execute_data->func->op_array;
         php_printf("|        .type = %d\n", op_array.type);

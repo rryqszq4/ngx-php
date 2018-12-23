@@ -55,6 +55,9 @@ PHP_FUNCTION(ngx_socket_create)
 
     arg1 = AF_INET;
     arg2 = SOCK_STREAM;
+#ifndef SOL_TCP
+#define SOL_TCP IPPROTO_TCP
+#endif
     arg3 = SOL_TCP;
     ngx_sock = php_ngx_socket_create();
 
