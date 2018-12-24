@@ -44,6 +44,15 @@ $             --add-module=/path/to/ngx_php7
 $ make && make install
 ```
 
+### Docker
+
+```sh
+$ docker build -t nginx-php7 .
+$ : "app.conf: Create nginx config"
+$ docker run -p 80:80 -v $PWD/app.conf:/etc/nginx/conf.d/default.conf nginx-php7
+```
+
+
 Synopsis
 --------
 
