@@ -36,6 +36,7 @@ echo "php install ..."
 --enable-sockets \
 --with-xmlrpc \
 --enable-zip \
+--without-libzip \
 --with-bz2 \
 --with-gettext \
 --with-readline \
