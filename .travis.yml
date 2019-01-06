@@ -22,6 +22,7 @@ addons:
       - openssl
       - libssl-dev
       - libbz2-dev
+      - libzip-dev
 compiler:
   - gcc
   - clang
