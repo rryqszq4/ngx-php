@@ -8,7 +8,7 @@ ngx_php7
 ![](https://raw.githubusercontent.com/rryqszq4/ngx_php7/master/docs/hello_world_performance.png)
 
 [ngx_php7](https://github.com/rryqszq4/ngx_php7) - Embedded php7 programming language for nginx-module.  
-[ngx_php](https://github.com/rryqszq4/ngx_php) - Embedded php5 script language for nginx-module.  
+[ngx_php5](https://github.com/rryqszq4/ngx_php/tree/ngx_php5) - Embedded php5 script language for nginx-module.  
 
 Requirement
 -----------
@@ -16,7 +16,7 @@ Requirement
 - nginx-1.4.7 ~ nginx-1.14.2 and mainline 1.15.7
 
 Installation
--------
+------------
 ```sh
 $ wget 'http://php.net/distributions/php-7.1.16.tar.gz'
 $ tar xf php-7.1.16.tar.gz
@@ -44,7 +44,8 @@ $             --add-module=/path/to/ngx_php7
 $ make && make install
 ```
 
-### Docker
+Docker
+------
 
 ```sh
 $ docker build -t nginx-php7 .

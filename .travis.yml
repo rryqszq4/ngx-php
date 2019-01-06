@@ -22,6 +22,7 @@ addons:
       - openssl
       - libssl-dev
       - libbz2-dev
+      - libzip-dev
 compiler:
   - gcc
   - clang
@@ -33,6 +34,8 @@ env:
   - PHP_SRC_VERSION=7.1.24
     NGINX_SRC_VERSION=1.12.2
   - PHP_SRC_VERSION=7.2.12
+    NGINX_SRC_VERSION=1.12.2
+  - PHP_SRC_VERSION=7.3.0
     NGINX_SRC_VERSION=1.12.2
   - PHP_SRC_VERSION=7.1.24
     NGINX_SRC_VERSION=1.12.2
