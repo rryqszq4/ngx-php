@@ -1,8 +1,30 @@
-/**
- *    Copyright(c) 2016-2018 rryqszq4
- *
- *
- */
+/*
+==============================================================================
+Copyright (c) 2016-2019, rryqszq4 <rryqszq@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+==============================================================================
+*/
 
 #include "php/impl/php_ngx.h"
 #include "php/impl/php_ngx_core.h"
@@ -167,25 +189,7 @@ static ngx_command_t ngx_http_php_commands[] = {
      0,
      ngx_http_php_body_filter_inline_handler
     },
-
- /*   {ngx_string("content_async_by_php"),
-     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
-        |NGX_CONF_TAKE1,
-     ngx_http_php_content_async_inline_phase,
-     NGX_HTTP_LOC_CONF_OFFSET,
-     0,
-     ngx_http_php_content_async_inline_handler
-    },
-
-    {ngx_string("content_sync_by_php"),
-     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
-        |NGX_CONF_TAKE1,
-     ngx_http_php_content_inline_phase,
-     NGX_HTTP_LOC_CONF_OFFSET,
-     0,
-     ngx_http_php_content_sync_inline_handler
-    },
-
+/*
 #if defined(NDK) && NDK
 
     {ngx_string("set_by_php"),
@@ -247,16 +251,16 @@ static ngx_http_module_t ngx_http_php_module_ctx = {
 
 ngx_module_t ngx_http_php_module = {
     NGX_MODULE_V1,
-    &ngx_http_php_module_ctx,    /* module context */
-    ngx_http_php_commands,       /* module directives */
-    NGX_HTTP_MODULE,               /* module type */
-    NULL,                          /* init master */
-    NULL,                          /* init module */
-    ngx_http_php_init_worker,      /* init process */
-    NULL,                          /* init thread */
-    NULL,                          /* exit thread */
-    ngx_http_php_exit_worker,      /* exit process */
-    NULL,                          /* exit master */
+    &ngx_http_php_module_ctx,       /* module context */
+    ngx_http_php_commands,          /* module directives */
+    NGX_HTTP_MODULE,                /* module type */
+    NULL,                           /* init master */
+    NULL,                           /* init module */
+    ngx_http_php_init_worker,       /* init process */
+    NULL,                           /* init thread */
+    NULL,                           /* exit thread */
+    ngx_http_php_exit_worker,       /* exit process */
+    NULL,                           /* exit master */
     NGX_MODULE_V1_PADDING
 };
 
@@ -352,13 +356,6 @@ ngx_http_php_handler_init(ngx_http_core_main_conf_t *cmcf, ngx_http_php_main_con
                     }
                     *h = ngx_http_php_stack_handler;
                 }
-                /*if (pmcf->enabled_content_async_handler){
-                    h = ngx_array_push(&cmcf->phases[phase].handlers);
-                    if (h == NULL){
-                        return NGX_ERROR;
-                    }
-                    *h = ngx_http_php_content_async_handler;
-                }*/
                 break;
             case NGX_HTTP_LOG_PHASE:
                 if (pmcf->enabled_log_handler) {
@@ -429,8 +426,6 @@ ngx_http_php_create_loc_conf(ngx_conf_t *cf)
     plcf->content_code = NGX_CONF_UNSET_PTR;
     plcf->content_inline_code = NGX_CONF_UNSET_PTR;
 
-    //plcf->content_async_inline_code = NGX_CONF_UNSET_PTR;
-
     plcf->opcode_inline_code = NGX_CONF_UNSET_PTR;
 
     plcf->stack_inline_code = NGX_CONF_UNSET_PTR;
@@ -474,8 +469,6 @@ ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     prev->content_code = conf->content_code;
     prev->content_inline_code = conf->content_inline_code;
 
-    //prev->content_async_inline_code = conf->content_async_inline_code;
-
     prev->opcode_inline_code = conf->opcode_inline_code;
 
     prev->stack_inline_code = conf->stack_inline_code;
@@ -501,15 +494,13 @@ ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 static ngx_int_t 
 ngx_http_php_init_worker(ngx_cycle_t *cycle)
 {
-    //TSRMLS_FETCH();
-
     ngx_http_php_main_conf_t *pmcf;
 
     pmcf = ngx_http_cycle_get_module_main_conf(cycle, ngx_http_php_module);
 
     php_ngx_module.ub_write = ngx_http_php_code_ub_write;
     //php_ngx_module.flush = ngx_http_php_code_flush;
-    ////php_ngx_module.log_message = ngx_http_php_code_log_message;
+    //php_ngx_module.log_message = ngx_http_php_code_log_message;
     //php_ngx_module.register_server_variables = ngx_http_php_code_register_server_variables;
     //php_ngx_module.read_post = ngx_http_php_code_read_post;
     //php_ngx_module.read_cookies = ngx_http_php_code_read_cookies;
@@ -567,7 +558,6 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 static void 
 ngx_http_php_exit_worker(ngx_cycle_t *cycle)
 {
-    //TSRMLS_FETCH();
     php_ngx_request_shutdown(TSRMLS_C);
     php_ngx_module_shutdown(TSRMLS_C);
 }
