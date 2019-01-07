@@ -1,8 +1,30 @@
-/**
- *    Copyright(c) 2016-2018 rryqszq4
- *
- *
- */
+/*
+==============================================================================
+Copyright (c) 2016-2019, rryqszq4 <rryqszq@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+==============================================================================
+*/
 
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_core.h"
@@ -357,39 +379,6 @@ ngx_http_php_stack_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     plcf->stack_inline_code = code;
     plcf->stack_handler = cmd->post;
     pmcf->enabled_stack_handler = 1;
-
-    return NGX_CONF_OK;
-}
-
-char *
-ngx_http_php_content_async_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
-{
-    ngx_http_php_main_conf_t *pmcf;
-    ngx_http_php_loc_conf_t *plcf;
-    ngx_str_t *value;
-    ngx_http_php_code_t *code;
-
-    if (cmd->post == NULL){
-        return NGX_CONF_ERROR;
-    }
-
-    pmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_php_module);
-    plcf = conf;
-
-    if (plcf->content_async_handler != NULL){
-        return "is duplicated";
-    }
-
-    value = cf->args->elts;
-
-    code = ngx_http_php_code_from_string(cf->pool, &value[1]);
-    if (code == NGX_CONF_UNSET_PTR){
-        return NGX_CONF_ERROR;
-    }
-
-    plcf->content_async_inline_code = code;
-    plcf->content_async_handler = cmd->post;
-    pmcf->enabled_content_async_handler = 1;
 
     return NGX_CONF_OK;
 }
