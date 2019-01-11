@@ -7,19 +7,19 @@ $ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
 run_tests();
 
 __DATA__
-=== TEST 1: hello, ngx_php7
+=== TEST 1: hello, ngx_php
 This is just a simple demonstration of the
-echo directive provided by ngx_php7.
+echo directive provided by ngx_php.
 --- config
 location = /t {
     content_by_php '
-        echo "hello ngx_php7!\n";
+        echo "hello ngx_php!\n";
     ';
 }
 --- request
 GET /t
 --- response_body
-hello ngx_php7!
+hello ngx_php!
 
 
 

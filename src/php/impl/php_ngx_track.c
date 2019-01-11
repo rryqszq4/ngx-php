@@ -1,8 +1,30 @@
-/**
- *    Copyright(c) 2016-2018 rryqszq4
- *
- *
- */
+/*
+==============================================================================
+Copyright (c) 2016-2019, rryqszq4 <rryqszq@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+==============================================================================
+*/
 
 #include "php.h"
 #include "php_ini.h"
@@ -79,7 +101,7 @@ zend_op_array* ngx_compile_file(zend_file_handle* file_handle, int type TSRMLS_D
 php_printf("    ___                   __    \n");
 php_printf("  /`__ \\___  ___  ___  __/ /__  \n");
 php_printf(" / /_/ / _ \\/ _ `/ _ \\/ _ / __\\ \n");
-php_printf(" \\___./ .__/\\___.\\___/\\___\\__..   /ngx_php7_tracker\n"); 
+php_printf(" \\___./ .__/\\___.\\___/\\___\\__..   /ngx_php_tracker\n"); 
 php_printf("     /_/                         /version: %s\n", NGX_HTTP_PHP_MODULE_VERSION);
 php_printf("\n/* ~: IS_TMP_VAR, $: IS_VAR, !: IS_CV */\n\n");
             ctx->opcode_logo = 1;
@@ -125,7 +147,7 @@ zend_op_array *ngx_compile_string(zval *source_string, char *filename TSRMLS_DC)
 php_printf("    ___                   __    \n");
 php_printf("  /`__ \\___  ___  ___  __/ /__  \n");
 php_printf(" / /_/ / _ \\/ _ `/ _ \\/ _ / __\\ \n");
-php_printf(" \\___./ .__/\\___.\\___/\\___\\__..   /ngx_php7_tracker\n"); 
+php_printf(" \\___./ .__/\\___.\\___/\\___\\__..   /ngx_php_tracker\n"); 
 php_printf("     /_/                         /version: %s\n", NGX_HTTP_PHP_MODULE_VERSION);
 php_printf("\n/* ~: IS_TMP_VAR, $: IS_VAR, !: IS_CV */\n\n");
             ctx->opcode_logo = 1;
@@ -627,7 +649,7 @@ void ngx_execute_ex(zend_execute_data *execute_data TSRMLS_DC)
 php_printf("    ____                __      \n");
 php_printf("   / __/_.._ ___  ___  / /__    \n");
 php_printf("  _\\ \\/_  __/ _ `/ _ `/  '_/    \n");
-php_printf(" /___/ /__/ \\_,\\/\\___/_/\\_\\     /ngx_php7_tracker\n");
+php_printf(" /___/ /__/ \\_,\\/\\___/_/\\_\\     /ngx_php_tracker\n");
 php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODULE_VERSION);
             ctx->stack_logo = 1;
         }
@@ -692,7 +714,7 @@ void ngx_execute_internal(zend_execute_data *execute_data, zval *return_value TS
 php_printf("    ____                __      \n");
 php_printf("   / __/_.._ ___  ___  / /__    \n");
 php_printf("  _\\ \\/_  __/ _ `/ _ `/  '_/    \n");
-php_printf(" /___/ /__/ \\_,\\/\\___/_/\\_\\     /ngx_php7_tracker\n");
+php_printf(" /___/ /__/ \\_,\\/\\___/_/\\_\\     /ngx_php_tracker\n");
 php_printf("                               /version: %s\n\n", NGX_HTTP_PHP_MODULE_VERSION);
             ctx->stack_logo = 1;
         }
