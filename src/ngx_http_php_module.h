@@ -26,8 +26,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-#ifndef NGX_HTTP_PHP_MODULE_H
-#define NGX_HTTP_PHP_MODULE_H
+#ifndef __NGX_HTTP_PHP_MODULE_H__
+#define __NGX_HTTP_PHP_MODULE_H__
 
 #include <php.h>
 #include <ngx_config.h>
@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-#define NGX_HTTP_PHP_MODULE_NAME "ngx_php7"
+#define NGX_HTTP_PHP_MODULE_NAME "ngx_php"
 #define NGX_HTTP_PHP_MODULE_VERSION  "0.0.14"
 
 extern ngx_module_t ngx_http_php_module;

@@ -12,7 +12,7 @@ ngx_php7
 
 Requirement
 -----------
-- PHP-7.0.* ~ PHP-7.2.*
+- PHP-7.0.* ~ PHP-7.3.*
 - nginx-1.4.7 ~ nginx-1.14.2 and mainline 1.15.7
 
 Installation
@@ -291,7 +291,7 @@ Nginx API for php
 Copyright and License
 ---------------------
 ```
-Copyright (c) 2016-2018, rryqszq4 <rryqszq@gmail.com>
+Copyright (c) 2016-2019, rryqszq4 <rryqszq@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -26,8 +26,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-#ifndef NGX_HTTP_PHP_DIRECTIVE_H
-#define NGX_HTTP_PHP_DIRECTIVE_H
+#ifndef __NGX_HTTP_PHP_DIRECTIVE_H__
+#define __NGX_HTTP_PHP_DIRECTIVE_H__
 
 #include <ngx_conf_file.h>
 #include <nginx.h>

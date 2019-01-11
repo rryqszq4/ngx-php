@@ -26,8 +26,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-#ifndef NGX_HTTP_PHP_HANDLER_H
-#define NGX_HTTP_PHP_HANDLER_H
+#ifndef __NGX_HTTP_PHP_HANDLER_H__
+#define __NGX_HTTP_PHP_HANDLER_H__
 
 #include <nginx.h>
 #include <ngx_http.h>
