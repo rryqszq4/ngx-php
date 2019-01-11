@@ -1,3 +1,12 @@
+ngx_php7 0.0.15 changes:                                                            12 Jan 2019
+    * Fixed compiled pass on freebas 11.2 and used of clang compiler.
+
+    * Added Dockerfile by kjdev.
+
+    * Fixed support compile with php version 7.3.* .
+
+    * Code review.
+
 ngx_php7 0.0.14 changes:                                                            14 Dec 2018
     * Add php function ngx_socket_*, ngx_request_*, ngx_var_*, ngx_log_*, ngx_query_args,
     ngx_post_args and so on.
