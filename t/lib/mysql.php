@@ -118,7 +118,33 @@ class mysql {
         $len = $len[1];
         yield ngx_socket_recv($this->socket, $result, $len);
         $this->print_bin($result);
+        var_dump("data field");
+        $this->data_field_packet($result);
 
+    }
+
+    private function data_field_packet($result) {
+        $start = 0;
+        $catalog = $this->parse_data_field($result, $start);
+        var_dump($catalog);
+        $db = $this->parse_data_field($result, $start);
+        var_dump($db);
+        $table = $this->parse_data_field($result, $start);
+        var_dump($table);
+        $ori_table = $this->parse_data_field($result, $start);
+        var_dump($ori_table);
+        $column = $this->parse_data_field($result, $start);
+        var_dump($column);
+        $ori_column = $this->parse_data_field($result, $start);
+        var_dump($ori_column);
+    }
+
+    private function parse_data_field($result, &$start) {
+        $len = ord(substr($result, $start, 1));
+        var_dump($len);
+        $field = substr($result, $start + 1, $len);
+        $start = $start + 1 + $len;
+        return $field;
     }
 
     public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
