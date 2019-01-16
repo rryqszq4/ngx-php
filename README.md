@@ -9,7 +9,7 @@ ngx_php7
 
 ngx_php7 is an extension module of high-performance web server nginx, which implements embedded php7 script to process nginx location and variables.  
 
-ngx_php draws on the design of [ngx_lua](https://github.com/openresty/lua-nginx-module) and is committed to providing non-blocking web services with significant performance advantages over php-cgi, mod_php, php-fpm and hhvm.  
+ngx_php7 draws on the design of [ngx_lua](https://github.com/openresty/lua-nginx-module) and is committed to providing non-blocking web services with significant performance advantages over php-cgi, mod_php, php-fpm and hhvm.  
 
 ngx_php7 doesn't want to replace anything, just want to provide a solution.  
 
@@ -17,10 +17,10 @@ There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree
 
 What's different with official php
 ----------------------------------
-* Global variable is unsafe
-* Static variable of a class is unsafe
+* Global variable is unsafe in per request
+* Static variable of a class is unsafe in per request
 * Do not design singleton mode
-* Native operation io function will block nginx
+* The native IO function works fine, but it slows down nginx
 
 Requirement
 -----------
@@ -30,18 +30,18 @@ Requirement
 Installation
 ------------
 ```sh
-$ wget 'http://php.net/distributions/php-7.1.16.tar.gz'
-$ tar xf php-7.1.16.tar.gz
-$ cd php-7.1.16
+$ wget 'http://php.net/distributions/php-7.2.14.tar.gz'
+$ tar xf php-7.2.14.tar.gz
+$ cd php-7.2.14
 
 $ ./configure --prefix=/path/to/php --enable-embed
 $ make && make install
 
 $ git clone https://github.com/rryqszq4/ngx_php7.git
 
-$ wget 'http://nginx.org/download/nginx-1.10.3.tar.gz'
-$ tar -zxvf nginx-1.10.3.tar.gz
-$ cd nginx-1.10.3
+$ wget 'http://nginx.org/download/nginx-1.12.2.tar.gz'
+$ tar -zxvf nginx-1.12.2.tar.gz
+$ cd nginx-1.12.2
 
 $ export PHP_CONFIG=/path/to/php/bin/php-config
 $ export PHP_BIN=/path/to/php/bin
