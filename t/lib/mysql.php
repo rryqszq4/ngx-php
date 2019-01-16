@@ -13,6 +13,9 @@ class mysql {
 
     private $packet_data = null;
 
+    private $resultState = 1;
+    private $resultFields = array();
+
     public function __construct() {
         $this->socket = ngx_socket_create();
     }
@@ -78,8 +81,10 @@ class mysql {
         $len = unpack('v',substr($result, $idx, 3));
         var_dump($len);
         $len1 = $len = $len[1];
+        var_dump($len1);
         $data = '';
         yield ngx_socket_recv($this->socket, $data, $len);
+        $this->print_bin($data);
         $len = ord($data[0]);
         if ($len == 0x00) {
             var_dump("OK packet");
@@ -90,11 +95,17 @@ class mysql {
             var_dump("EOF packet");
         }else{
             var_dump("Data packet");
-            if ($len1 == 1) {
+            if ($len1 == 1 && $this->resultState == 1) {
+                var_dump("fields");
                 yield from $this->result_set_packet();
                 yield from $this->result_set_packet();
                 yield from $this->result_set_packet();
                 yield from $this->result_set_packet();
+                $this->resultState = 2;
+            }else if ($this->resultState == 2) {
+                var_dump("rows");
+
+
             }
         }
 
@@ -125,18 +136,43 @@ class mysql {
 
     private function data_field_packet($result) {
         $start = 0;
-        $catalog = $this->parse_data_field($result, $start);
+        $field = array();
+        $field['catalog'] = $catalog = $this->parse_data_field($result, $start);
         var_dump($catalog);
-        $db = $this->parse_data_field($result, $start);
+        $field['db'] = $db = $this->parse_data_field($result, $start);
         var_dump($db);
-        $table = $this->parse_data_field($result, $start);
+        $field['table'] = $table = $this->parse_data_field($result, $start);
         var_dump($table);
-        $ori_table = $this->parse_data_field($result, $start);
+        $field['ori_table'] == $ori_table = $this->parse_data_field($result, $start);
         var_dump($ori_table);
-        $column = $this->parse_data_field($result, $start);
+        $field['column'] = $column = $this->parse_data_field($result, $start);
         var_dump($column);
-        $ori_column = $this->parse_data_field($result, $start);
+        $field['ori_column'] = $ori_column = $this->parse_data_field($result, $start);
         var_dump($ori_column);
+
+        $this->print_bin(substr($result, $start));
+
+        $this->print_bin(substr($result, $start, 1));
+        // 0xC0
+        $start += 1;
+        $this->print_bin(substr($result, $start, 2));
+        $field['charset'] = $charset = unpack('v', substr($result, $start, 2))[1];
+        var_dump($charset);
+        $start += 2;
+        $field['length'] = $length = unpack('V', substr($result, $start, 4))[1];
+        var_dump($length);
+        $start += 4;
+        $field['type'] = $type = ord(substr($result, $start, 1));
+        var_dump($type);
+        $start += 1;
+        $field['flag'] = $flag = unpack('v', substr($result, $start, 2))[1];
+        var_dump($flag);
+        $start += 2;
+        $field['decimals'] = $decimals = unpack('v', substr($result, $start, 2))[1];
+        var_dump($decimals);
+
+        $this->resultFields[] = $field;
+
     }
 
     private function parse_data_field($result, &$start) {
@@ -145,6 +181,10 @@ class mysql {
         $field = substr($result, $start + 1, $len);
         $start = $start + 1 + $len;
         return $field;
+    }
+
+    private function data_row_packet() {
+
     }
 
     public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
@@ -250,18 +290,25 @@ class mysql {
         $data = $this->packet_data;
         var_dump($data);
 
-        $query = "select * from sakila.city limit 1;";
+        $query = "select * from sakila.city limit 4;";
         #$query = "select sleep(1);";
         $req = chr(0x03).$query;
         $pack_len = strlen($query) + 1;
         
         yield from $this->write_packet($req, $pack_len, 0);
 
+        // field
         yield from $this->read_packet(0);
         $data = $this->packet_data;
         var_dump($data);
 
         $this->print_bin($data);
+
+        // EOF
+        yield from $this->read_packet(0);
+
+        // rows
+        yield from $this->read_packet(0);
 
     }
 
