@@ -8,9 +8,19 @@ ngx_php7
 ![](https://raw.githubusercontent.com/rryqszq4/ngx_php7/master/docs/hello_world_performance.png)
 
 ngx_php7 is an extension module of high-performance web server nginx, which implements embedded php7 script to process nginx location and variables.  
+
 ngx_php draws on the design of [ngx_lua](https://github.com/openresty/lua-nginx-module) and is committed to providing non-blocking web services with significant performance advantages over php-cgi, mod_php, php-fpm and hhvm.  
+
 ngx_php7 doesn't want to replace anything, just want to provide a solution.  
+
 There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree/ngx_php5), which records some of my past code practices and is also valuable.   
+
+What's different with official php
+----------------------------------
+* Global variable is unsafe
+* Static variable of a class is unsafe
+* Do not design singleton mode
+* Native operation io function will block nginx
 
 Requirement
 -----------
