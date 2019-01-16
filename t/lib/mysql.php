@@ -115,10 +115,109 @@ class mysql {
     }
 
     private function handshake_packet() {
+        yield from $this->read_packet();
+        $data = $this->packet_data;
 
+        var_dump("packet length: ".$len);
+
+        $protocol_ver = ord(substr($data, 0, 1));
+
+        var_dump("protocol version: ".$protocol_ver);
+
+        var_dump(strpos($data, "\0", 2));
+
+        var_dump("server version: ".substr($data, 1, strpos($data, "\0", 2)-1));
+
+        $pos = strpos($data, "\0", 2)+1;
+
+        $thread_id = unpack("V", substr($data, $pos, 4));
+        $thread_id = $thread_id[1];
+        var_dump("thread id: ".$thread_id);
+
+        $pos += 4;
+        var_dump($pos);
+
+        $scramble = substr($data, $pos, 8);
+
+        var_dump($scramble);
+
+        #$pos = 1+$protocol_ver+4 + 9;
+
+        $capabilities = unpack('v', substr($data, $pos+9, 2));
+        $capabilities = $capabilities[1];
+        var_dump("server capabilities: ".$capabilities);
+
+        $server_lang = ord(substr($data, $pos+9+2,1));
+        var_dump("server lang: ".$server_lang);
+
+        $server_status = unpack('v', substr($data, $pos+9+2+1, 2));
+        $server_status = $server_status[1];
+        var_dump("server status: ".$server_status);
+
+        $more_capabilites = unpack('v', substr($data, $pos+9+2+1+2,2));
+        $more_capabilites = $more_capabilites[1];
+        var_dump("more capabilities: ".$more_capabilites);
+
+        $capabilities = $capabilities | ($more_capabilites << 16);
+        var_dump("server capabilities: ".$capabilities);
+
+        $scramble_2 = substr($data, $pos+9+2+1+2+2+1+10, 21-8-1);
+        var_dump($scramble_2);
+
+        $scramble = $scramble.$scramble_2;
+        var_dump("scramble: ".$scramble);
+        var_dump(strlen($scramble));
+
+        #$data = substr($data, $pos);
+
+        #$data = substr($data, 1, $protocol_ver+1);
+
+
+        //$this->print_bin($result.$data);
+
+        return $scramble;
     }
 
-    private function auth_packet() {
+    private function auth_packet($scramble, $user, $password, $database) {
+        #client 
+        $client_flags = 0x3f7cf;
+        //$database = "sakila";
+        //$user = "root";
+        //$password = "123456";
+        $stage1 = sha1($password,1);
+        $stage2 = sha1($stage1,1);
+        $stage3 = sha1($scramble.$stage2,1);
+        $n = strlen($stage1);
+        /*$bytes = array();
+        for ($i = 0; $i < $n; $i++) {
+            $bytes[] = ord($stage3[$i]) ^ ord($stage1[$i]);
+        }
+
+
+        $token = '';
+        foreach ($bytes as $ch) {
+            $token .= chr($ch);
+        }*/
+        $token = $stage1 ^ $stage3;
+
+
+        $req = $this->set_byte4($client_flags)
+                .$this->set_byte4(1024*1024)
+                .chr(0)
+                .str_repeat("\0", 23)
+                .$user."\0"
+                .chr(strlen($token)).$token
+                .$database."\0";
+        var_dump($req);
+
+        $pack_len = 4 + 4 + 1 + 23 + strlen($user) + 1 + strlen($token) + 1 + strlen($database) + 1;
+        var_dump($pack_len);
+
+        yield from $this->write_packet($req, $pack_len);
+
+        yield from $this->read_packet();
+        $data = $this->packet_data;
+        var_dump($data);
 
     }
 
@@ -190,110 +289,18 @@ class mysql {
     public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
         yield ngx_socket_connect($this->socket, $host, $port);
 
-        yield from $this->read_packet();
-        $data = $this->packet_data;
+        $scramble = ( yield from $this->handshake_packet() );
 
-        var_dump("packet length: ".$len);
+        yield from $this->auth_packet($scramble, $user, $password, $database);
 
-        $protocol_ver = ord(substr($data, 0, 1));
+        yield from $this->query("select * from sakila.city limit 4;");
+    }
 
-        var_dump("protocol version: ".$protocol_ver);
-
-        var_dump(strpos($data, "\0", 2));
-
-        var_dump("server version: ".substr($data, 1, strpos($data, "\0", 2)-1));
-
-        $pos = strpos($data, "\0", 2)+1;
-
-        $thread_id = unpack("V", substr($data, $pos, 4));
-        $thread_id = $thread_id[1];
-        var_dump("thread id: ".$thread_id);
-
-        $pos += 4;
-        var_dump($pos);
-
-        $scramble = substr($data, $pos, 8);
-
-        var_dump($scramble);
-
-        #$pos = 1+$protocol_ver+4 + 9;
-
-        $capabilities = unpack('v', substr($data, $pos+9, 2));
-        $capabilities = $capabilities[1];
-        var_dump("server capabilities: ".$capabilities);
-
-        $server_lang = ord(substr($data, $pos+9+2,1));
-        var_dump("server lang: ".$server_lang);
-
-        $server_status = unpack('v', substr($data, $pos+9+2+1, 2));
-        $server_status = $server_status[1];
-        var_dump("server status: ".$server_status);
-
-        $more_capabilites = unpack('v', substr($data, $pos+9+2+1+2,2));
-        $more_capabilites = $more_capabilites[1];
-        var_dump("more capabilities: ".$more_capabilites);
-
-        $capabilities = $capabilities | ($more_capabilites << 16);
-        var_dump("server capabilities: ".$capabilities);
-
-        $scramble_2 = substr($data, $pos+9+2+1+2+2+1+10, 21-8-1);
-        var_dump($scramble_2);
-
-        $scramble = $scramble.$scramble_2;
-        var_dump("scramble: ".$scramble);
-        var_dump(strlen($scramble));
-
-        #$data = substr($data, $pos);
-
-        #$data = substr($data, 1, $protocol_ver+1);
-
-
-        //$this->print_bin($result.$data);
-
-        #client 
-        $client_flags = 0x3f7cf;
-        $database = "sakila";
-        $user = "root";
-        $password = "123456";
-        $stage1 = sha1($password,1);
-        $stage2 = sha1($stage1,1);
-        $stage3 = sha1($scramble.$stage2,1);
-        $n = strlen($stage1);
-        /*$bytes = array();
-        for ($i = 0; $i < $n; $i++) {
-            $bytes[] = ord($stage3[$i]) ^ ord($stage1[$i]);
-        }
-
-
-        $token = '';
-        foreach ($bytes as $ch) {
-            $token .= chr($ch);
-        }*/
-        $token = $stage1 ^ $stage3;
-
-
-        $req = $this->set_byte4($client_flags)
-                .$this->set_byte4(1024*1024)
-                .chr(0)
-                .str_repeat("\0", 23)
-                .$user."\0"
-                .chr(strlen($token)).$token
-                .$database."\0";
-        var_dump($req);
-
-        $pack_len = 4 + 4 + 1 + 23 + strlen($user) + 1 + strlen($token) + 1 + strlen($database) + 1;
-        var_dump($pack_len);
-
-        yield from $this->write_packet($req, $pack_len);
-
-        yield from $this->read_packet();
-        $data = $this->packet_data;
-        var_dump($data);
-
-        $query = "select * from sakila.city limit 4;";
-        #$query = "select sleep(1);";
-        $req = chr(0x03).$query;
-        $pack_len = strlen($query) + 1;
+    public function query($sql) {
+        $sql = "select * from sakila.city limit 4;";
+        #$sql = "select sleep(1);";
+        $req = chr(0x03).$sql;
+        $pack_len = strlen($sql) + 1;
         
         yield from $this->write_packet($req, $pack_len, 0);
 
@@ -309,7 +316,6 @@ class mysql {
 
         // rows
         yield from $this->read_packet(0);
-
     }
 
     public function close() {
