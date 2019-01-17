@@ -66,25 +66,29 @@ class mysql {
         //var_dump($bytes);
     }
 
-    private function length_encode_integer($data) {
-        $start = 0;
-        $first = ord(substr($data, 0, 1));
+    private function length_encode_integer($data, &$start) {
+        $first = ord(substr($data, $start, 1));
         if ($first <= 250) {
+            $start += 1;
             return $first;
         }
         if ($first === 251) {
             return null;
         }
         if ($first === 252) {
-            $start += 1;
-            return unpack('v', substr($data, $start, 2));
+            $ret = unpack('v', substr($data, $start, 2));
+            $start += 2;
+            return $ret[1];
         }
         if ($first === 253) {
-            $start += 1;
-            return unpack('V', substr($data, $start, 3)."\0");
+            $ret = unpack('V', substr($data, $start, 3)."\0");
+            $start += 3;
+            return $ret[1];
         }
-        $start += 1;
-        return unpack('P', substr($data, $start, 8));
+
+        $ret = unpack('P', substr($data, $start, 8));
+        $start += 8;
+        return $ret[1];
     }
 
     private function write_packet($data, $len, $chr=1) {
@@ -159,6 +163,9 @@ class mysql {
             if ($this->resultState == 2) {
                 yield from $this->read_packet();
             }
+            if ($this->resultState == 201) {
+                $this->resultState = 0;
+            }
         }else {
             var_dump("Data packet");
             if ($field_count == 1 && $this->resultState == 0) {
@@ -179,10 +186,12 @@ class mysql {
                     $this->resultState = 2;
                     yield from $this->read_packet();
                 }
-            }else if ($this->resultState == 2) {
+            }else if ($this->resultState == 2 || $this->resultState == 201) {
+                $this->resultState = 201;
                 var_dump("rows");
                 var_dump($data);
                 $this->data_row_packet($data);
+                yield from $this->read_packet();
             }else {
                 return $data;
             }
@@ -360,12 +369,16 @@ class mysql {
         $start = 0;
         $row = array();
         foreach ($this->resultFields as $field) {
-            //$len = $this->length_encode_integer($data);
-            //$row[$field['column']] = substr($data, 0, $len);
-            //$start += $len;
-            //$data = substr($data, $start);
+            $len = $this->length_encode_integer($data, $start);
+            var_dump($len);
+            
+            $value = substr($data, $start, $len);
+            var_dump($value);
+            $start += $len;
+            $row[$field['column']] = $value;
         }
         var_dump($row);
+        $this->rows[] = $row;
     }
 
     public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
@@ -379,28 +392,18 @@ class mysql {
     }
 
     public function query($sql) {
-        $sql = "select * from sakila.city limit 4;";
+        $sql = "select * from sakila.city order by city_id desc limit 4;";
         #$sql = "select sleep(1);";
         $req = chr(0x03).$sql;
         $pack_len = strlen($sql) + 1;
         
         yield from $this->write_packet($req, $pack_len, 0);
 
-        // header set
-        //yield from $this->read_packet();
-
-        // field
+        // result set packet
         yield from $this->read_packet();
-        //$data = $this->packet_data;
-        //var_dump($data);
 
-        //$this->print_bin($data);
-
-        // EOF
-        //yield from $this->read_packet();
-
-        // rows
-        //yield from $this->read_packet(0);
+        var_dump($this->rows);
+        
     }
 
     public function close() {
