@@ -13,7 +13,9 @@ class mysql {
 
     private $packet_data = null;
 
-    private $resultState = 1;
+    private $headerNum = 0;
+    private $headerCurr = 0;
+    private $resultState = 0;
     private $resultFields = array();
 
     public function __construct() {
@@ -63,6 +65,27 @@ class mysql {
         //var_dump($bytes);
     }
 
+    private function length_encode_integer($data) {
+        $start = 0;
+        $first = ord(substr($data, 0, 1));
+        if ($first <= 250) {
+            return $first;
+        }
+        if ($first === 251) {
+            return null;
+        }
+        if ($first === 252) {
+            $start += 1;
+            return unpack('v', substr($data, $start, 2));
+        }
+        if ($first === 253) {
+            $start += 1;
+            return unpack('V', substr($data, $start, 3)."\0");
+        }
+        $start += 1;
+        return unpack('P', substr($data, $start, 8));
+    }
+
     private function write_packet($data, $len, $chr=1) {
         $pack = $this->set_byte3($len).chr($chr).$data;
         var_dump("pack: ".$pack);
@@ -75,7 +98,7 @@ class mysql {
         yield ngx_socket_send($this->socket, $pack, strlen($pack));
     }
 
-    private function read_packet($idx=0) {
+    private function read_packet_1($idx=0) {
         yield ngx_socket_recv($this->socket, $result, 4);
         $this->print_bin($result);
         $len = unpack('v',substr($result, $idx, 3));
@@ -114,9 +137,53 @@ class mysql {
         $this->packet_data = $data;
     }
 
+    private function read_packet() {
+        var_dump("read_packet_2");
+        yield ngx_socket_recv($this->socket, $result, 4);
+        $this->print_bin($result);
+        $field_count = unpack('v', substr($result, 0, 3))[1];
+        var_dump("field_count: ".$field_count);
+        $data = '';
+        yield ngx_socket_recv($this->socket, $data, $field_count);
+        $this->print_bin($data);
+        if ($field_count === 0x00) {
+            var_dump("OK packet");
+        }else if ($field_count === 0xff) {
+            var_dump("Error packet");
+        }else if ($field_count === 0xfe) {
+            var_dump("EOF packet");
+        }else {
+            var_dump("Data packet");
+            if ($field_count == 1 && $this->resultState == 0) {
+                var_dump("header set");
+                $this->headerNum = ord($data);
+                var_dump($this->headerNum);
+                $this->resultState = 1;
+                yield from $this->read_packet();
+            }else if ($this->resultState == 1) {
+                var_dump('fields');
+                if ($this->headerCurr < $this->headerNum - 1) {
+                    $this->data_field_packet($data);
+                    $this->headerCurr++;
+                    yield from $this->read_packet();
+                }else {
+                    $this->data_field_packet($data);
+                    $this->headerCurr++;
+                    $this->resultState = 2;
+                    yield from $this->read_packet();
+                }
+            }else if ($this->resultState == 2) {
+                var_dump("rows");
+            }else {
+                return $data;
+            }
+        }
+
+
+    }
+
     private function handshake_packet() {
-        yield from $this->read_packet();
-        $data = $this->packet_data;
+        $data = ( yield from $this->read_packet() );
 
         var_dump("packet length: ".$len);
 
@@ -216,8 +283,6 @@ class mysql {
         yield from $this->write_packet($req, $pack_len);
 
         yield from $this->read_packet();
-        $data = $this->packet_data;
-        var_dump($data);
 
     }
 
@@ -304,18 +369,21 @@ class mysql {
         
         yield from $this->write_packet($req, $pack_len, 0);
 
-        // field
-        yield from $this->read_packet(0);
-        $data = $this->packet_data;
-        var_dump($data);
+        // header set
+        //yield from $this->read_packet();
 
-        $this->print_bin($data);
+        // field
+        yield from $this->read_packet();
+        //$data = $this->packet_data;
+        //var_dump($data);
+
+        //$this->print_bin($data);
 
         // EOF
-        yield from $this->read_packet(0);
+        //yield from $this->read_packet();
 
         // rows
-        yield from $this->read_packet(0);
+        //yield from $this->read_packet(0);
     }
 
     public function close() {
