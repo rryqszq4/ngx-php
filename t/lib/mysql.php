@@ -17,6 +17,7 @@ class mysql {
     private $headerCurr = 0;
     private $resultState = 0;
     private $resultFields = array();
+    private $resultRows = array();
 
     public function __construct() {
         $this->socket = ngx_socket_create();
@@ -146,12 +147,18 @@ class mysql {
         $data = '';
         yield ngx_socket_recv($this->socket, $data, $field_count);
         $this->print_bin($data);
+        if ($field_count != 1) {
+            $field_count = ord(substr($data, 0, 1));
+        }
         if ($field_count === 0x00) {
             var_dump("OK packet");
         }else if ($field_count === 0xff) {
             var_dump("Error packet");
         }else if ($field_count === 0xfe) {
             var_dump("EOF packet");
+            if ($this->resultState == 2) {
+                yield from $this->read_packet();
+            }
         }else {
             var_dump("Data packet");
             if ($field_count == 1 && $this->resultState == 0) {
@@ -174,6 +181,8 @@ class mysql {
                 }
             }else if ($this->resultState == 2) {
                 var_dump("rows");
+                var_dump($data);
+                $this->data_row_packet($data);
             }else {
                 return $data;
             }
@@ -347,8 +356,16 @@ class mysql {
         return $field;
     }
 
-    private function data_row_packet() {
-
+    private function data_row_packet($data) {
+        $start = 0;
+        $row = array();
+        foreach ($this->resultFields as $field) {
+            //$len = $this->length_encode_integer($data);
+            //$row[$field['column']] = substr($data, 0, $len);
+            //$start += $len;
+            //$data = substr($data, $start);
+        }
+        var_dump($row);
     }
 
     public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
