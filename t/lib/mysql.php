@@ -66,13 +66,15 @@ class mysql {
         //var_dump($bytes);
     }
 
-    private function length_encode_integer($data, &$start) {
+    private function length_encoded_integer($data, &$start) {
         $first = ord(substr($data, $start, 1));
+        var_dump($first);
         if ($first <= 250) {
             $start += 1;
             return $first;
         }
         if ($first === 251) {
+            $start += 1;
             return null;
         }
         if ($first === 252) {
@@ -177,11 +179,11 @@ class mysql {
             }else if ($this->resultState == 1) {
                 var_dump('fields');
                 if ($this->headerCurr < $this->headerNum - 1) {
-                    $this->data_field_packet($data);
+                    $this->field_data_packet($data);
                     $this->headerCurr++;
                     yield from $this->read_packet();
                 }else {
-                    $this->data_field_packet($data);
+                    $this->field_data_packet($data);
                     $this->headerCurr++;
                     $this->resultState = 2;
                     yield from $this->read_packet();
@@ -190,7 +192,7 @@ class mysql {
                 $this->resultState = 201;
                 var_dump("rows");
                 var_dump($data);
-                $this->data_row_packet($data);
+                $this->row_data_packet($data);
                 yield from $this->read_packet();
             }else {
                 return $data;
@@ -312,11 +314,11 @@ class mysql {
         yield ngx_socket_recv($this->socket, $result, $len);
         $this->print_bin($result);
         var_dump("data field");
-        $this->data_field_packet($result);
+        $this->field_data_packet($result);
 
     }
 
-    private function data_field_packet($result) {
+    private function field_data_packet($result) {
         $start = 0;
         $field = array();
         $field['catalog'] = $catalog = $this->parse_data_field($result, $start);
@@ -365,11 +367,11 @@ class mysql {
         return $field;
     }
 
-    private function data_row_packet($data) {
+    private function row_data_packet($data) {
         $start = 0;
         $row = array();
         foreach ($this->resultFields as $field) {
-            $len = $this->length_encode_integer($data, $start);
+            $len = $this->length_encoded_integer($data, $start);
             var_dump($len);
             
             $value = substr($data, $start, $len);
@@ -388,11 +390,11 @@ class mysql {
 
         yield from $this->auth_packet($scramble, $user, $password, $database);
 
-        yield from $this->query("select * from sakila.city limit 4;");
+        yield from $this->query("select * from sakila.film limit 1;");
     }
 
     public function query($sql) {
-        $sql = "select * from sakila.city order by city_id desc limit 4;";
+        #$sql = "select * from sakila.city order by city_id desc limit 4;";
         #$sql = "select sleep(1);";
         $req = chr(0x03).$sql;
         $pack_len = strlen($sql) + 1;
@@ -402,7 +404,7 @@ class mysql {
         // result set packet
         yield from $this->read_packet();
 
-        var_dump($this->rows);
+        //var_dump($this->rows);
         
     }
 
