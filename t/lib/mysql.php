@@ -68,7 +68,7 @@ class mysql {
 
     private function length_encoded_integer($data, &$start) {
         $first = ord(substr($data, $start, 1));
-        var_dump($first);
+        #var_dump($first);
         if ($first <= 250) {
             $start += 1;
             return $first;
@@ -95,12 +95,12 @@ class mysql {
 
     private function write_packet($data, $len, $chr=1) {
         $pack = $this->set_byte3($len).chr($chr).$data;
-        var_dump("pack: ".$pack);
+        #var_dump("pack: ".$pack);
 
         //$pack = substr_replace(pack("V", $len), chr(1), 3, 1).$data;
         //var_dump(($pack == $pack1));
 
-        $this->print_bin($pack);
+        #$this->print_bin($pack);
 
         yield ngx_socket_send($this->socket, $pack, strlen($pack));
     }
@@ -145,23 +145,23 @@ class mysql {
     }
 
     private function read_packet() {
-        var_dump("read_packet_2");
+        #var_dump("read_packet");
         yield ngx_socket_recv($this->socket, $result, 4);
-        $this->print_bin($result);
+        #$this->print_bin($result);
         $field_count = unpack('v', substr($result, 0, 3))[1];
-        var_dump("field_count: ".$field_count);
+        #var_dump("field_count: ".$field_count);
         $data = '';
         yield ngx_socket_recv($this->socket, $data, $field_count);
-        $this->print_bin($data);
+        #$this->print_bin($data);
         if ($field_count != 1) {
             $field_count = ord(substr($data, 0, 1));
         }
         if ($field_count === 0x00) {
-            var_dump("OK packet");
+            #var_dump("OK packet");
         }else if ($field_count === 0xff) {
-            var_dump("Error packet");
+            #var_dump("Error packet");
         }else if ($field_count === 0xfe) {
-            var_dump("EOF packet");
+            #var_dump("EOF packet");
             if ($this->resultState == 2) {
                 yield from $this->read_packet();
             }
@@ -169,15 +169,15 @@ class mysql {
                 $this->resultState = 0;
             }
         }else {
-            var_dump("Data packet");
+            #var_dump("Data packet");
             if ($field_count == 1 && $this->resultState == 0) {
-                var_dump("header set");
+                #var_dump("header set");
                 $this->headerNum = ord($data);
-                var_dump($this->headerNum);
+                #var_dump($this->headerNum);
                 $this->resultState = 1;
                 yield from $this->read_packet();
             }else if ($this->resultState == 1) {
-                var_dump('fields');
+                #var_dump('fields');
                 if ($this->headerCurr < $this->headerNum - 1) {
                     $this->field_data_packet($data);
                     $this->headerCurr++;
@@ -190,8 +190,8 @@ class mysql {
                 }
             }else if ($this->resultState == 2 || $this->resultState == 201) {
                 $this->resultState = 201;
-                var_dump("rows");
-                var_dump($data);
+                #var_dump("rows");
+                #var_dump($data);
                 $this->row_data_packet($data);
                 yield from $this->read_packet();
             }else {
@@ -205,68 +205,59 @@ class mysql {
     private function handshake_packet() {
         $data = ( yield from $this->read_packet() );
 
-        var_dump("packet length: ".$len);
+        #var_dump("packet length: ".$len);
 
         $protocol_ver = ord(substr($data, 0, 1));
 
-        var_dump("protocol version: ".$protocol_ver);
+        #var_dump("protocol version: ".$protocol_ver);
 
-        var_dump(strpos($data, "\0", 2));
+        #var_dump(strpos($data, "\0", 2));
 
-        var_dump("server version: ".substr($data, 1, strpos($data, "\0", 2)-1));
+        #var_dump("server version: ".substr($data, 1, strpos($data, "\0", 2)-1));
 
         $pos = strpos($data, "\0", 2)+1;
 
         $thread_id = unpack("V", substr($data, $pos, 4));
         $thread_id = $thread_id[1];
-        var_dump("thread id: ".$thread_id);
+        #var_dump("thread id: ".$thread_id);
 
         $pos += 4;
-        var_dump($pos);
+        #var_dump($pos);
 
         $scramble = substr($data, $pos, 8);
 
-        var_dump($scramble);
-
-        #$pos = 1+$protocol_ver+4 + 9;
+        #var_dump($scramble);
 
         $capabilities = unpack('v', substr($data, $pos+9, 2));
         $capabilities = $capabilities[1];
-        var_dump("server capabilities: ".$capabilities);
+        #var_dump("server capabilities: ".$capabilities);
 
         $server_lang = ord(substr($data, $pos+9+2,1));
-        var_dump("server lang: ".$server_lang);
+        #var_dump("server lang: ".$server_lang);
 
         $server_status = unpack('v', substr($data, $pos+9+2+1, 2));
         $server_status = $server_status[1];
-        var_dump("server status: ".$server_status);
+        #var_dump("server status: ".$server_status);
 
         $more_capabilites = unpack('v', substr($data, $pos+9+2+1+2,2));
         $more_capabilites = $more_capabilites[1];
-        var_dump("more capabilities: ".$more_capabilites);
+        #var_dump("more capabilities: ".$more_capabilites);
 
         $capabilities = $capabilities | ($more_capabilites << 16);
-        var_dump("server capabilities: ".$capabilities);
+        #var_dump("server capabilities: ".$capabilities);
 
         $scramble_2 = substr($data, $pos+9+2+1+2+2+1+10, 21-8-1);
-        var_dump($scramble_2);
+        #var_dump($scramble_2);
 
         $scramble = $scramble.$scramble_2;
-        var_dump("scramble: ".$scramble);
-        var_dump(strlen($scramble));
-
-        #$data = substr($data, $pos);
-
-        #$data = substr($data, 1, $protocol_ver+1);
-
-
-        //$this->print_bin($result.$data);
+        #var_dump("scramble: ".$scramble);
+        #var_dump(strlen($scramble));
 
         return $scramble;
     }
 
     private function auth_packet($scramble, $user, $password, $database) {
-        #client 
+        // client 
         $client_flags = 0x3f7cf;
         //$database = "sakila";
         //$user = "root";
@@ -295,10 +286,10 @@ class mysql {
                 .$user."\0"
                 .chr(strlen($token)).$token
                 .$database."\0";
-        var_dump($req);
+        #var_dump($req);
 
         $pack_len = 4 + 4 + 1 + 23 + strlen($user) + 1 + strlen($token) + 1 + strlen($database) + 1;
-        var_dump($pack_len);
+        #var_dump($pack_len);
 
         yield from $this->write_packet($req, $pack_len);
 
@@ -321,47 +312,47 @@ class mysql {
     private function field_data_packet($result) {
         $start = 0;
         $field = array();
-        $field['catalog'] = $catalog = $this->parse_data_field($result, $start);
-        var_dump($catalog);
-        $field['db'] = $db = $this->parse_data_field($result, $start);
-        var_dump($db);
-        $field['table'] = $table = $this->parse_data_field($result, $start);
-        var_dump($table);
-        $field['ori_table'] == $ori_table = $this->parse_data_field($result, $start);
-        var_dump($ori_table);
-        $field['column'] = $column = $this->parse_data_field($result, $start);
-        var_dump($column);
-        $field['ori_column'] = $ori_column = $this->parse_data_field($result, $start);
-        var_dump($ori_column);
+        $field['catalog'] = $catalog = $this->parse_field_data($result, $start);
+        #var_dump($catalog);
+        $field['db'] = $db = $this->parse_field_data($result, $start);
+        #var_dump($db);
+        $field['table'] = $table = $this->parse_field_data($result, $start);
+        #var_dump($table);
+        $field['ori_table'] == $ori_table = $this->parse_field_data($result, $start);
+        #var_dump($ori_table);
+        $field['column'] = $column = $this->parse_field_data($result, $start);
+        #var_dump($column);
+        $field['ori_column'] = $ori_column = $this->parse_field_data($result, $start);
+        #var_dump($ori_column);
 
-        $this->print_bin(substr($result, $start));
+        #$this->print_bin(substr($result, $start));
 
-        $this->print_bin(substr($result, $start, 1));
+        #$this->print_bin(substr($result, $start, 1));
         // 0xC0
         $start += 1;
-        $this->print_bin(substr($result, $start, 2));
+        #$this->print_bin(substr($result, $start, 2));
         $field['charset'] = $charset = unpack('v', substr($result, $start, 2))[1];
-        var_dump($charset);
+        #var_dump($charset);
         $start += 2;
         $field['length'] = $length = unpack('V', substr($result, $start, 4))[1];
-        var_dump($length);
+        #var_dump($length);
         $start += 4;
         $field['type'] = $type = ord(substr($result, $start, 1));
-        var_dump($type);
+        #var_dump($type);
         $start += 1;
         $field['flag'] = $flag = unpack('v', substr($result, $start, 2))[1];
-        var_dump($flag);
+        #var_dump($flag);
         $start += 2;
         $field['decimals'] = $decimals = unpack('v', substr($result, $start, 2))[1];
-        var_dump($decimals);
+        #var_dump($decimals);
 
         $this->resultFields[] = $field;
 
     }
 
-    private function parse_data_field($result, &$start) {
+    private function parse_field_data($result, &$start) {
         $len = ord(substr($result, $start, 1));
-        var_dump($len);
+        #var_dump($len);
         $field = substr($result, $start + 1, $len);
         $start = $start + 1 + $len;
         return $field;
@@ -372,14 +363,14 @@ class mysql {
         $row = array();
         foreach ($this->resultFields as $field) {
             $len = $this->length_encoded_integer($data, $start);
-            var_dump($len);
+            #var_dump($len);
             
             $value = substr($data, $start, $len);
-            var_dump($value);
+            #var_dump($value);
             $start += $len;
             $row[$field['column']] = $value;
         }
-        var_dump($row);
+        #var_dump($row);
         $this->rows[] = $row;
     }
 
@@ -389,13 +380,10 @@ class mysql {
         $scramble = ( yield from $this->handshake_packet() );
 
         yield from $this->auth_packet($scramble, $user, $password, $database);
-
-        yield from $this->query("select * from sakila.film limit 1;");
+        
     }
 
     public function query($sql) {
-        #$sql = "select * from sakila.city order by city_id desc limit 4;";
-        #$sql = "select sleep(1);";
         $req = chr(0x03).$sql;
         $pack_len = strlen($sql) + 1;
         
@@ -404,7 +392,7 @@ class mysql {
         // result set packet
         yield from $this->read_packet();
 
-        //var_dump($this->rows);
+        var_dump($this->rows);
         
     }
 
