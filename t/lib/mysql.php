@@ -198,8 +198,6 @@ class mysql {
                 return $data;
             }
         }
-
-
     }
 
     private function handshake_packet() {
@@ -294,7 +292,6 @@ class mysql {
         yield from $this->write_packet($req, $pack_len);
 
         yield from $this->read_packet();
-
     }
 
     private function result_set_packet() {
@@ -306,7 +303,6 @@ class mysql {
         $this->print_bin($result);
         var_dump("data field");
         $this->field_data_packet($result);
-
     }
 
     private function field_data_packet($result) {
@@ -347,7 +343,6 @@ class mysql {
         #var_dump($decimals);
 
         $this->resultFields[] = $field;
-
     }
 
     private function parse_field_data($result, &$start) {
@@ -380,7 +375,6 @@ class mysql {
         $scramble = ( yield from $this->handshake_packet() );
 
         yield from $this->auth_packet($scramble, $user, $password, $database);
-        
     }
 
     public function query($sql) {
@@ -392,8 +386,7 @@ class mysql {
         // result set packet
         yield from $this->read_packet();
 
-        var_dump($this->rows);
-        
+        return $this->rows;
     }
 
     public function close() {
