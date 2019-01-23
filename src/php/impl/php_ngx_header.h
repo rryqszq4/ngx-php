@@ -34,9 +34,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ext/standard/info.h>
 #include <ngx_http.h>
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_header_set_arginfo, 0, 0, 2)
+	ZEND_ARG_INFO(0, key)
+    ZEND_ARG_INFO(0, value)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_header_get_arginfo, 0, 0, 1)
+	ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(ngx_header_gets_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+PHP_FUNCTION(ngx_header_set);
 PHP_FUNCTION(ngx_header_get);
 PHP_FUNCTION(ngx_header_gets);
 
