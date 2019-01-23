@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "php/impl/php_ngx_socket.h"
 #include "php/impl/php_ngx_var.h"
 #include "php/impl/php_ngx_sockets.h"
+#include "php/impl/php_ngx_header.h"
 
 #include <ngx_core.h>
 #include <ngx_http.h>
@@ -551,6 +552,7 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     php_impl_ngx_socket_init(0 TSRMLS_CC);
     php_impl_ngx_var_init(0 TSRMLS_CC);
     php_impl_ngx_sockets_init(0 TSRMLS_CC);
+    php_impl_ngx_header_init(0 TSRMLS_CC);
 
     return NGX_OK;
 }

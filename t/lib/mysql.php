@@ -105,7 +105,7 @@ class mysql {
         yield ngx_socket_send($this->socket, $pack, strlen($pack));
     }
 
-    private function read_packet_1($idx=0) {
+    /*private function read_packet_1($idx=0) {
         yield ngx_socket_recv($this->socket, $result, 4);
         $this->print_bin($result);
         $len = unpack('v',substr($result, $idx, 3));
@@ -142,7 +142,7 @@ class mysql {
         //$this->print_bin($result.$data);
 
         $this->packet_data = $data;
-    }
+    }*/
 
     private function read_packet() {
         #var_dump("read_packet");
@@ -158,8 +158,10 @@ class mysql {
         }
         if ($field_count === 0x00) {
             #var_dump("OK packet");
+            $this->ok_packet($data);
         }else if ($field_count === 0xff) {
             #var_dump("Error packet");
+            $this->error_packet($data);
         }else if ($field_count === 0xfe) {
             #var_dump("EOF packet");
             if ($this->resultState == 2) {
@@ -294,7 +296,35 @@ class mysql {
         yield from $this->read_packet();
     }
 
-    private function result_set_packet() {
+    private function ok_packet($data) {
+        $start = 1;
+        $rows_len = $this->length_encoded_integer($data, $start);
+        #var_dump($rows_len);
+        $insert_id = $this->length_encoded_integer($data, $start);
+        #var_dump($insert_id);
+        $server_status = unpack('v', substr($data, $start, 2))[1];
+        $start += 2;
+        #var_dump($server_status);
+        $warning_count = unpack('v', substr($data, $start, 2))[1];
+        $start += 2;
+        #var_dump($warning_count);
+        $message = substr($data, $start);
+        #var_dump($message);
+    }
+
+    private function error_packet($data) {
+        $start = 1;
+        $errno = unpack('v', substr($data, $start, 2))[1];
+        $start += 2;
+        #var_dump($errno);
+        $sql_state = substr($data, $start, 6);
+        $start += 6;
+        #var_dump($sql_state);
+        $message = substr($data, $start);
+        #var_dump($message);
+    }
+
+    /*private function result_set_packet() {
         yield ngx_socket_recv($this->socket, $result, 4);
         $this->print_bin($result);
         $len = unpack('v',substr($result, 0, 3));
@@ -303,7 +333,7 @@ class mysql {
         $this->print_bin($result);
         var_dump("data field");
         $this->field_data_packet($result);
-    }
+    }*/
 
     private function field_data_packet($result) {
         $start = 0;

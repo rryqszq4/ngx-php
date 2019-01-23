@@ -48,3 +48,6 @@ ngx_socket_send
 ngx_socket_recv
 ngx_var_get
 ngx_var_set
+ngx_header_set
+ngx_header_get
+ngx_header_gets
