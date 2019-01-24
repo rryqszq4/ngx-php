@@ -33,18 +33,23 @@ PHP_FUNCTION(ngx_header_set)
 {
 	ngx_http_request_t 	*r;
     zend_string *key_str;
-    zend_string *value_str;
+    zval *value;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "SS", &key_str, &value_str) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Sz", &key_str, &value) == FAILURE) {
         RETURN_NULL();
     }
 
     r = ngx_php_request;
 
     if (ngx_strncasecmp((u_char *)ZSTR_VAL(key_str), (u_char *)"content-type", 12) == 0){
-        r->headers_out.content_type.data = (u_char *)ZSTR_VAL(value_str);
-        r->headers_out.content_type.len = ZSTR_LEN(value_str);
-        r->headers_out.content_type_len = ZSTR_LEN(value_str);
+        r->headers_out.content_type.data = (u_char *)Z_STRVAL_P(value);
+        r->headers_out.content_type.len = Z_STRLEN_P(value);
+        r->headers_out.content_type_len = Z_STRLEN_P(value);
+    }
+
+    if ( ngx_strncasecmp((u_char *)ZSTR_VAL(key_str), (u_char *)"content-length", 14) == 0 ) {
+        php_printf("%d", (int)Z_LVAL_P(value));
+        r->headers_out.content_length_n = Z_LVAL_P(value);
     }
 
 }
