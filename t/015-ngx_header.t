@@ -27,8 +27,10 @@ Testing ngx_header!
 --- config
 location = /ngx_header {
 	content_by_php '
-		echo "Testing ngx_header!\n";
-		ngx_header_set("Content-Length", 8);
+		$str = "Testing ngx_header!\n";
+		echo $str;
+		echo $str;
+		ngx_header_set("Content-Length", strlen($str));
 	';
 }
 --- request
@@ -36,7 +38,8 @@ GET /ngx_header
 --- response_headers
 Content-Length: 8
 --- response_body
-Testing 
+Testing ngx_header!
+ 
 
 
 === TEST 3: set other part of reponse headers
