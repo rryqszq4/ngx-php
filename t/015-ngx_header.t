@@ -36,10 +36,10 @@ location = /ngx_header {
 --- request
 GET /ngx_header
 --- response_headers
-Content-Length: 8
+Content-Length: 20
 --- response_body
 Testing ngx_header!
- 
+
 
 
 === TEST 3: set other part of reponse headers
