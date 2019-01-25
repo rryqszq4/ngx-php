@@ -9,7 +9,7 @@ __DATA__
 ngx_var_get
 --- config
 location = /ngx_var_get {
-	set $a 1234567890;
+    set $a 1234567890;
     content_by_php '
         $a = ngx_var::get("a");
         var_dump($a);
@@ -26,7 +26,7 @@ string(10) "1234567890"
 ngx_var_set
 --- config
 location = /ngx_var_set{
-	set $a 1234567890;
+    set $a 1234567890;
     content_by_php '
     	ngx_var::set("a", "abc");
         $a = ngx_var::get("a");
