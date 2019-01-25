@@ -31,37 +31,83 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PHP_FUNCTION(ngx_header_set)
 {
-	ngx_http_request_t 	*r;
-    zend_string *key_str;
-    zend_string *value_str;
+    ngx_http_request_t 	*r;
+    ngx_table_elt_t     *h;
+    zend_string         *key_str;
+    zval                *value;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "SS", &key_str, &value_str) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Sz", &key_str, &value) == FAILURE) {
         RETURN_NULL();
     }
 
     r = ngx_php_request;
 
     if (ngx_strncasecmp((u_char *)ZSTR_VAL(key_str), (u_char *)"content-type", 12) == 0){
-        r->headers_out.content_type.data = (u_char *)ZSTR_VAL(value_str);
-        r->headers_out.content_type.len = ZSTR_LEN(value_str);
-        r->headers_out.content_type_len = ZSTR_LEN(value_str);
+        r->headers_out.content_type.data = (u_char *)Z_STRVAL_P(value);
+        r->headers_out.content_type.len = Z_STRLEN_P(value);
+        r->headers_out.content_type_len = Z_STRLEN_P(value);
+    }else if ( ngx_strncasecmp((u_char *)ZSTR_VAL(key_str), (u_char *)"content-length", 14) == 0 ) {
+        r->headers_out.content_length_n = Z_LVAL_P(value);
+    }else {
+        h = ngx_list_push(&r->headers_out.headers);
+
+        if ( h == NULL ) {
+            RETURN_FALSE;
+        }
+
+        h->hash = 1;
+        h->key.len = ZSTR_LEN(key_str);
+        h->key.data = (u_char *)ZSTR_VAL(key_str);
+        h->value.len = Z_STRLEN_P(value);
+        h->value.data = (u_char *)Z_STRVAL_P(value);
     }
 
+    RETURN_TRUE;
 }
 
 PHP_FUNCTION(ngx_header_get)
 {
-	ngx_http_request_t 	*r;
     zend_string *key_str;
-    
+    ngx_http_request_t  *r;
+    ngx_list_part_t     *part;
+    ngx_table_elt_t     *header;
+    ngx_uint_t          i;
+    unsigned            found;
+
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &key_str) == FAILURE){
         RETURN_NULL();
     }
 
     r = ngx_php_request;
+    found = 0;
 
     if (ngx_strncasecmp((u_char *)ZSTR_VAL(key_str), (u_char *)"content-type", 12) == 0){
     	ZVAL_STRINGL(return_value, (char *)r->headers_out.content_type.data, r->headers_out.content_type.len);
+        found = 1;
+    }else {
+        part = &r->headers_out.headers.part;
+        header = part->elts;
+
+        for ( i = 0; /* void */; i++) {
+            if ( i >= part->nelts ) {
+                if ( part->next == NULL ) {
+                    break;
+                }
+                part = part->next;
+                header = part->elts;
+                i = 0;
+            }
+
+            if ( ngx_strncasecmp((u_char *)ZSTR_VAL(key_str), header[i].key.data, header[i].key.len) == 0 ) {
+                ZVAL_STRINGL(return_value, (char *)header[i].value.data, header[i].value.len);
+                found = 1;
+                break;
+            }
+        }
+    }
+
+    if ( !found ) {
+        RETURN_NULL();
     }
 }
 
@@ -77,6 +123,10 @@ PHP_FUNCTION(ngx_header_gets)
 	header = part->elts;
 
 	array_init(return_value);
+
+    if ( r->headers_out.content_type.len ) {
+        add_assoc_stringl(return_value, "content-type", (char *)r->headers_out.content_type.data, r->headers_out.content_type.len);
+    }
 
 	for ( i = 0; /* void */; i++ ) {
 		if ( i >= part->nelts ) {

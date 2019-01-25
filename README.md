@@ -166,6 +166,13 @@ http {
             ';
         }
         
+        # set content-type of response headers
+        location = /ngx_header {
+            content_by_php '
+                ngx_header_set("Content-Type", "text/html; charset=UTF-8");
+            ';
+        }
+
         # run a php file
         location = /php {
             content_by_php '
@@ -298,6 +305,9 @@ Nginx API for php
 * [ngx_socket_recv](#ngx_socket_recv)
 * [ngx_var_get](#ngx_var_get)
 * [ngx_var_set](#ngx_var_set)
+* [ngx_header_set](#ngx_header_set)
+* [ngx_header_get](#ngx_header_get)
+* [ngx_header_gets](#ngx_header_gets)
 
 
 Copyright and License
