@@ -39,7 +39,6 @@ Content-Length: 8
 Testing 
 
 
-
 === TEST 3: set other part of reponse headers
 --- config
 location = /ngx_header {
