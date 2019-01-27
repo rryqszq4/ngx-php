@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define php_ngx_sockets_le_socket_name "ngx_socket"
 
 typedef struct {
-	ngx_http_php_socket_upstream_t  *upstream;
+	//ngx_http_php_socket_upstream_t  *upstream;
 	int type;
 	int error;
 } php_ngx_socket;

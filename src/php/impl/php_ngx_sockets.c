@@ -44,17 +44,9 @@ static void php_ngx_socket_destroy(zend_resource *rsrc);
 
 static php_ngx_socket *php_ngx_socket_create(void)
 {
-    ngx_http_request_t              *r;
-    ngx_http_php_ctx_t              *ctx;
-    ngx_http_php_socket_upstream_t  *u;
     php_ngx_socket                  *ngx_sock;
 
     ngx_sock = emalloc(sizeof(php_ngx_socket));
-    r = ngx_php_request;
-    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
-
-    u = ctx->upstream;
-    ngx_sock->upstream = u;
     ngx_sock->type = 0;
     ngx_sock->error = 0;
 
@@ -144,7 +136,7 @@ PHP_FUNCTION(ngx_socket_connect)
 PHP_FUNCTION(ngx_socket_close)
 {
     zval                *arg1;
-    php_ngx_socket      *ngx_sock;
+    //php_ngx_socket      *ngx_sock;
 
     ngx_http_request_t  *r;
 
@@ -152,9 +144,9 @@ PHP_FUNCTION(ngx_socket_close)
         return ;
     }
 
-    if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
+    /*if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
         RETURN_FALSE;
-    }
+    }*/
 
     r = ngx_php_request;
 
@@ -166,7 +158,7 @@ PHP_FUNCTION(ngx_socket_close)
 PHP_FUNCTION(ngx_socket_send)
 {
     zval                            *arg1;
-    php_ngx_socket                  *ngx_sock;
+    //php_ngx_socket                  *ngx_sock;
     size_t                          buf_len, retval;
     zend_long                       len;
     char                            *buf;
@@ -187,9 +179,9 @@ PHP_FUNCTION(ngx_socket_send)
         RETURN_FALSE;
     }
 
-    if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
+    /*if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
         RETURN_FALSE;
-    }
+    }*/
 
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
@@ -218,7 +210,7 @@ PHP_FUNCTION(ngx_socket_recv)
 {
     zval                            *arg1, *buf;
     //zend_string                   *recv_buf;
-    php_ngx_socket                  *ngx_sock;
+    //php_ngx_socket                  *ngx_sock;
     int                             retval;
     zend_long                       len = 1024;
 
@@ -232,9 +224,9 @@ PHP_FUNCTION(ngx_socket_recv)
         return ;
     }
 
-    if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
+    /*if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
         RETURN_FALSE;
-    }
+    }*/
 
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
