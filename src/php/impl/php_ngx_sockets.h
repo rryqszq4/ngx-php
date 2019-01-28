@@ -44,6 +44,13 @@ typedef struct {
 	int error;
 } php_ngx_socket;
 
+typedef struct php_ngx_socket_s {
+
+	int type;
+	int error;
+
+} php_ngx_socket_t;
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_create, 0, 0, 0)
 	ZEND_ARG_INFO(0, domain)
 	ZEND_ARG_INFO(0, type)
