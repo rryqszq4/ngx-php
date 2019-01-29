@@ -270,6 +270,10 @@ ngx_php_error_cb(int type,
             r->headers_out.content_length_n += ns.len;
         }
 
+        if (!r->headers_out.status) {
+            r->headers_out.status = NGX_HTTP_INTERNAL_SERVER_ERROR;
+        }
+
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, " %s: %s in %s on line %d \n", error_type_str, buffer, error_filename, error_lineno);
 
         ngx_http_php_zend_uthread_exit(r);

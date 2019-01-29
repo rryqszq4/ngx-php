@@ -16,11 +16,5 @@ location = /error {
 }
 --- request
 GET /error
---- response_body
-hello ngx_php
-Fatal error: Uncaught Error: Class 'abc' not found in ngx_php eval code:4
-Stack trace:
-#0 [internal function]: ngx_content_6a50af555ddc38eb1560f83e04f54a6c()
-#1 {main}
-  thrown in ngx_php eval code on line 4
+--- error_code: 500
 
