@@ -535,16 +535,16 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     old_zend_error_cb = zend_error_cb;
     zend_error_cb = ngx_php_error_cb;
     
-    ori_compile_file = zend_compile_file;
-    zend_compile_file = ngx_compile_file;
+    //ori_compile_file = zend_compile_file;
+    //zend_compile_file = ngx_compile_file;
 
-    ori_compile_string = zend_compile_string;
-    zend_compile_string = ngx_compile_string;
+    //ori_compile_string = zend_compile_string;
+    //zend_compile_string = ngx_compile_string;
 
-    ori_execute_ex = zend_execute_ex;
-    zend_execute_ex = ngx_execute_ex;
+    //ori_execute_ex = zend_execute_ex;
+    //zend_execute_ex = ngx_execute_ex;
 
-    zend_execute_internal = ngx_execute_internal;
+    //zend_execute_internal = ngx_execute_internal;
     
     php_impl_ngx_core_init(0 TSRMLS_CC);
     php_impl_ngx_log_init(0 TSRMLS_CC);
