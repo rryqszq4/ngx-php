@@ -39,10 +39,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define php_ngx_sockets_le_socket_name "ngx_socket"
 
 typedef struct {
-	ngx_http_php_socket_upstream_t  *upstream;
+	//ngx_http_php_socket_upstream_t  *upstream;
 	int type;
 	int error;
 } php_ngx_socket;
+
+typedef struct php_ngx_socket_s {
+
+	int type;
+	int error;
+
+} php_ngx_socket_t;
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_create, 0, 0, 0)
 	ZEND_ARG_INFO(0, domain)

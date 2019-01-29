@@ -246,7 +246,7 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
 
     /* rc == NGX_OK || rc == NGX_AGAIN || rc == NGX_DONE */
 
-    ctx->phase_status = NGX_AGAIN;
+    //ctx->phase_status = NGX_AGAIN;
 
     c = peer->connection;
     c->data = u;
@@ -282,6 +282,8 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
                        "php socket connected: fd:%d", (int) c->fd);
         ngx_php_debug("php socket connected: fd:%d", (int) c->fd);
 
+        ctx->phase_status = NGX_OK;
+
         if (ngx_handle_write_event(c->write, 0) != NGX_OK) {
 
             return NGX_ERROR;
@@ -299,6 +301,8 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     }
 
     // rc == NGX_AGAIN
+    
+    ctx->phase_status = NGX_AGAIN;
     
     ngx_add_timer(c->write, 5 * 1000);
 

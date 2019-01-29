@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ngx_http.h>
 #include <php_embed.h>
 #include "php/impl/php_ngx.h"
+#include "php/impl/php_ngx_sockets.h"
 
 #include "ngx_http_php_socket.h"
 
@@ -123,6 +124,7 @@ typedef struct ngx_http_php_ctx_s {
     ngx_int_t delay_time;
     ngx_event_t sleep;
 
+    php_ngx_socket_t *php_socket;
     ngx_http_php_socket_upstream_t  *upstream;
     ngx_str_t   host;
     in_port_t   port;
