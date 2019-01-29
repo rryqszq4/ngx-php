@@ -161,7 +161,9 @@ PHP_FUNCTION(ngx_socket_close)
 
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+    
     efree(ctx->php_socket);
+    ctx->php_socket = NULL;
 
     ngx_http_php_socket_close(r);
 
@@ -251,6 +253,7 @@ PHP_FUNCTION(ngx_socket_recv)
     //b = &u->buffer;
 
     ctx->recv_buf = buf;
+    zval_ptr_dtor(ctx->recv_buf);
 
     retval = ngx_http_php_socket_recv(r);
 
