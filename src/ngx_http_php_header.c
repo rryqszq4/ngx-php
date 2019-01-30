@@ -28,8 +28,71 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ngx_http_php_header.h"
 
-ngx_int_t 
-ngx_http_php_output_header_get(ngx_http_request_t *r)
+ngx_str_t *
+ngx_http_php_output_header_get(ngx_http_request_t *r, const u_char *key_data, size_t key_len)
 {
-	
+	ngx_str_t 			*value;
+	ngx_list_part_t     *part;
+	ngx_table_elt_t 	*header;
+	ngx_uint_t 			i;
+
+	value = NULL;
+
+	if (ngx_strncasecmp((u_char *)key_data, (u_char *)"content-type", 12) == 0){
+    	value = &r->headers_out.content_type;
+    }else {
+        part = &r->headers_out.headers.part;
+        header = part->elts;
+
+        for ( i = 0; /* void */; i++) {
+            if ( i >= part->nelts ) {
+                if ( part->next == NULL ) {
+                    break;
+                }
+                part = part->next;
+                header = part->elts;
+                i = 0;
+            }
+
+            if ( ngx_strncasecmp((u_char *)key_data, header[i].key.data, header[i].key.len) == 0 ) {
+            	value = &header[i].value;
+                break;
+            }
+        }
+    }
+
+    return value;
 }
+
+ngx_int_t 
+ngx_http_php_output_header_set(ngx_http_request_t *r, 
+	const u_char *key_data, size_t key_len, 
+	const u_char *value_data, size_t value_len)
+{
+	ngx_table_elt_t     *h;
+
+	if ( ngx_strncasecmp((u_char *)key_data, (u_char *)"content-type", 12) == 0 ){
+        r->headers_out.content_type.data = (u_char *)value_data;
+        r->headers_out.content_type.len = value_len;
+        r->headers_out.content_type_len = value_len;
+    }else if ( ngx_strncasecmp((u_char *)key_data, (u_char *)"content-length", 14) == 0 ) {
+        r->headers_out.content_length_n = value_len;
+    }else {
+        h = ngx_list_push(&r->headers_out.headers);
+
+        if ( h == NULL ) {
+            return 0;
+        }
+
+        h->hash = 1;
+        h->key.len = key_len;
+        h->key.data = (u_char *)key_data;
+        h->value.len = value_len;
+        h->value.data = (u_char *)value_data;
+    }
+
+    return 1;
+}
+
+
+

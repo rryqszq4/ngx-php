@@ -31,8 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ngx_http_php_module.h"
 
-ngx_int_t ngx_http_php_output_header_get(ngx_http_request_t *r);
+ngx_str_t *ngx_http_php_output_header_get(ngx_http_request_t *r, const u_char *key_data, size_t key_len);
 
-ngx_int_t ngx_http_php_output_header_set(ngx_http_request_t *r);
+ngx_int_t ngx_http_php_output_header_set(ngx_http_request_t *r, const u_char *key_data, size_t key_len, const u_char *value_data, size_t value_len);
 
 #endif
