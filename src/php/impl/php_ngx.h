@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <ngx_http.h>
 
-#include "php_ngx_track.h"
+//#include "php_ngx_track.h"
 
 extern ngx_http_request_t * ngx_php_request;
 
