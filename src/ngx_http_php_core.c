@@ -227,7 +227,7 @@ ngx_php_error_cb(int type,
                 error_type_str = "Unknown error";
                 break;
         }
-        buffer_len = spprintf(&buffer, 0, "\n%s: %s in %s on line %d\n", error_type_str, buffer, error_filename, error_lineno);
+        buffer_len = spprintf(&buffer, 0, "%s: %s in %s on line %d", error_type_str, buffer, error_filename, error_lineno);
 
         ngx_buf_t *b;
         ngx_http_php_rputs_chain_list_t *chain;
@@ -274,7 +274,7 @@ ngx_php_error_cb(int type,
             r->headers_out.status = NGX_HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, " %s: %s in %s on line %d \n", error_type_str, buffer, error_filename, error_lineno);
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%s", buffer);
 
         ngx_http_php_zend_uthread_exit(r);
 
