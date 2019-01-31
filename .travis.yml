@@ -27,7 +27,7 @@ compiler:
   - gcc
   - clang
 cache:
-  - apt
+  apt: true
   directories:
   - data-cache
 env:
