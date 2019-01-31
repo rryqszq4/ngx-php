@@ -309,6 +309,10 @@ set_output:
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
+    if ( ctx == NULL ) {
+        return NGX_ERROR;
+    }
+
     if ( ctx && ctx->generator_closure ) {
         zval_ptr_dtor(ctx->generator_closure);
     }
@@ -587,6 +591,10 @@ set_output:
     }*/
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if ( ctx == NULL ) {
+        return NGX_ERROR;
+    }
 
     if ( ctx && ctx->generator_closure ) {
         zval_ptr_dtor(ctx->generator_closure);
@@ -977,6 +985,12 @@ set_output:
     }*/
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ngx_php_debug("r: %p, ctx: %p", r, ctx);
+
+    if ( ctx == NULL ) {
+        return NGX_ERROR;
+    }
 
     if ( ctx && ctx->generator_closure ) {
         zval_ptr_dtor(ctx->generator_closure);
