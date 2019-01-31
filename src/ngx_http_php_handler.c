@@ -927,6 +927,8 @@ ngx_http_php_content_inline_handler(ngx_http_request_t *r)
         return rc;
     }
 
+    ngx_php_debug("ctx->phase_status: %d", (int)ctx->phase_status);
+
     if (ctx->phase_status == NGX_DECLINED) {
 
         //ngx_http_php_content_inline_uthread_routine(r);

@@ -491,6 +491,13 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         zval retval;
 
         closure = ctx->generator_closure;
+        ngx_php_debug("closure: %p", closure);
+        if (!closure) {
+            if (ctx->upstream) {
+                ngx_http_php_socket_clear(r);
+            }
+            return ;
+        }
 
         if (ctx->upstream && ctx->upstream->enabled_receive == 1) {
             ngx_php_debug("buf write in php var.");
