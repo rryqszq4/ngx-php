@@ -972,9 +972,9 @@ ngx_http_php_content_inline_handler(ngx_http_request_t *r)
 set_output:
     rc = ngx_php_get_request_status();
 
-    if ( r->keepalive == 0 ) {
+    /*if ( r->keepalive == 0 ) {
         return NGX_OK;
-    }
+    }*/
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
