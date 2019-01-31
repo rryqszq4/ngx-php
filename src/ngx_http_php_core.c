@@ -276,6 +276,8 @@ ngx_php_error_cb(int type,
 
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%s", buffer);
 
+        ngx_php_debug("ngx_php error handler.");
+
         ngx_http_php_zend_uthread_exit(r);
 
         efree(buffer);

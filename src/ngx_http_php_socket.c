@@ -637,7 +637,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
         ngx_del_timer(c->read);
     }
 
-    r->keepalive = 0;
+    //r->keepalive = 0;
 
     u = ctx->upstream;
 
