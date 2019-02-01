@@ -303,9 +303,17 @@ ngx_http_php_rewrite_inline_handler(ngx_http_request_t *r)
 set_output:
     rc = ngx_php_get_request_status();
 
+    /*if ( r->keepalive == 0 ) {
+        return NGX_OK;
+    }*/
+
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    if ( ctx->generator_closure ) {
+    if ( ctx == NULL ) {
+        return NGX_ERROR;
+    }
+
+    if ( ctx && ctx->generator_closure ) {
         zval_ptr_dtor(ctx->generator_closure);
     }
 
@@ -578,9 +586,17 @@ ngx_http_php_access_inline_handler(ngx_http_request_t *r)
 set_output:
     rc = ngx_php_get_request_status();
 
+    /*if ( r->keepalive == 0 ) {
+        return NGX_OK;
+    }*/
+
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    if (ctx->generator_closure) {
+    if ( ctx == NULL ) {
+        return NGX_ERROR;
+    }
+
+    if ( ctx && ctx->generator_closure ) {
         zval_ptr_dtor(ctx->generator_closure);
     }
 
@@ -927,6 +943,9 @@ ngx_http_php_content_inline_handler(ngx_http_request_t *r)
         return rc;
     }
 
+    ngx_php_debug("ctx->phase_status: %d", (int)ctx->phase_status);
+    ngx_php_debug("r->keepalive: %d", r->keepalive);
+
     if (ctx->phase_status == NGX_DECLINED) {
 
         //ngx_http_php_content_inline_uthread_routine(r);
@@ -961,9 +980,20 @@ ngx_http_php_content_inline_handler(ngx_http_request_t *r)
 set_output:
     rc = ngx_php_get_request_status();
 
+    /*if ( r->keepalive == 0 ) {
+        return NGX_OK;
+    }*/
+
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    if (ctx->generator_closure) {
+    ngx_php_debug("r: %p, ctx: %p", r, ctx);
+
+    if ( ctx == NULL ) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at content inline handler.");
+        return NGX_ERROR;
+    }
+
+    if ( ctx && ctx->generator_closure ) {
         zval_ptr_dtor(ctx->generator_closure);
     }
 
@@ -1024,7 +1054,7 @@ set_output:
 
         ngx_http_output_filter(r, chain->out);
 
-        //ngx_http_set_ctx(r, NULL, ngx_http_php_module);
+        ngx_http_set_ctx(r, NULL, ngx_http_php_module);
 
         return NGX_OK;
 

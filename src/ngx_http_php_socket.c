@@ -314,14 +314,11 @@ ngx_http_php_socket_finalize(ngx_http_request_t *r,
     ngx_http_php_socket_upstream_t *u)
 {
     ngx_connection_t        *c;
-    ngx_http_php_ctx_t      *ctx;
 
     ngx_php_debug("request: %p, u: %p, u->cleanup: %p", r, u, u->cleanup);
 
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                    "php finalize socket");
-
-    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     if (u->cleanup) {
         *u->cleanup = NULL;
@@ -353,10 +350,6 @@ ngx_http_php_socket_finalize(ngx_http_request_t *r,
     }
 
     ngx_php_debug("socket end");
-
-    ctx->delay_time = 1;
-
-    ngx_http_php_sleep(r);
 
 }
 
@@ -644,7 +637,7 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
         ngx_del_timer(c->read);
     }
 
-    r->keepalive = 0;
+    //r->keepalive = 0;
 
     u = ctx->upstream;
 
@@ -766,6 +759,10 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
 
     ngx_http_php_socket_finalize(r, u);
 
+    ctx->delay_time = 1;
+
+    ngx_http_php_sleep(r);
+
     return ;
 }
 
@@ -873,6 +870,36 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
 
     return NGX_OK;
 }
+
+void 
+ngx_http_php_socket_clear(ngx_http_request_t *r)
+{
+    ngx_http_php_socket_upstream_t      *u;
+    ngx_http_php_ctx_t                  *ctx;
+
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    u = ctx->upstream;
+
+    if (u == NULL || 
+        u->peer.connection == NULL )
+    {
+        return ;
+    }
+
+    u->enabled_receive = 0;
+
+    if (u->request != r) {
+
+    }
+
+    ngx_php_debug("u->peer.connected: %p, r->connection: %p", u->peer.connection, r->connection);
+
+    ngx_http_php_socket_finalize(r, u);
+
+    return ;
+}
+
 
 
 
