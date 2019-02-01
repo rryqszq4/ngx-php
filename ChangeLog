@@ -1,3 +1,12 @@
+ngx_php7 0.0.16 changes:                                                            01 Feb 2019
+    * Add php impl ngx_header_set, ngx_header_get and ngx_header_gets.
+
+    * Fixed when php script was error, response return 500 code.
+
+    * Fixed core dump at php error handler.
+
+    * Fixed nginx request keepalive to close by the right way.
+
 ngx_php7 0.0.15 changes:                                                            12 Jan 2019
     * Fixed compiled pass on freebas 11.2 and used of clang compiler.
 
