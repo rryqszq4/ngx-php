@@ -989,6 +989,7 @@ set_output:
     ngx_php_debug("r: %p, ctx: %p", r, ctx);
 
     if ( ctx == NULL ) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at content inline handler.");
         return NGX_ERROR;
     }
 

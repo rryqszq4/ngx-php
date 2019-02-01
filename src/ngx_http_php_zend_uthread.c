@@ -468,6 +468,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
     }else {
         ngx_php_debug("r:%p, closure:%p, retval:%d", r, ctx->generator_closure, Z_TYPE(retval));
         efree(ctx->generator_closure);
+        ctx->generator_closure = NULL;
     }
 }
 
@@ -479,7 +480,8 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
     ngx_http_php_ctx_t *ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     if (ctx == NULL) {
-        
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at zend_uthread_resume.");
+        return ;
     }
 
     ngx_php_debug("ctx: %p", ctx);
@@ -518,9 +520,14 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
             ctx->phase_status = NGX_AGAIN;
         }else {
             ctx->phase_status = NGX_OK;
+
+            //zval_ptr_dtor(ctx->recv_buf);
+            if ( ctx->generator_closure ) {
+                efree(ctx->generator_closure);
+                ctx->generator_closure = NULL;
+            }
+            
             ngx_http_core_run_phases(r);
-            efree(ctx->generator_closure);
-            ctx->generator_closure = NULL;
         }
 
     }zend_catch {
@@ -537,17 +544,14 @@ ngx_http_php_zend_uthread_exit(ngx_http_request_t *r)
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
-    if (ctx == NULL) {
-
-    }
-
-    if (ctx->generator_closure) {
+    if ( ctx && ctx->generator_closure ) {
         //ngx_http_php_zend_uthread_resume(r);
         ctx->phase_status = NGX_OK;
-        ngx_http_core_run_phases(r);
         efree(ctx->generator_closure);
         ctx->generator_closure = NULL;
     }
+
+    ngx_http_core_run_phases(r);
 
 }
 

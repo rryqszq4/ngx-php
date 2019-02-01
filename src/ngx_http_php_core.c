@@ -239,6 +239,18 @@ ngx_php_error_cb(int type,
         r = ngx_php_request;
         ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
+        if ( ctx == NULL ) {
+            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%s", buffer);
+
+            ngx_php_debug("ngx_php error handler, ctx is nil.");
+
+            efree(buffer);
+            zend_bailout();
+
+            ngx_http_php_zend_uthread_exit(r);
+            return ;
+        }
+
         ns.data = (u_char *)buffer;
         ns.len = buffer_len;
 
@@ -278,10 +290,10 @@ ngx_php_error_cb(int type,
 
         ngx_php_debug("ngx_php error handler.");
 
-        ngx_http_php_zend_uthread_exit(r);
-
         efree(buffer);
         zend_bailout();
+
+        ngx_http_php_zend_uthread_exit(r);
         return ;
     }
 
