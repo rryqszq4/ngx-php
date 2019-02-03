@@ -467,6 +467,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
 
     }else {
         ngx_php_debug("r:%p, closure:%p, retval:%d", r, ctx->generator_closure, Z_TYPE(retval));
+        zval_ptr_dtor(ctx->generator_closure);
         efree(ctx->generator_closure);
         ctx->generator_closure = NULL;
     }
@@ -523,6 +524,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
 
             //zval_ptr_dtor(ctx->recv_buf);
             if ( ctx->generator_closure ) {
+                zval_ptr_dtor(ctx->generator_closure);
                 efree(ctx->generator_closure);
                 ctx->generator_closure = NULL;
             }
@@ -547,6 +549,7 @@ ngx_http_php_zend_uthread_exit(ngx_http_request_t *r)
     if ( ctx && ctx->generator_closure ) {
         //ngx_http_php_zend_uthread_resume(r);
         ctx->phase_status = NGX_OK;
+        zval_ptr_dtor(ctx->generator_closure);
         efree(ctx->generator_closure);
         ctx->generator_closure = NULL;
     }
