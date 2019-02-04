@@ -504,7 +504,8 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
 
         if (ctx->upstream && ctx->upstream->enabled_receive == 1) {
             ngx_php_debug("buf write in php var.");
-            ZVAL_STRINGL(ctx->recv_buf, (char *)ctx->upstream->buffer.pos, ctx->upstream->buffer.last - ctx->upstream->buffer.pos);
+            //ZVAL_STRINGL(ctx->recv_buf, (char *)ctx->upstream->buffer.pos, ctx->upstream->buffer.last - ctx->upstream->buffer.pos);
+            //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ctx->recv_buf: %p, type: %d, enabled_receive: %d", ctx->recv_buf, Z_TYPE_P(ctx->recv_buf), ctx->upstream->enabled_receive);
         }
 
         ZVAL_STRING(&func_next, "next");
@@ -516,6 +517,26 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         zval_ptr_dtor(&func_valid);
 
         ngx_php_debug("r:%p, closure:%p, retval:%d,%d", r, closure, Z_TYPE(retval), IS_TRUE);
+
+        if (ctx->upstream && ctx->upstream->enabled_receive == 1) {
+            //ZVAL_STRINGL(ctx->recv_buf, (char *)ctx->upstream->buffer.pos, ctx->upstream->buffer.last - ctx->upstream->buffer.pos);
+            //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ctx->recv_buf: %p, type: %d, enabled_receive: %d", ctx->recv_buf, Z_TYPE_P(ctx->recv_buf), ctx->upstream->enabled_receive);
+            //zval_ptr_dtor(ctx->recv_buf);
+            //ZVAL_NULL(ctx->recv_buf);
+            //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ctx->recv_buf: %p, type: %d, enabled_receive: %d", ctx->recv_buf, Z_TYPE_P(ctx->recv_buf), ctx->upstream->enabled_receive);
+        }
+        /*if (ctx->recv_buf) {
+            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "2 ctx->recv_buf: %p, type: %d", ctx->recv_buf, Z_TYPE_P(ctx->recv_buf));
+            if (Z_TYPE_P(ctx->recv_buf) != IS_NULL) {
+                ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "3 ctx->recv_buf: %p, type: %d", ctx->recv_buf, Z_TYPE_P(ctx->recv_buf));
+                //ZVAL_NULL(ctx->recv_buf);
+            }
+        }*/
+
+        /*if (Z_TYPE_P(ctx->recv_buf) != IS_NULL) {
+            zval_ptr_dtor(ctx->recv_buf);
+            ZVAL_NULL(ctx->recv_buf);
+        }*/
 
         if (Z_TYPE(retval) == IS_TRUE) {
             ctx->phase_status = NGX_AGAIN;
