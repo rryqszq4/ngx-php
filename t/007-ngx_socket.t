@@ -5,24 +5,27 @@ use Test::Nginx::Socket 'no_plan';
 run_tests();
 
 __DATA__
-=== TEST 1: ngx_socket
-ngx_socket
+=== TEST 2: ngx_socket2
+ngx_socket2
 --- config
 resolver 8.8.8.8;
-location = /ngx_socket {
-	default_type 'application/json;charset=UTF-8';
+location = /ngx_socket2 {
+    default_type 'application/json;charset=UTF-8';
     content_by_php '
-        yield ngx_socket::connect("hq.sinajs.cn", 80);
-        yield ngx_socket::send("GET /list=s_sh000001 HTTP/1.0\r\nHost: hq.sinajs.cn\r\nConnection: close\r\n\r\n");
-        yield $ret = ngx_socket::recv(1024);
-        yield ngx_socket::close();
+        $fd = ngx_socket_create();
+        yield ngx_socket_connect($fd, "hq.sinajs.cn", 80);
+        $send_buf = "GET /list=s_sh000001 HTTP/1.0\r\nHost: hq.sinajs.cn\r\nConnection: close\r\n\r\n";
+        yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
+        $ret = "";
+        yield ngx_socket_recv($fd, $ret);
+        yield ngx_socket_close($fd);
         $ret = explode("\r\n",$ret);
         var_dump($ret[0]);
-		var_dump($ret[1]);
-		var_dump(explode(":",$ret[2])[0].": 7?");
-		var_dump($ret[3]);
-		var_dump($ret[4]);
-		var_dump(explode("=",$ret[6])[0]);
+        var_dump($ret[1]);
+        var_dump(explode(":",$ret[2])[0].": 7?");
+        var_dump($ret[3]);
+        var_dump($ret[4]);
+        var_dump(explode("=",$ret[6])[0]);
     ';
 }
 --- request
