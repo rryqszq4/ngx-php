@@ -29,6 +29,23 @@ Requirement
 
 Installation
 ------------
+
+### CentOS / RedHat 7
+
+```sh
+yum -y install https://extras.getpagespeed.com/release-el7-latest.rpm
+yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm yum-utils
+yum-config-manager --enable remi-php73
+yum install nginx-module-php7
+```
+
+Edit `nginx.conf` and load the required modules at the top:
+
+    load_module modules/ndk_http_module.so;
+    load_module modules/ngx_http_php_module.so;
+
+### Other platforms
+
 ```sh
 $ wget 'http://php.net/distributions/php-7.2.14.tar.gz'
 $ tar xf php-7.2.14.tar.gz
