@@ -73,8 +73,7 @@ $             --add-module=/path/to/ngx_php7
 $ make && make install
 ```
 
-Docker
-------
+### Docker
 
 ```sh
 $ docker build -t nginx-php7 .
@@ -143,19 +142,6 @@ http {
                 echo "ngx_sleep start\n";
                 yield ngx::sleep(1);
                 echo "ngx_sleep end\n";
-            ';
-        }
-
-        location = /ngx_socket {
-            default_type 'application/json;charset=UTF-8';
-            content_by_php '
-                yield ngx_socket::connect("hq.sinajs.cn", 80);
-                yield ngx_socket::send("GET /list=s_sh000001 HTTP/1.0\r\n
-                                        Host: hq.sinajs.cn\r\nConnection: close\r\n\r\n");
-                yield $ret = ngx_socket::recv(1024);
-                yield ngx_socket::close();
-                
-                var_dump($ret);
             ';
         }
 
