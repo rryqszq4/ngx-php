@@ -537,7 +537,9 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         if (n > 0) {
             b->last += n;
             b->start = NULL;
-            ZVAL_STRINGL(ctx->recv_buf, (char *)ctx->upstream->buffer.pos, ctx->upstream->buffer.last - ctx->upstream->buffer.pos);
+
+            ngx_php_debug("buf write in php var.");
+            ZVAL_STRINGL(ctx->recv_buf, (char *)b->pos, b->last - b->pos);
             return NGX_AGAIN;
         }
 
