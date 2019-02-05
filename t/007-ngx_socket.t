@@ -17,7 +17,7 @@ location = /ngx_socket2 {
         $send_buf = "GET /list=s_sh000001 HTTP/1.0\\r\\nHost: hq.sinajs.cn\\r\\nConnection: close\\r\\n\\r\\n";
         yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
         $ret = "";
-        yield ngx_socket_recv($fd, $ret);
+        yield ngx_socket_recv($fd, $ret, 1024);
         yield ngx_socket_close($fd);
         $ret = explode("\r\n",$ret);
         var_dump($ret[0]);
@@ -44,6 +44,11 @@ string(21) "var hq_str_s_sh000001"
 --- http_config
     server {
         listen 8999;
+        server_name localhost;
+    
+        location = /foo {
+            content_by_php 'echo "foo";';
+        }
     }
 --- config
     location = /ngx_socket_http {
@@ -53,16 +58,12 @@ string(21) "var hq_str_s_sh000001"
             $send_buf = "GET /foo HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n";
             yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
             $ret = "";
-            yield ngx_socket_recv($fd, $ret);
+            yield ngx_socket_recv($fd, $ret, 1024);
             yield ngx_socket_close($fd);
             $ret = explode("\r\n",$ret);
             var_dump($ret[0]);
             var_dump($ret[6]);
         ';
-    }
-
-    location = /foo {
-        content_by_php 'echo "foo";';
     }
 --- request
 GET ngx_socket_http
