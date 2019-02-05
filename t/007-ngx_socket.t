@@ -40,3 +40,36 @@ array(6) {
   [5]=>
   string(0) ""
 }
+
+
+
+=== TEST 3: ngx_socket http
+--- http_config
+    server {
+        listen 8999;
+    }
+--- config
+    location = /ngx_socket_http {
+        content_by_php '
+            $fd = ngx_socket_create();
+            yield ngx_socket_connect($fd, "127.0.0.1", 8999);
+            $send_buf = "GET /foo HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n";
+            yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
+            $ret = "";
+            yield ngx_socket_recv($fd, $ret);
+            yield ngx_socket_close($fd);
+            $ret = explode("\r\n",$ret);
+            var_dump($ret[0]);
+            var_dump($ret[6]);
+        ';
+    }
+
+    location = /foo {
+        content_by_php 'echo "foo";';
+    }
+--- request
+GET ngx_socket_http
+--- response_body
+string(15) "HTTP/1.1 200 OK"
+string(3) "foo"
+
