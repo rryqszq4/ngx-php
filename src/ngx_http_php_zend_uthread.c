@@ -477,7 +477,12 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
             ctx->generator_closure = NULL;
         }
     }zend_catch {
-
+        zval_ptr_dtor(&func_main);
+        if ( ctx && ctx->generator_closure ){
+            zval_ptr_dtor(ctx->generator_closure);
+            efree(ctx->generator_closure);
+            ctx->generator_closure = NULL;
+        }
     }zend_end_try();
 }
 
