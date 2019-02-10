@@ -292,7 +292,6 @@ ngx_php_error_cb(int type,
 
         efree(buffer);
         //zend_bailout();
-        r->keepalive = 0;
 
         ngx_http_php_zend_uthread_exit(r);
         return ;
