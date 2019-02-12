@@ -94,7 +94,7 @@ class mysql {
     }
 
     private function write_packet($data, $len, $chr=1) {
-        $pack = $this->set_byte3($len).chr($chr).$data;
+        $pack = substr(pack('V', $len), 0, 3).chr($chr).$data;
         #var_dump("pack: ".$pack);
 
         //$pack = substr_replace(pack("V", $len), chr(1), 3, 1).$data;
@@ -146,11 +146,10 @@ class mysql {
 
     private function read_packet() {
         #var_dump("read_packet");
-        $data = '';
-        //do {
-            //$result = null;
+        do {
+            $data = '';
             yield ngx_socket_recv($this->socket, $data, 4);
-        //} while (empty($data));
+        } while (empty($data));
         #$this->print_bin($result);
         $field_count = unpack('v', substr($data, 0, 3))[1];
         #var_dump("field_count: ".$field_count);
@@ -283,8 +282,7 @@ class mysql {
         $token = $stage1 ^ $stage3;
 
 
-        $req = $this->set_byte4($client_flags)
-                .$this->set_byte4(1024*1024)
+        $req = pack('VV', $client_flags, 1048576)
                 .chr(0)
                 .str_repeat("\0", 23)
                 .$user."\0"
