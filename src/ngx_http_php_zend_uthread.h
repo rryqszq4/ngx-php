@@ -37,6 +37,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
+#define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
+	ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, 1)
+#define ngx_http_php_call_user_function_ex(function_table, object, function_name, retval_ptr, param_count, params, no_separation, symbol_table) \
+	ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, no_separation)
+
 void ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r);
 void ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r);
 void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);

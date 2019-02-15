@@ -30,8 +30,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_zend_uthread.h"
 #include "ngx_http_php_util.h"
 
+#include <zend_closures.h>
+
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name);
 static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *retval_ptr, char *string_name, int handle_exceptions);
+
+static int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation);
+static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache);
+
+static void ngx_http_php_zend_throw_exception_internal(zval *exception);
 
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name) /* {{{ */
 {
@@ -110,6 +117,299 @@ static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *re
     return result;
 }
 /* }}} */
+
+static int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation) /* {{{ */
+{
+    zend_fcall_info fci;
+
+    fci.size = sizeof(fci);
+    fci.object = object ? Z_OBJ_P(object) : NULL;
+    ZVAL_COPY_VALUE(&fci.function_name, function_name);
+    fci.retval = retval_ptr;
+    fci.param_count = param_count;
+    fci.params = params;
+    fci.no_separation = (zend_bool) no_separation;
+
+    return ngx_http_php_zend_call_function(&fci, NULL);
+}
+
+static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /* {{{ */
+{
+    uint32_t i;
+    zend_execute_data *call, dummy_execute_data;
+    zend_fcall_info_cache fci_cache_local;
+    zend_function *func;
+
+    ZVAL_UNDEF(fci->retval);
+
+    if (!EG(active)) {
+        return FAILURE; /* executor is already inactive */
+    }
+
+    if (EG(exception)) {
+        return FAILURE; /* we would result in an instable executor otherwise */
+    }
+
+    ZEND_ASSERT(fci->size == sizeof(zend_fcall_info));
+
+    /* Initialize execute_data */
+    if (!EG(current_execute_data)) {
+        /* This only happens when we're called outside any execute()'s
+         * It shouldn't be strictly necessary to NULL execute_data out,
+         * but it may make bugs easier to spot
+         */
+        memset(&dummy_execute_data, 0, sizeof(zend_execute_data));
+        EG(current_execute_data) = &dummy_execute_data;
+    } else if (EG(current_execute_data)->func &&
+               ZEND_USER_CODE(EG(current_execute_data)->func->common.type) &&
+               EG(current_execute_data)->opline->opcode != ZEND_DO_FCALL &&
+               EG(current_execute_data)->opline->opcode != ZEND_DO_ICALL &&
+               EG(current_execute_data)->opline->opcode != ZEND_DO_UCALL &&
+               EG(current_execute_data)->opline->opcode != ZEND_DO_FCALL_BY_NAME) {
+        /* Insert fake frame in case of include or magic calls */
+        dummy_execute_data = *EG(current_execute_data);
+        dummy_execute_data.prev_execute_data = EG(current_execute_data);
+        dummy_execute_data.call = NULL;
+        dummy_execute_data.opline = NULL;
+        dummy_execute_data.func = NULL;
+        EG(current_execute_data) = &dummy_execute_data;
+    }
+
+    if (!fci_cache || !fci_cache->function_handler) {
+        char *error = NULL;
+
+        if (!fci_cache) {
+            fci_cache = &fci_cache_local;
+        }
+
+        if (!zend_is_callable_ex(&fci->function_name, fci->object, IS_CALLABLE_CHECK_SILENT, NULL, fci_cache, &error)) {
+            if (error) {
+                zend_string *callable_name
+                    = zend_get_callable_name_ex(&fci->function_name, fci->object);
+                zend_error(E_WARNING, "Invalid callback %s, %s", ZSTR_VAL(callable_name), error);
+                efree(error);
+                zend_string_release_ex(callable_name, 0);
+            }
+            if (EG(current_execute_data) == &dummy_execute_data) {
+                EG(current_execute_data) = dummy_execute_data.prev_execute_data;
+            }
+            return FAILURE;
+        } else if (error) {
+            /* Capitalize the first latter of the error message */
+            if (error[0] >= 'a' && error[0] <= 'z') {
+                error[0] += ('A' - 'a');
+            }
+            zend_error(E_DEPRECATED, "%s", error);
+            efree(error);
+            if (UNEXPECTED(EG(exception))) {
+                if (EG(current_execute_data) == &dummy_execute_data) {
+                    EG(current_execute_data) = dummy_execute_data.prev_execute_data;
+                }
+                return FAILURE;
+            }
+        }
+    }
+
+    func = fci_cache->function_handler;
+    fci->object = (func->common.fn_flags & ZEND_ACC_STATIC) ?
+        NULL : fci_cache->object;
+
+    call = zend_vm_stack_push_call_frame(ZEND_CALL_TOP_FUNCTION | ZEND_CALL_DYNAMIC,
+        func, fci->param_count, fci_cache->called_scope, fci->object);
+
+    if (UNEXPECTED(func->common.fn_flags & ZEND_ACC_DEPRECATED)) {
+        zend_error(E_DEPRECATED, "Function %s%s%s() is deprecated",
+            func->common.scope ? ZSTR_VAL(func->common.scope->name) : "",
+            func->common.scope ? "::" : "",
+            ZSTR_VAL(func->common.function_name));
+        if (UNEXPECTED(EG(exception))) {
+            zend_vm_stack_free_call_frame(call);
+            if (EG(current_execute_data) == &dummy_execute_data) {
+                EG(current_execute_data) = dummy_execute_data.prev_execute_data;
+            }
+            return FAILURE;
+        }
+    }
+
+    for (i=0; i<fci->param_count; i++) {
+        zval *param;
+        zval *arg = &fci->params[i];
+
+        if (ARG_SHOULD_BE_SENT_BY_REF(func, i + 1)) {
+            if (UNEXPECTED(!Z_ISREF_P(arg))) {
+                if (!fci->no_separation) {
+                    /* Separation is enabled -- create a ref */
+                    ZVAL_NEW_REF(arg, arg);
+                } else if (!ARG_MAY_BE_SENT_BY_REF(func, i + 1)) {
+                    /* By-value send is not allowed -- emit a warning,
+                     * but still perform the call with a by-value send. */
+                    zend_error(E_WARNING,
+                        "Parameter %d to %s%s%s() expected to be a reference, value given", i+1,
+                        func->common.scope ? ZSTR_VAL(func->common.scope->name) : "",
+                        func->common.scope ? "::" : "",
+                        ZSTR_VAL(func->common.function_name));
+                    if (UNEXPECTED(EG(exception))) {
+                        ZEND_CALL_NUM_ARGS(call) = i;
+                        zend_vm_stack_free_args(call);
+                        zend_vm_stack_free_call_frame(call);
+                        if (EG(current_execute_data) == &dummy_execute_data) {
+                            EG(current_execute_data) = dummy_execute_data.prev_execute_data;
+                        }
+                        return FAILURE;
+                    }
+                }
+            }
+        } else {
+            if (Z_ISREF_P(arg) &&
+                !(func->common.fn_flags & ZEND_ACC_CALL_VIA_TRAMPOLINE)) {
+                /* don't separate references for __call */
+                arg = Z_REFVAL_P(arg);
+            }
+        }
+
+        param = ZEND_CALL_ARG(call, i+1);
+        ZVAL_COPY(param, arg);
+    }
+
+    if (UNEXPECTED(func->op_array.fn_flags & ZEND_ACC_CLOSURE)) {
+        uint32_t call_info;
+
+        GC_ADDREF(ZEND_CLOSURE_OBJECT(func));
+        call_info = ZEND_CALL_CLOSURE;
+        if (func->common.fn_flags & ZEND_ACC_FAKE_CLOSURE) {
+            call_info |= ZEND_CALL_FAKE_CLOSURE;
+        }
+        ZEND_ADD_CALL_FLAG(call, call_info);
+    }
+
+    if (func->type == ZEND_USER_FUNCTION) {
+        int call_via_handler = (func->common.fn_flags & ZEND_ACC_CALL_VIA_TRAMPOLINE) != 0;
+        const zend_op *current_opline_before_exception = EG(opline_before_exception);
+
+        zend_init_func_execute_data(call, &func->op_array, fci->retval);
+        zend_execute_ex(call);
+        EG(opline_before_exception) = current_opline_before_exception;
+        if (call_via_handler) {
+            /* We must re-initialize function again */
+            fci_cache->function_handler = NULL;
+        }
+    } else if (func->type == ZEND_INTERNAL_FUNCTION) {
+        int call_via_handler = (func->common.fn_flags & ZEND_ACC_CALL_VIA_TRAMPOLINE) != 0;
+        ZVAL_NULL(fci->retval);
+        call->prev_execute_data = EG(current_execute_data);
+        call->return_value = NULL; /* this is not a constructor call */
+        EG(current_execute_data) = call;
+        if (EXPECTED(zend_execute_internal == NULL)) {
+            /* saves one function call if zend_execute_internal is not used */
+            func->internal_function.handler(call, fci->retval);
+        } else {
+            zend_execute_internal(call, fci->retval);
+        }
+        EG(current_execute_data) = call->prev_execute_data;
+        zend_vm_stack_free_args(call);
+
+        if (EG(exception)) {
+            zval_ptr_dtor(fci->retval);
+            ZVAL_UNDEF(fci->retval);
+        }
+
+        if (call_via_handler) {
+            /* We must re-initialize function again */
+            fci_cache->function_handler = NULL;
+        }
+    } else { /* ZEND_OVERLOADED_FUNCTION */
+        ZVAL_NULL(fci->retval);
+
+        /* Not sure what should be done here if it's a static method */
+        if (fci->object) {
+            call->prev_execute_data = EG(current_execute_data);
+            EG(current_execute_data) = call;
+            fci->object->handlers->call_method(func->common.function_name, fci->object, call, fci->retval);
+            EG(current_execute_data) = call->prev_execute_data;
+        } else {
+            zend_throw_error(NULL, "Cannot call overloaded function for non-object");
+        }
+
+        zend_vm_stack_free_args(call);
+
+        if (func->type == ZEND_OVERLOADED_FUNCTION_TEMPORARY) {
+            zend_string_release_ex(func->common.function_name, 0);
+        }
+        efree(func);
+
+        if (EG(exception)) {
+            zval_ptr_dtor(fci->retval);
+            ZVAL_UNDEF(fci->retval);
+        }
+    }
+
+    zend_vm_stack_free_call_frame(call);
+
+    if (EG(current_execute_data) == &dummy_execute_data) {
+        EG(current_execute_data) = dummy_execute_data.prev_execute_data;
+    }
+
+    if (UNEXPECTED(EG(exception))) {
+        if (UNEXPECTED(!EG(current_execute_data))) {
+            ngx_http_php_zend_throw_exception_internal(NULL);
+        }
+// hack way !!!
+#if 1
+        else if (EG(current_execute_data)->func &&
+                   ZEND_USER_CODE(EG(current_execute_data)->func->common.type)) {
+            zend_rethrow_exception(EG(current_execute_data));
+        }
+#endif
+    }
+
+    return SUCCESS;
+}
+
+static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ */
+{
+#ifdef HAVE_DTRACE
+    if (DTRACE_EXCEPTION_THROWN_ENABLED()) {
+        if (exception != NULL) {
+            DTRACE_EXCEPTION_THROWN(ZSTR_VAL(Z_OBJ_P(exception)->ce->name));
+        } else {
+            DTRACE_EXCEPTION_THROWN(NULL);
+        }
+    }
+#endif /* HAVE_DTRACE */
+
+    if (exception != NULL) {
+        zend_object *previous = EG(exception);
+        zend_exception_set_previous(Z_OBJ_P(exception), EG(exception));
+        EG(exception) = Z_OBJ_P(exception);
+        if (previous) {
+            return;
+        }
+    }
+    if (!EG(current_execute_data)) {
+        if (exception && (Z_OBJCE_P(exception) == zend_ce_parse_error || Z_OBJCE_P(exception) == zend_ce_compile_error)) {
+            return;
+        }
+        if(EG(exception)) {
+            zend_exception_error(EG(exception), E_ERROR);
+        }
+        
+        // hack way !!!
+        //zend_error_noreturn(E_CORE_ERROR, "Exception thrown without a stack frame");
+    }
+
+    if (zend_throw_exception_hook) {
+        zend_throw_exception_hook(exception);
+    }
+
+    if (!EG(current_execute_data) || !EG(current_execute_data)->func ||
+        !ZEND_USER_CODE(EG(current_execute_data)->func->common.type) ||
+        EG(current_execute_data)->opline->opcode == ZEND_HANDLE_EXCEPTION) {
+        /* no need to rethrow the exception */
+        return;
+    }
+    EG(opline_before_exception) = EG(current_execute_data)->opline;
+    EG(current_execute_data)->opline = EG(exception_op);
+}
 
 void 
 ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)
@@ -438,7 +738,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
 
     zend_try {
         ZVAL_STRINGL(&func_main, (char *)func_name.data, func_name.len);
-        call_user_function(EG(function_table), NULL, &func_main, ctx->generator_closure, 0, NULL);
+        ngx_http_php_call_user_function(EG(function_table), NULL, &func_main, ctx->generator_closure, 0, NULL);
         zval_ptr_dtor(&func_main);
 
         if ( !ctx->generator_closure ) {
@@ -448,7 +748,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
         if (Z_TYPE_P(ctx->generator_closure) == IS_OBJECT){
 
             ZVAL_STRING(&func_valid, "valid");
-            if (call_user_function(NULL, ctx->generator_closure, &func_valid, &retval, 0, NULL) == FAILURE)
+            if (ngx_http_php_call_user_function(NULL, ctx->generator_closure, &func_valid, &retval, 0, NULL) == FAILURE)
             {
                 php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling valid");
                 return ;
@@ -461,7 +761,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
                 /*
                 ZVAL_STRING(&func_next, "next");
 
-                call_user_function(NULL, ctx->generator_closure, &func_next, &retval, 0, NULL TSRMLS_CC);
+                ngx_http_php_call_user_function(NULL, ctx->generator_closure, &func_next, &retval, 0, NULL TSRMLS_CC);
 
                 zval_ptr_dtor(&func_next);
                 */
@@ -518,7 +818,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         // ngx_php_debug("uthread resume before.");
 
         ZVAL_STRING(&func_next, "next");
-        if ( call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC) == FAILURE )
+        if ( ngx_http_php_call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC) == FAILURE )
         {
             php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling next");
             return ;
@@ -536,7 +836,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         }
 
         ZVAL_STRING(&func_valid, "valid");
-        if ( call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC) == FAILURE )
+        if ( ngx_http_php_call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC) == FAILURE )
         {
             php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling valid");
             return ;
