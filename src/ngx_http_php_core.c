@@ -246,7 +246,7 @@ ngx_php_error_cb(int type,
 
             efree(buffer);
             efree(log_buffer);
-            zend_bailout();
+            //zend_bailout();
 
             //ngx_http_php_zend_uthread_exit(r);
             return ;
