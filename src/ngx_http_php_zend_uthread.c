@@ -525,6 +525,16 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         }
         zval_ptr_dtor(&func_next);
 
+        r = ngx_php_request;
+        ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+        ngx_php_debug("%d, %p, %p", Z_TYPE_P(closure), r, ctx);
+        if ( !ctx ) {
+            zval_ptr_dtor(closure);
+            efree(closure);
+            closure = NULL;
+            return;
+        }
+
         ZVAL_STRING(&func_valid, "valid");
         if ( call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC) == FAILURE )
         {
@@ -552,7 +562,11 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         }
 
     }zend_catch {
-
+        if ( ctx && ctx->generator_closure ){
+            zval_ptr_dtor(ctx->generator_closure);
+            efree(ctx->generator_closure);
+            ctx->generator_closure = NULL;
+        }
     }zend_end_try();
 }
 
@@ -571,6 +585,15 @@ ngx_http_php_zend_uthread_exit(ngx_http_request_t *r)
         zval_ptr_dtor(ctx->generator_closure);
         efree(ctx->generator_closure);
         ctx->generator_closure = NULL;
+    }
+
+    if ( ctx && ctx->upstream ) {
+        ngx_http_php_socket_clear(r);
+    }
+
+    if ( ctx && ctx->php_socket ) {
+        efree(ctx->php_socket);
+        ctx->php_socket = NULL;
     }
 
     ngx_http_core_run_phases(r);
