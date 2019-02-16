@@ -274,7 +274,12 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
     if (UNEXPECTED(func->op_array.fn_flags & ZEND_ACC_CLOSURE)) {
         uint32_t call_info;
 
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 3
+        ZEND_ASSERT(GC_TYPE((zend_object*)func->op_array.prototype) == IS_OBJECT);
+        GC_REFCOUNT((zend_object*)func->op_array.prototype)++;
+#else
         GC_ADDREF(ZEND_CLOSURE_OBJECT(func));
+#endif
         call_info = ZEND_CALL_CLOSURE;
         if (func->common.fn_flags & ZEND_ACC_FAKE_CLOSURE) {
             call_info |= ZEND_CALL_FAKE_CLOSURE;
@@ -386,7 +391,12 @@ static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ *
         }
     }
     if (!EG(current_execute_data)) {
-        if (exception && (Z_OBJCE_P(exception) == zend_ce_parse_error || Z_OBJCE_P(exception) == zend_ce_compile_error)) {
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 3
+        if (exception && Z_OBJCE_P(exception) == zend_ce_parse_error)
+#else
+        if (exception && (Z_OBJCE_P(exception) == zend_ce_parse_error || Z_OBJCE_P(exception) == zend_ce_compile_error))
+#endif
+        {
             return;
         }
         if(EG(exception)) {
