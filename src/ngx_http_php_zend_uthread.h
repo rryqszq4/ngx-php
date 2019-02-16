@@ -37,6 +37,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 3
+#define zend_string_release_ex(s, persistent) \
+	zend_string_release(s)
+#endif
+
+
 #define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
 	ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, 1)
 #define ngx_http_php_call_user_function_ex(function_table, object, function_name, retval_ptr, param_count, params, no_separation, symbol_table) \
