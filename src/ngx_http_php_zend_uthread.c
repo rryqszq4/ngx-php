@@ -219,7 +219,12 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
     fci->object = (func->common.fn_flags & ZEND_ACC_STATIC) ?
         NULL : fci_cache->object;
 
-    call = zend_vm_stack_push_call_frame(ZEND_CALL_TOP_FUNCTION | ZEND_CALL_DYNAMIC,
+    call = zend_vm_stack_push_call_frame( 
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
+        ZEND_CALL_TOP_FUNCTION,
+#else
+        ZEND_CALL_TOP_FUNCTION | ZEND_CALL_DYNAMIC,
+#endif
         func, fci->param_count, fci_cache->called_scope, fci->object);
 
     if (UNEXPECTED(func->common.fn_flags & ZEND_ACC_DEPRECATED)) {
