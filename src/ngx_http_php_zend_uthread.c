@@ -184,11 +184,16 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
 
         if (!zend_is_callable_ex(&fci->function_name, fci->object, IS_CALLABLE_CHECK_SILENT, NULL, fci_cache, &error)) {
             if (error) {
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 2
+                zend_error(E_WARNING, "Invalid callback %s, %s", "", error);
+                efree(error);
+#else
                 zend_string *callable_name
                     = zend_get_callable_name_ex(&fci->function_name, fci->object);
                 zend_error(E_WARNING, "Invalid callback %s, %s", ZSTR_VAL(callable_name), error);
                 efree(error);
                 zend_string_release_ex(callable_name, 0);
+#endif
             }
             if (EG(current_execute_data) == &dummy_execute_data) {
                 EG(current_execute_data) = dummy_execute_data.prev_execute_data;
@@ -281,9 +286,11 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         GC_ADDREF(ZEND_CLOSURE_OBJECT(func));
 #endif
         call_info = ZEND_CALL_CLOSURE;
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1        
         if (func->common.fn_flags & ZEND_ACC_FAKE_CLOSURE) {
             call_info |= ZEND_CALL_FAKE_CLOSURE;
         }
+#endif
         ZEND_ADD_CALL_FLAG(call, call_info);
     }
 
@@ -360,10 +367,12 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         }
 // hack way !!!
 #if 1
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1
         else if (EG(current_execute_data)->func &&
                    ZEND_USER_CODE(EG(current_execute_data)->func->common.type)) {
             zend_rethrow_exception(EG(current_execute_data));
         }
+#endif
 #endif
     }
 

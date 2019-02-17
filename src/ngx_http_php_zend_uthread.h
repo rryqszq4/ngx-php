@@ -42,6 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	zend_string_release(s)
 #endif
 
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 2
+#define zend_init_func_execute_data(ex, op_array, return_value) \
+	zend_init_execute_data(ex, op_array, return_value)
+#endif
 
 #define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
 	ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, 1)
