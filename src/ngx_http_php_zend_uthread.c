@@ -436,6 +436,7 @@ static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ *
     EG(opline_before_exception) = EG(current_execute_data)->opline;
     EG(current_execute_data)->opline = EG(exception_op);
 }
+#endif
 
 void 
 ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)
@@ -480,7 +481,6 @@ ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)
 
     }zend_end_try();
 }
-#endif
 
 void 
 ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r)
@@ -852,8 +852,12 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         }
         zval_ptr_dtor(&func_next);
 
-        r = ngx_php_request;
-        ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+        /*
+        错误：变量‘ctx’能为‘longjmp’或‘vfork’所篡改 [-Werror=clobbered]
+        错误：实参‘r’可能为‘longjmp’或‘vfork’所篡改 [-Werror=clobbered]
+        */
+        //r = ngx_php_request;
+        //ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
         ngx_php_debug("%d, %p, %p", Z_TYPE_P(closure), r, ctx);
         if ( !ctx ) {
             zval_ptr_dtor(closure);
