@@ -69,6 +69,7 @@ ngx_http_php_post_read_handler(ngx_http_request_t *r)
         ctx->access_phase = 0;
         ctx->content_phase = 0;
         ctx->phase_status = NGX_DECLINED;
+        ctx->end_of_request = 0;
         ngx_memzero(&ctx->sleep, sizeof(ngx_event_t));
     }
 
@@ -207,6 +208,8 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
+    ctx->end_of_request = 1;
+
     if ( rc == NGX_OK || rc == NGX_HTTP_OK ) {
 
         chain = ctx->rputs_chain;
@@ -310,6 +313,7 @@ set_output:
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     if ( ctx == NULL ) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at rewrite inline handler.");
         return NGX_ERROR;
     }
 
@@ -318,6 +322,8 @@ set_output:
     }
 
     ctx->phase_status = NGX_DECLINED;
+
+    ctx->end_of_request = 1;
 
     if ( rc == NGX_OK || rc == NGX_HTTP_OK ) {
         chain = ctx->rputs_chain;
@@ -486,6 +492,8 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
+    ctx->end_of_request = 1;
+
     if (rc == NGX_OK || rc == NGX_HTTP_OK) {
 
         chain = ctx->rputs_chain;
@@ -593,6 +601,7 @@ set_output:
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     if ( ctx == NULL ) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at access inline handler.");
         return NGX_ERROR;
     }
 
@@ -601,6 +610,8 @@ set_output:
     }
 
     ctx->phase_status = NGX_DECLINED;
+
+    ctx->end_of_request = 1;
 
     if (rc == NGX_OK || rc == NGX_HTTP_OK) {
 
@@ -819,6 +830,8 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
+    ctx->end_of_request = 1;
+
     if (rc == NGX_OK || rc == NGX_DECLINED) {
 
         chain = ctx->rputs_chain;
@@ -998,6 +1011,8 @@ set_output:
     }
 
     ctx->phase_status = NGX_DECLINED;
+
+    ctx->end_of_request = 1;
 
     if (rc == NGX_OK || rc == NGX_DECLINED) {
 

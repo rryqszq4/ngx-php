@@ -821,7 +821,7 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
     ngx_http_php_ctx_t *ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     if (ctx == NULL) {
-        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at zend_uthread_resume.");
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at zend_uthread_resume");
         return ;
     }
 
@@ -859,10 +859,11 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         //r = ngx_php_request;
         //ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
         ngx_php_debug("%d, %p, %p", Z_TYPE_P(closure), r, ctx);
-        if ( !ctx ) {
-            zval_ptr_dtor(closure);
-            efree(closure);
-            closure = NULL;
+        if ( ctx->end_of_request ) {
+            //zval_ptr_dtor(closure);
+            //efree(closure);
+            //closure = NULL;
+            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "End of request and zend uthread has be shutdown");
             return;
         }
 

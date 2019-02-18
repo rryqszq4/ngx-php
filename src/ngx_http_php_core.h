@@ -131,6 +131,8 @@ typedef struct ngx_http_php_ctx_s {
 
     zval *recv_buf;
 
+    unsigned end_of_request : 1;
+
 } ngx_http_php_ctx_t;
 
 
