@@ -80,7 +80,7 @@ PHP_FUNCTION(ngx_socket_create)
     php_sock = php_ngx_socket_create();
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "|lll", &arg1, &arg2, &arg3) == FAILURE) {
-        return ;
+        RETURN_FALSE;
     }
 
     php_sock->type = arg1;
@@ -106,13 +106,17 @@ PHP_FUNCTION(ngx_socket_connect)
     ngx_http_php_ctx_t  *ctx;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "zs|l", &arg1, &addr, &addr_len, &port) == FAILURE) {
-        return ;
+        RETURN_FALSE;
     }
 
     //php_sock = Z_RES_P(arg1)->ptr;
 
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if ( !ctx ) {
+        RETURN_FALSE;
+    } 
 
     switch(ctx->php_socket->type) {
         case AF_INET: {
@@ -128,7 +132,7 @@ PHP_FUNCTION(ngx_socket_connect)
         }
 
         default:
-            php_error_docref(NULL, E_WARNING, "Unsupported socket type %d", ctx->php_socket->type);
+            //php_error_docref(NULL, E_WARNING, "Unsupported socket type %d", ctx->php_socket->type);
             RETURN_FALSE;
     }
 
@@ -162,6 +166,10 @@ PHP_FUNCTION(ngx_socket_close)
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
     
+    if ( !ctx ) {
+        RETURN_FALSE;
+    } 
+
     efree(ctx->php_socket);
     ctx->php_socket = NULL;
 
@@ -186,11 +194,11 @@ PHP_FUNCTION(ngx_socket_send)
     ngx_chain_t                     *cl;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "zsl", &arg1, &buf, &buf_len, &len) == FAILURE) {
-        return ;
+        RETURN_FALSE;
     }
 
     if (len < 0) {
-        php_error_docref(NULL, E_WARNING, "Length cannot be negative");
+        //php_error_docref(NULL, E_WARNING, "Length cannot be negative");
         RETURN_FALSE;
     }
 
@@ -201,6 +209,10 @@ PHP_FUNCTION(ngx_socket_send)
 
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if ( !ctx ) {
+        RETURN_FALSE;
+    } 
 
     ns.data = (u_char *)buf;
     ns.len = buf_len;
@@ -237,7 +249,7 @@ PHP_FUNCTION(ngx_socket_recv)
     //long                            size = 1024;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "zz/|l", &arg1, &buf, &len) == FAILURE) {
-        return ;
+        RETURN_FALSE;
     }
 
     /*if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
@@ -247,6 +259,14 @@ PHP_FUNCTION(ngx_socket_recv)
 
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ngx_php_debug("ctx: %p", ctx);
+    if ( !ctx ) {
+        // maybe memory leak.
+        //zval_ptr_dtor(buf);
+        //efree(buf);
+        RETURN_FALSE;
+    }
 
     u = ctx->upstream;
     u->buffer_size = len;
