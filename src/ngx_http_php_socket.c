@@ -762,7 +762,7 @@ ngx_http_php_socket_close(ngx_http_request_t *r)
 
     ngx_http_php_socket_finalize(r, u);
 
-    ctx->delay_time = 1;
+    ctx->delay_time = 0;
 
     ngx_http_php_sleep(r);
 
@@ -850,7 +850,7 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
     if (u->enabled_receive == 0) {
         u->enabled_receive = 1;
     }else {
-        ctx->delay_time = 1;
+        ctx->delay_time = 0;
         ngx_http_php_sleep(r);
     }
 

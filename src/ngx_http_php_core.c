@@ -320,6 +320,11 @@ size_t ngx_http_php_code_ub_write(const char *str, size_t str_length TSRMLS_DC)
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
+    if ( !ctx ) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php output handler, ctx is nil");
+        return 0;
+    }
+
     if (ctx->output_type & OUTPUT_CONTENT){
 
         ns.data = (u_char *)str;

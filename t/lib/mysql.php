@@ -401,7 +401,7 @@ class mysql {
         $this->rows[] = $row;
     }
 
-    public function connect($host="127.0.0.1", $port=3306, $user="root", $password="123456") {
+    public function connect($host="", $port="", $user="", $password="", $database="") {
         yield ngx_socket_connect($this->socket, $host, $port);
 
         $scramble = ( yield from $this->handshake_packet() );
