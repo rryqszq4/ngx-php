@@ -309,7 +309,7 @@ Nginx API for php
 
 Nginx non-blocking API for php
 ------------------------------
-* [yield ngx_sleep](#yield ngx_sleep)
+* [yield ngx_sleep](#yield_ngx_sleep)
 * [ngx_socket_create](#ngx_socket_create)
 * [yield ngx_socket_connect](#yield_ngx_socket_connect)
 * [yield ngx_socket_close](#yield_ngx_socket_close)
