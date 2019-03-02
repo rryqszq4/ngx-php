@@ -285,7 +285,6 @@ Nginx API for php
 * [ngx_exit](#ngx_exit)
 * [ngx_query_args](#ngx_query_args)
 * [ngx_post_args](#ngx_post_args)
-* [ngx_sleep](#ngx_sleep)
 * [ngx_log_error](#ngx_log_error)
 * [ngx_request_method](#ngx_request_method)
 * [ngx_request_document_root](#ngx_request_document_root)
@@ -301,16 +300,21 @@ Nginx API for php
 * [ngx_request_server_port](#ngx_request_server_port)
 * [ngx_request_server_name](#ngx_request_server_name)
 * [ngx_request_headers](#ngx_request_headers)
-* [ngx_socket_create](#ngx_socket_create)
-* [ngx_socket_connect](#ngx_socket_connect)
-* [ngx_socket_close](#ngx_socket_close)
-* [ngx_socket_send](#ngx_socket_send)
-* [ngx_socket_recv](#ngx_socket_recv)
 * [ngx_var_get](#ngx_var_get)
 * [ngx_var_set](#ngx_var_set)
 * [ngx_header_set](#ngx_header_set)
 * [ngx_header_get](#ngx_header_get)
 * [ngx_header_gets](#ngx_header_gets)
+
+
+Nginx non-blocking API for php
+------------------------------
+* [yield ngx_sleep](#yield_ngx_sleep)
+* [ngx_socket_create](#ngx_socket_create)
+* [yield ngx_socket_connect](#yield_ngx_socket_connect)
+* [yield ngx_socket_close](#yield_ngx_socket_close)
+* [yield ngx_socket_send](#yield_ngx_socket_send)
+* [yield ngx_socket_recv](#yield_ngx_socket_recv)
 
 
 Copyright and License
