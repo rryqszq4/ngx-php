@@ -308,7 +308,7 @@ Nginx API for php
 
 ngx_exit
 --------
-* **syntax:** `void ngx_exit(int status)`
+* **syntax:** `void ngx_exit(int $status)`
 
 ngx_query_args
 --------------
@@ -320,7 +320,7 @@ ngx_post_args
 
 ngx_log_error
 -------------
-* **syntax:** `void ngx_log_error(int level, string log_str)` or `void ngx_log::error(int level, string log_str)`
+* **syntax:** `void ngx_log_error(int $level, string $log_str)` or `void ngx_log::error(int $level, string $log_str)`
 
 ngx_request_method
 ------------------
@@ -380,19 +380,19 @@ ngx_request_headers
 
 ngx_var_get
 -----------
-* **syntax:** `string ngx_var_get(string key)` or `string ngx_var::get(string key)`
+* **syntax:** `string ngx_var_get(string $key)` or `string ngx_var::get(string $key)`
 
 ngx_var_set
 -----------
-* **syntax:** `void ngx_var_set(string key, string value)` or `void ngx_var::set(string key, string value)`
+* **syntax:** `void ngx_var_set(string $key, string $value)` or `void ngx_var::set(string $key, string $value)`
 
 ngx_header_set
 --------------
-* **syntax:** `bool ngx_header_set(string key, string value)`
+* **syntax:** `bool ngx_header_set(string $key, string $value)`
 
 ngx_header_get
 --------------
-* **syntax:** `string ngx_header_get(string key)`
+* **syntax:** `string ngx_header_get(string $key)`
 
 ngx_header_gets
 ---------------
@@ -401,16 +401,36 @@ ngx_header_gets
 
 Nginx non-blocking API for php
 ------------------------------
-* [yield ngx_sleep](#yield&emsp;ngx_sleep)
+* [yield ngx_sleep](#ngx_sleep)
 * [ngx_socket_create](#ngx_socket_create)
-* [yield ngx_socket_connect](#yield_ngx_socket_connect)
-* [yield ngx_socket_close](#yield_ngx_socket_close)
-* [yield ngx_socket_send](#yield_ngx_socket_send)
-* [yield ngx_socket_recv](#yield_ngx_socket_recv)
+* [yield ngx_socket_connect](#ngx_socket_connect)
+* [yield ngx_socket_close](#ngx_socket_close)
+* [yield ngx_socket_send](#ngx_socket_send)
+* [yield ngx_socket_recv](#ngx_socket_recv)
 
-yield ngx_sleep
----------------
+ngx_sleep
+---------
 * **syntax:** `yield ngx_sleep(int seconds)`
+
+ngx_socket_create
+-----------------
+* **syntax:** `resource ngx_socket_create(int $domain, int $type, int $protocol)`
+
+ngx_socket_connect
+------------------
+* **syntax:** `bool ( yield ngx_socket_connect(resource $socket, string $address, int $port) )`
+
+ngx_socket_close
+----------------
+* **syntax:** `bool ( yield ngx_socket_close(resource $socket) )`
+
+ngx_socket_send
+---------------
+* **syntax:** `int ( yield ngx_socket_send(resource $socket, string $buf, int $len) )`
+
+ngx_socket_recv
+---------------
+* **syntax:** `int ( yield ngx_socket_recv(resource $socket, string &$buf, int $len) )`
 
 
 Copyright and License
