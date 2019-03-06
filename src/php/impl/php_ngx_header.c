@@ -114,7 +114,7 @@ PHP_FUNCTION(ngx_header_get)
 PHP_FUNCTION(ngx_header_gets)
 {
     ngx_http_request_t  *r;
-    ngx_list_part_t     part;
+    ngx_list_part_t     *part;
     ngx_table_elt_t     *header;
     ngx_uint_t          i;
 
