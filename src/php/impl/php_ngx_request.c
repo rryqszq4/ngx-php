@@ -72,7 +72,7 @@ PHP_FUNCTION(ngx_request_document_uri)
         char *tmp_uri;
         tmp_uri = emalloc(r->uri.len + 9 + 1);
         ngx_cpystrn((u_char *)tmp_uri, (u_char *)r->uri.data, r->uri.len + 1);
-        strncat(tmp_uri, "index.php", 9);
+        strncat(tmp_uri, "index.php", 9 + 1);
         ZVAL_STRINGL(return_value, (char *)tmp_uri, r->uri.len + 9);
         efree(tmp_uri);
     } else {
@@ -106,7 +106,7 @@ PHP_FUNCTION(ngx_request_script_filename)
         tmp_script = emalloc(plcf->document_root.len + r->uri.len + 9 + 1);
         ngx_cpystrn((u_char *)tmp_script, (u_char *)plcf->document_root.data, plcf->document_root.len+1);
         strncat(tmp_script, (char *)r->uri.data, r->uri.len);
-        strncat(tmp_script, "index.php", 9);
+        strncat(tmp_script, "index.php", 9 + 1);
         ZVAL_STRINGL(return_value, (char *)tmp_script, plcf->document_root.len + r->uri.len + 9);
         efree(tmp_script);
     } else {
@@ -347,7 +347,7 @@ PHP_METHOD(ngx_request, document_uri)
         char *tmp_uri;
         tmp_uri = emalloc(r->uri.len + 9 + 1);
         ngx_cpystrn((u_char *)tmp_uri, (u_char *)r->uri.data, r->uri.len + 1);
-        strncat(tmp_uri, "index.php", 9);
+        strncat(tmp_uri, "index.php", 9 + 1);
         ZVAL_STRINGL(return_value, (char *)tmp_uri, r->uri.len + 9);
         efree(tmp_uri);
     } else {
@@ -381,7 +381,7 @@ PHP_METHOD(ngx_request, script_filename)
         tmp_script = emalloc(plcf->document_root.len + r->uri.len + 9 + 1);
         ngx_cpystrn((u_char *)tmp_script, (u_char *)plcf->document_root.data, plcf->document_root.len+1);
         strncat(tmp_script, (char *)r->uri.data, r->uri.len);
-        strncat(tmp_script, "index.php", 9);
+        strncat(tmp_script, "index.php", 9 + 1);
         ZVAL_STRINGL(return_value, (char *)tmp_script, plcf->document_root.len + r->uri.len + 9);
         efree(tmp_script);
     } else {

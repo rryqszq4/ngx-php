@@ -644,6 +644,10 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
 
     u = ctx->upstream;
 
+    u->connect_timeout = 60000;
+    u->read_timeout = 60000;
+    u->write_timeout = 60000;
+
     u->enabled_receive = 0;
 
     u->request = r;

@@ -153,7 +153,7 @@ PHP_FUNCTION(ngx_socket_close)
     ngx_http_php_ctx_t  *ctx;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &arg1) == FAILURE) {
-        return ;
+        RETURN_FALSE;
     }
 
     /*if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
@@ -285,6 +285,32 @@ PHP_FUNCTION(ngx_socket_recv)
     }*/
 
     RETURN_LONG(retval);
+}
+
+PHP_FUNCTION(ngx_socket_set_timeout)
+{
+    ngx_http_request_t              *r;
+    ngx_http_php_ctx_t              *ctx;
+    ngx_http_php_socket_upstream_t  *u;
+    long                            timeout;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout) == FAILURE) {
+        RETURN_FALSE;
+    }
+
+    r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if (ctx == NULL) {
+        RETURN_FALSE;
+    }
+
+    u = ctx->upstream;
+    u->connect_timeout = (ngx_msec_t) timeout;
+    u->read_timeout = (ngx_msec_t) timeout;
+    u->write_timeout = (ngx_msec_t) timeout;
+
+    RETURN_TRUE;
 }
 
 void php_impl_ngx_sockets_init(int module_number TSRMLS_DC)

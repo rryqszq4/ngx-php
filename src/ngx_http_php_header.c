@@ -31,15 +31,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ngx_str_t *
 ngx_http_php_output_header_get(ngx_http_request_t *r, const u_char *key_data, size_t key_len)
 {
-	ngx_str_t 			*value;
-	ngx_list_part_t     *part;
-	ngx_table_elt_t 	*header;
-	ngx_uint_t 			i;
+    ngx_str_t           *value;
+    ngx_list_part_t     *part;
+    ngx_table_elt_t     *header;
+    ngx_uint_t          i;
 
-	value = NULL;
+    value = NULL;
 
-	if (ngx_strncasecmp((u_char *)key_data, (u_char *)"content-type", 12) == 0){
-    	value = &r->headers_out.content_type;
+    if (ngx_strncasecmp((u_char *)key_data, (u_char *)"content-type", 12) == 0){
+        value = &r->headers_out.content_type;
     }else {
         part = &r->headers_out.headers.part;
         header = part->elts;
@@ -55,7 +55,7 @@ ngx_http_php_output_header_get(ngx_http_request_t *r, const u_char *key_data, si
             }
 
             if ( ngx_strncasecmp((u_char *)key_data, header[i].key.data, header[i].key.len) == 0 ) {
-            	value = &header[i].value;
+                value = &header[i].value;
                 break;
             }
         }
@@ -66,12 +66,12 @@ ngx_http_php_output_header_get(ngx_http_request_t *r, const u_char *key_data, si
 
 ngx_int_t 
 ngx_http_php_output_header_set(ngx_http_request_t *r, 
-	const u_char *key_data, size_t key_len, 
-	const u_char *value_data, size_t value_len)
+    const u_char *key_data, size_t key_len, 
+    const u_char *value_data, size_t value_len)
 {
-	ngx_table_elt_t     *h;
+    ngx_table_elt_t     *h;
 
-	if ( ngx_strncasecmp((u_char *)key_data, (u_char *)"content-type", 12) == 0 ){
+    if ( ngx_strncasecmp((u_char *)key_data, (u_char *)"content-type", 12) == 0 ){
         r->headers_out.content_type.data = (u_char *)value_data;
         r->headers_out.content_type.len = value_len;
         r->headers_out.content_type_len = value_len;

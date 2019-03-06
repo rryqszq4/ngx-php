@@ -52,7 +52,7 @@ struct ngx_http_php_socket_upstream_s {
 
     ngx_msec_t      connect_timeout;
     ngx_msec_t      read_timeout;
-    ngx_msec_t      send_timeout;
+    ngx_msec_t      write_timeout;
 
     ngx_http_cleanup_pt     *cleanup;
     ngx_http_request_t      *request;
