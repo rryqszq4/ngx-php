@@ -113,33 +113,33 @@ PHP_FUNCTION(ngx_header_get)
 
 PHP_FUNCTION(ngx_header_gets)
 {
-	ngx_http_request_t 	*r;
-	ngx_list_part_t 	*part;
-	ngx_table_elt_t 	*header;
-	ngx_uint_t 			i;
+    ngx_http_request_t  *r;
+    ngx_list_part_t     *part;
+    ngx_table_elt_t     *header;
+    ngx_uint_t          i;
 
-	r = ngx_php_request;
-	part = &r->headers_out.headers.part;
-	header = part->elts;
+    r = ngx_php_request;
+    part = &r->headers_out.headers.part;
+    header = part->elts;
 
-	array_init(return_value);
+    array_init(return_value);
 
     if ( r->headers_out.content_type.len ) {
         add_assoc_stringl(return_value, "content-type", (char *)r->headers_out.content_type.data, r->headers_out.content_type.len);
     }
 
-	for ( i = 0; /* void */; i++ ) {
-		if ( i >= part->nelts ) {
-			if ( part->next == NULL ) {
-				break;
-			}
-			part = part->next;
-			header = part->elts;
-			i = 0;
-		}
+    for ( i = 0; /* void */; i++ ) {
+        if ( i >= part->nelts ) {
+            if ( part->next == NULL ) {
+                break;
+            }
+            part = part->next;
+            header = part->elts;
+            i = 0;
+        }
 
-		add_assoc_stringl_ex(return_value, (char *)header[i].key.data, header[i].key.len, (char *)header[i].value.data, header[i].value.len);
-	}
+        add_assoc_stringl_ex(return_value, (char *)header[i].key.data, header[i].key.len, (char *)header[i].value.data, header[i].value.len);
+    }
 }
 
 void 
