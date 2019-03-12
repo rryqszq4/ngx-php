@@ -68,12 +68,12 @@ GET /rewrite3
 	set $position null;
 
 	rewrite_by_php '
-		ngx_var_set("position", "int the server directive");
+		ngx_var_set("position", "in the server directive");
 	';
 
 	location = /rewrite4 {
 		rewrite_by_php '
-			ngx_var_set("position", "int the location directive");
+			ngx_var_set("position", "in the location directive");
 		';
 
 		return 200 $position;
