@@ -14,7 +14,7 @@ __DATA__
 			ngx_var_set("sel", 1);
 		';
 		return 200 $sel;
-	};
+	}
 --- request
 GET /rewrite1
 --- response_body eval
