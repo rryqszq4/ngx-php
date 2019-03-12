@@ -461,26 +461,63 @@ ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     conf->document_root.len = clcf->root.len;
     conf->document_root.data = clcf->root.data;
 
-    prev->rewrite_code = conf->rewrite_code;
-    prev->rewrite_inline_code = conf->rewrite_inline_code;
+    if ( conf->rewrite_code == NGX_CONF_UNSET_PTR ) {
+        conf->rewrite_code = prev->rewrite_code;
+    }
 
-    prev->access_code = conf->access_code;
-    prev->access_inline_code = conf->access_inline_code;
+    if ( conf->rewrite_inline_code == NGX_CONF_UNSET_PTR ) {
+        conf->rewrite_inline_code = prev->rewrite_inline_code;
+        conf->rewrite_handler = prev->rewrite_handler;
+    }
 
-    prev->content_code = conf->content_code;
-    prev->content_inline_code = conf->content_inline_code;
+    if ( conf->access_code == NGX_CONF_UNSET_PTR ) {
+        conf->access_code = prev->access_code;
+    }
+    
+    if ( conf->access_inline_code == NGX_CONF_UNSET_PTR ) {
+        conf->access_inline_code = prev->access_inline_code;
+        conf->access_handler = prev->access_handler;
+    }
+
+    if ( conf->content_code == NGX_CONF_UNSET_PTR ){
+        conf->content_code = prev->content_code;
+    }
+
+    if ( conf->content_inline_code == NGX_CONF_UNSET_PTR ){
+        conf->content_inline_code = prev->content_inline_code;
+        conf->content_handler = prev->content_handler;
+    }
 
     prev->opcode_inline_code = conf->opcode_inline_code;
 
     prev->stack_inline_code = conf->stack_inline_code;
 
-    prev->log_code = conf->log_code;
-    prev->log_inline_code = conf->log_inline_code;
+    if ( conf->log_code == NGX_CONF_UNSET_PTR ) {
+        conf->log_code = prev->log_code;
+    }
 
-    prev->header_filter_code = conf->header_filter_code;
-    prev->header_filter_inline_code = conf->header_filter_inline_code;
-    prev->body_filter_code = conf->body_filter_code;
-    prev->body_filter_inline_code = conf->body_filter_inline_code;
+    if ( conf->log_inline_code == NGX_CONF_UNSET_PTR ) {
+        conf->log_inline_code = prev->log_inline_code;
+        conf->log_handler = prev->log_handler;
+    }
+
+    if ( conf->header_filter_code == NGX_CONF_UNSET_PTR ) {
+        conf->header_filter_code = prev->header_filter_code;
+    }
+
+    if ( conf->header_filter_inline_code == NGX_CONF_UNSET_PTR ) {
+        conf->header_filter_inline_code = prev->header_filter_inline_code;
+        conf->header_filter_handler = prev->header_filter_handler;
+    }
+
+    if ( conf->body_filter_code == NGX_CONF_UNSET_PTR ) {
+        conf->body_filter_code = prev->body_filter_code;
+    }
+
+    if ( conf->body_filter_inline_code == NGX_CONF_UNSET_PTR ) {
+        conf->body_filter_inline_code = prev->body_filter_inline_code;
+        conf->body_filter_handler = prev->body_filter_handler;
+    }
 
     prev->enabled_rewrite_inline_compile = conf->enabled_rewrite_inline_compile;
     prev->enabled_access_inline_compile = conf->enabled_access_inline_compile;
