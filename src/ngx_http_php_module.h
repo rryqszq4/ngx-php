@@ -46,6 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NGX_HTTP_PHP_MODULE_NAME "ngx_php"
 #define NGX_HTTP_PHP_MODULE_VERSION  "0.0.16"
 
+#ifndef NGX_HTTP_PERMANENT_REDIRECT
+#   define NGX_HTTP_PERMANENT_REDIRECT  308
+#endif
+
 extern ngx_module_t ngx_http_php_module;
 ngx_http_request_t *ngx_php_request;
 
