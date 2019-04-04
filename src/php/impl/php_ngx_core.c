@@ -211,6 +211,66 @@ PHP_FUNCTION(ngx_sleep)
 
 }
 
+PHP_FUNCTION(ngx_redirect)
+{
+    ngx_http_request_t  *r;
+    ngx_http_php_ctx_t  *ctx;
+    zend_string         *uri;
+    zend_long           status = NGX_HTTP_MOVED_TEMPORARILY;
+
+    ngx_table_elt_t     *h;
+    u_char              *ngx_uri;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S|l", &uri, &status) == FAILURE) {
+        RETURN_FALSE;
+    }
+
+    if (status != NGX_HTTP_MOVED_TEMPORARILY
+        && status != NGX_HTTP_MOVED_PERMANENTLY
+        && status != NGX_HTTP_SEE_OTHER
+        && status != NGX_HTTP_TEMPORARY_REDIRECT
+        && status != NGX_HTTP_PERMANENT_REDIRECT) 
+    {
+        RETURN_FALSE;
+    }
+
+    r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if (ctx == NULL) {
+        RETURN_FALSE;
+    }
+
+    ngx_uri = ngx_palloc(r->pool, ZSTR_LEN(uri));
+    if (ngx_uri == NULL) {
+        RETURN_FALSE;
+    }
+
+    ngx_memcpy(ngx_uri, ZSTR_VAL(uri), ZSTR_LEN(uri));
+
+    h = ngx_list_push(&r->headers_out.headers);
+    if (h == NULL) {
+        RETURN_FALSE;
+    }
+
+    h->hash = 1;
+
+    h->value.len = ZSTR_LEN(uri);
+    h->value.data = ngx_uri;
+    ngx_str_set(&h->key, "Location");
+
+    r->headers_out.status = status;
+
+    EG(exit_status) = status;
+
+    if (ZSTR_LEN(uri) && ngx_uri[0] != '/') {
+        r->headers_out.location = h;
+    }
+
+    RETURN_TRUE;
+
+}
+
 PHP_METHOD(ngx, _exit)
 {
     long status = 0;
@@ -426,6 +486,8 @@ void php_impl_ngx_core_init(int module_number TSRMLS_DC)
     REGISTER_LONG_CONSTANT("NGX_HTTP_SEE_OTHER", NGX_HTTP_SEE_OTHER, CONST_CS);
     REGISTER_LONG_CONSTANT("NGX_HTTP_NOT_MODIFIED", NGX_HTTP_NOT_MODIFIED, CONST_CS);
     REGISTER_LONG_CONSTANT("NGX_HTTP_TEMPORARY_REDIRECT", NGX_HTTP_TEMPORARY_REDIRECT, CONST_CS);
+    REGISTER_LONG_CONSTANT("NGX_HTTP_PERMANENT_REDIRECT", NGX_HTTP_PERMANENT_REDIRECT, CONST_CS);
+
     REGISTER_LONG_CONSTANT("NGX_HTTP_BAD_REQUEST", NGX_HTTP_BAD_REQUEST, CONST_CS);
     REGISTER_LONG_CONSTANT("NGX_HTTP_UNAUTHORIZED", NGX_HTTP_UNAUTHORIZED, CONST_CS);
     REGISTER_LONG_CONSTANT("NGX_HTTP_FORBIDDEN", NGX_HTTP_FORBIDDEN, CONST_CS);

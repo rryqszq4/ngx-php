@@ -305,6 +305,7 @@ Nginx API for php
 * [ngx_header_set](#ngx_header_set)
 * [ngx_header_get](#ngx_header_get)
 * [ngx_header_gets](#ngx_header_gets)
+* [ngx_redirect](#ngx_redirect)
 
 ngx_exit
 --------
@@ -397,6 +398,10 @@ ngx_header_get
 ngx_header_gets
 ---------------
 * **syntax:** `array ngx_header_gets(void)`
+
+ngx_redirect
+------------
+* **syntax:** `bool ngx_redirect(string $uri, int $status)`
 
 
 Nginx non-blocking API for php
