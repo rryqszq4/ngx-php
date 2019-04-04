@@ -20,7 +20,7 @@ __DATA__
 		';
 	}
 --- request
-GET ngx_redirect
+GET /ngx_redirect
 --- raw_response_headers_like: Location: /test\r\n
 --- response_body_like: 302 Found
 --- error_code: 302
