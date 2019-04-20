@@ -70,6 +70,7 @@ ngx_http_php_post_read_handler(ngx_http_request_t *r)
         ctx->content_phase = 0;
         ctx->phase_status = NGX_DECLINED;
         ctx->end_of_request = 0;
+        ctx->request_body_more = 1;
         ngx_memzero(&ctx->sleep, sizeof(ngx_event_t));
     }
 
@@ -273,6 +274,31 @@ ngx_http_php_rewrite_inline_handler(ngx_http_request_t *r)
     ngx_http_set_ctx(r, ctx, ngx_http_php_module);
 
     ngx_php_request = r;
+
+    if (r->method == NGX_HTTP_POST && !ctx->read_request_body_done) {
+        r->request_body_in_single_buf = 1;
+        r->request_body_in_persistent_file = 1;
+        r->request_body_in_clean_file = 1;
+
+        ngx_php_debug("read_request_body_done: %d", (int)ctx->read_request_body_done);
+
+        rc = ngx_http_read_client_request_body(r, ngx_http_php_read_request_body_callback);
+        ngx_php_debug("%d, %d, %d", (int)rc, (int)ctx->request_body_more, (int)ctx->read_request_body_done);
+        if (rc == NGX_ERROR || rc >= NGX_HTTP_SPECIAL_RESPONSE) {
+#if (nginx_version < 1002006) || (nginx_version >= 1003000 && nginx_version < 1003009)
+            r->main->count--;
+#endif
+            return rc;
+        }
+
+        if (rc == NGX_AGAIN) {
+            ctx->request_body_more = 1;
+            ctx->read_request_body_done = 0;
+            return NGX_AGAIN;
+        }
+
+        return rc;
+    }
 
     if ( ctx->phase_status == NGX_DECLINED ) {
         
@@ -559,6 +585,31 @@ ngx_http_php_access_inline_handler(ngx_http_request_t *r)
     ngx_http_set_ctx(r, ctx, ngx_http_php_module);
 
     ngx_php_request = r;
+
+    if (r->method == NGX_HTTP_POST && !ctx->read_request_body_done) {
+        r->request_body_in_single_buf = 1;
+        r->request_body_in_persistent_file = 1;
+        r->request_body_in_clean_file = 1;
+
+        ngx_php_debug("read_request_body_done: %d", (int)ctx->read_request_body_done);
+
+        rc = ngx_http_read_client_request_body(r, ngx_http_php_read_request_body_callback);
+        ngx_php_debug("%d, %d, %d", (int)rc, (int)ctx->request_body_more, (int)ctx->read_request_body_done);
+        if (rc == NGX_ERROR || rc >= NGX_HTTP_SPECIAL_RESPONSE) {
+#if (nginx_version < 1002006) || (nginx_version >= 1003000 && nginx_version < 1003009)
+            r->main->count--;
+#endif
+            return rc;
+        }
+
+        if (rc == NGX_AGAIN) {
+            ctx->request_body_more = 1;
+            ctx->read_request_body_done = 0;
+            return NGX_AGAIN;
+        }
+
+        return rc;
+    }
 
     if (ctx->phase_status == NGX_DECLINED) {
 
@@ -920,7 +971,6 @@ ngx_http_php_content_inline_handler(ngx_http_request_t *r)
 
     ctx->output_type = OUTPUT_CONTENT;
 
-    ctx->request_body_more = 1;
     ngx_http_set_ctx(r, ctx, ngx_http_php_module);
 
     ngx_php_request = r;
