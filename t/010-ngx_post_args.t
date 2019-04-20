@@ -52,29 +52,3 @@ array(2) {
   string(1) "2"
 }
 
-
-
-=== TEST 3: ngx_post_args at access
-ngx_post_args at access
---- config
-location = /ngx_access {
-	access_by_php '
-		var_dump(ngx_post_args());
-		ngx_exit(NGX_OK);
-	';
-	content_by_php '
-		echo "not output";
-	';
-}
---- more_headers
-Content-type: application/x-www-form-urlencoded
---- request
-POST /ngx_access
-a=1&b=2
---- response_body
-array(2) {
-  ["a"]=>
-  string(1) "1"
-  ["b"]=>
-  string(1) "2"
-}
