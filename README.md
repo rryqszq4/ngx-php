@@ -15,7 +15,7 @@ ngx_php7 doesn't want to replace anything, just want to provide a solution.
 
 There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree/ngx_php5), which records some of my past code practices and is also valuable.   
 
-[Benchmarks about ngx_php and php](https://www.techempower.com/benchmarks/#section=test&runid=76a34044-54d6-4349-adfe-863c2d5ae756&hw=ph&test=plaintext&l=zik073-7)  
+[Benchmarks about ngx_php7 and php](https://www.techempower.com/benchmarks/#section=test&runid=76a34044-54d6-4349-adfe-863c2d5ae756&hw=ph&test=plaintext&l=zik073-7)  
 
 What's different with official php
 ----------------------------------
@@ -32,21 +32,7 @@ Requirement
 Installation
 ------------
 
-### CentOS / RedHat 7
-
-```sh
-yum -y install https://extras.getpagespeed.com/release-el7-latest.rpm
-yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm yum-utils
-yum-config-manager --enable remi-php73
-yum install nginx-module-php7
-```
-
-Edit `nginx.conf` and load the required modules at the top:
-
-    load_module modules/ndk_http_module.so;
-    load_module modules/ngx_http_php_module.so;
-
-### Other platforms
+### Compile install
 
 ```sh
 $ wget 'http://php.net/distributions/php-7.2.14.tar.gz'
@@ -74,6 +60,20 @@ $             --add-module=/path/to/ngx_php7/third_party/ngx_devel_kit \
 $             --add-module=/path/to/ngx_php7
 $ make && make install
 ```
+
+### CentOS / RedHat 7
+
+```sh
+yum -y install https://extras.getpagespeed.com/release-el7-latest.rpm
+yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm yum-utils
+yum-config-manager --enable remi-php73
+yum install nginx-module-php7
+```
+
+Edit `nginx.conf` and load the required modules at the top:
+
+    load_module modules/ndk_http_module.so;
+    load_module modules/ngx_http_php_module.so;
 
 ### Docker
 
