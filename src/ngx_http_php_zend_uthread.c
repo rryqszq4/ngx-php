@@ -31,6 +31,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_util.h"
 
 #include <zend_closures.h>
+#include <zend_dtrace.h>
+
+#ifdef HAVE_DTRACE
+#define php_exception__thrown_semaphore 0
+#endif /* HAVE_DTRACE */
 
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name);
 static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *retval_ptr, char *string_name, int handle_exceptions);
