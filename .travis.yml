@@ -23,6 +23,7 @@ addons:
       - libssl-dev
       - libbz2-dev
       - libzip-dev
+      - systemtap-sdt-dev
 compiler:
   - gcc
   - clang
