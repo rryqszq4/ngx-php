@@ -358,6 +358,8 @@ ngx_http_php_socket_connected_handler(ngx_http_request_t *r,
     ngx_http_php_socket_upstream_t *u)
 {
     ngx_php_debug("php socket connected handler");
+    u->read_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_dummy_handler;
+    u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_dummy_handler;
 }
 
 static ngx_int_t 
