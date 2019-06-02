@@ -1,3 +1,18 @@
+ngx_php7 0.0.17 changes:                                                            01 Jun 2019
+    * Add php impl ngx_redirect.
+
+    * Fixed mysql handshake error.
+
+    * Fixed add handler post data at rewrite and access phase.
+
+    * Fixed the directive rewrite_by_php has not been extended in context configuration.
+
+    * Fixed error handler coredump.
+
+    * Fixed ngx_exit memory leak.
+
+    * Fixed socket receive memory leak.
+
 ngx_php7 0.0.16 changes:                                                            01 Feb 2019
     * Add php impl ngx_header_set, ngx_header_get and ngx_header_gets.
 

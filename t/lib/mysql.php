@@ -146,11 +146,11 @@ class mysql {
 
     private function read_packet() {
         #var_dump("read_packet");
-        do {
+        //do {
             $data = '';
             yield ngx_socket_recv($this->socket, $data, 4);
-        } while (empty($data));
-        #$this->print_bin($result);
+        //} while (empty($data));
+        #$this->print_bin($data);
         $field_count = unpack('v', substr($data, 0, 3))[1];
         #var_dump("field_count: ".$field_count);
         //$data = '';
@@ -346,7 +346,7 @@ class mysql {
         #var_dump($db);
         $field['table'] = $table = $this->parse_field_data($result, $start);
         #var_dump($table);
-        $field['ori_table'] == $ori_table = $this->parse_field_data($result, $start);
+        $field['ori_table'] = $ori_table = $this->parse_field_data($result, $start);
         #var_dump($ori_table);
         $field['column'] = $column = $this->parse_field_data($result, $start);
         #var_dump($column);
