@@ -552,6 +552,9 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 2
     zend_startup_module(&php_ngx_module_entry);
+#else
+    EG(current_module) = &php_ngx_module_entry;
+    EG(current_module)->type = MODULE_PERSISTENT;
 #endif
 
     php_ngx_request_init(TSRMLS_C);
