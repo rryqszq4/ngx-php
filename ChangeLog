@@ -1,3 +1,6 @@
+ngx_php7 0.0.18 changes:                                                            10 Jun 2019
+    * Fixed error about php-7.3.6
+
 ngx_php7 0.0.17 changes:                                                            01 Jun 2019
     * Add php impl ngx_redirect.
 
