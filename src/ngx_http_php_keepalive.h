@@ -33,10 +33,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ngx_http.h>
 
 typedef struct {
-	ngx_queue_t 	queue;
-	ngx_connection 	*connection;
-	struct socketaddr 	sockaddr;
-	socklen_t 			socklen;
+	ngx_http_php_keepalive_conf_t 	*keepalilve_conf;
+	ngx_queue_t 					queue;
+	ngx_connection 					*connection;
+	struct socketaddr 				sockaddr;
+	socklen_t 						socklen;
 } ngx_http_php_keepalive_cache_t;
 
+
+typedef struct {
+
+	ngx_pool_t 		*pool;
+	ngx_uint_t 		max_cached;
+	ngx_queue_t 	cache;
+	ngx_queue_t 	free;
+
+
+} ngx_http_php_keepalive_conf_t;
+
+ngx_int_t ngx_http_php_keepalive_init(ngx_http_request_t *r, ngx_http_php_keepalive_conf_t *kc);
+
+ngx_int_t ngx_http_php_keepalive_get_peer(ngx_peer_connection_t *pc, void *data);
+
+void ngx_http_php_keepalive_free_peer(ngx_peer_connection_t *pc, void *data, ngx_uint_t state);
+
+void ngx_http_php_keepalive_dummy_handler(ngx_event_t *ev);
+
+void ngx_http_php_keepalive_close_handler(ngx_event_t *ev);
+
+void ngx_http_php_keepalive_close(ngx_connection_t *c);
+
 #endif
+
