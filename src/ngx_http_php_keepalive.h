@@ -33,23 +33,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ngx_http.h>
 
 typedef struct {
-	ngx_http_php_keepalive_conf_t 	*keepalilve_conf;
-	ngx_queue_t 					queue;
-	ngx_connection 					*connection;
-	struct socketaddr 				sockaddr;
-	socklen_t 						socklen;
-} ngx_http_php_keepalive_cache_t;
-
-
-typedef struct {
 
 	ngx_pool_t 		*pool;
 	ngx_uint_t 		max_cached;
 	ngx_queue_t 	cache;
 	ngx_queue_t 	free;
 
-
 } ngx_http_php_keepalive_conf_t;
+
+typedef struct {
+
+	ngx_http_php_keepalive_conf_t 	*keepalilve_conf;
+	ngx_queue_t 					queue;
+	ngx_connection_t 					*connection;
+	struct sockaddr 				sockaddr;
+	socklen_t 						socklen;
+
+} ngx_http_php_keepalive_cache_t;
 
 ngx_int_t ngx_http_php_keepalive_init(ngx_http_request_t *r, ngx_http_php_keepalive_conf_t *kc);
 

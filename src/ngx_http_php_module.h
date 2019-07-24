@@ -38,6 +38,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ngx_http.h>
 #include <nginx.h>
 
+#include "ngx_http_php_keepalive.h"
+
 #if defined(NDK) && NDK
 #include <ndk.h>
 #endif
@@ -77,6 +79,12 @@ typedef struct ngx_http_php_main_conf_s {
     ngx_http_php_state_t *state;
 
 } ngx_http_php_main_conf_t;
+
+typedef struct ngx_http_php_srv_conf_s {
+
+    ngx_http_php_keepalive_conf_t   *keepalive_conf;
+
+} ngx_http_php_srv_conf_t;
 
 typedef struct ngx_http_php_loc_conf_s {
     ngx_str_t document_root;

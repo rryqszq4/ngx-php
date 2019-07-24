@@ -26,8 +26,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
+#include "ngx_http_php_module.h"
 #include "ngx_http_php_keepalive.h"
-
 
 ngx_int_t 
 ngx_http_php_keepalive_init(ngx_http_request_t *r, ngx_http_php_keepalive_conf_t *kc)
@@ -35,7 +35,7 @@ ngx_http_php_keepalive_init(ngx_http_request_t *r, ngx_http_php_keepalive_conf_t
 	ngx_http_php_keepalive_cache_t 	*cached;
 	ngx_uint_t 						i;
 
-	cached = ngx_pcalloc(kc->pool, sizeof(ngx_http_php_keepalive_cache_t * kc->max_cached));
+	cached = ngx_pcalloc(kc->pool, sizeof(ngx_http_php_keepalive_cache_t) * kc->max_cached);
 
 	if ( cached == NULL ) {
 		return NGX_ERROR;
@@ -141,7 +141,7 @@ ngx_http_php_keepalive_free_peer(ngx_peer_connection_t *pc, void *data, ngx_uint
 	c->pool->log = ngx_cycle->log;
 
 	item->socklen = pc->socklen;
-	ngx_memcpy(&item->sockaddr, pc->sockaddr);
+	ngx_memcpy(&item->sockaddr, pc->sockaddr, pc->socklen);
 
 }
 
@@ -174,7 +174,7 @@ ngx_http_php_keepalive_close_handler(ngx_event_t *ev)
     if (n == -1 && ngx_socket_errno == NGX_EAGAIN) {
         ev->ready = 0;
 
-        if (ngx_handle_read_event(c->read, 0, NGX_FUNC_LINE) != NGX_OK) {
+        if (ngx_handle_read_event(c->read, 0) != NGX_OK) {
             goto close;
         }
 

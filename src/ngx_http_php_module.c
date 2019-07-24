@@ -51,6 +51,8 @@ static ngx_int_t ngx_http_php_handler_init(ngx_http_core_main_conf_t *cmcf, ngx_
 static void *ngx_http_php_create_main_conf(ngx_conf_t *cf);
 static char *ngx_http_php_init_main_conf(ngx_conf_t *cf, void *conf);
 
+static void *ngx_http_php_create_srv_conf(ngx_conf_t *cf);
+
 static void *ngx_http_php_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child); 
 
@@ -241,7 +243,7 @@ static ngx_http_module_t ngx_http_php_module_ctx = {
     ngx_http_php_create_main_conf, /* create main configuration */
     ngx_http_php_init_main_conf,   /* init main configuration */
 
-    NULL,                          /* create server configuration */
+    ngx_http_php_create_srv_conf,  /* create server configuration */
     NULL,                          /* merge server configuration */
 
     ngx_http_php_create_loc_conf,  /* create location configuration */
@@ -404,6 +406,26 @@ static char *
 ngx_http_php_init_main_conf(ngx_conf_t *cf, void *conf)
 {
     return NGX_CONF_OK;
+}
+
+static void *
+ngx_http_php_create_srv_conf(ngx_conf_t *cf)
+{
+    ngx_http_php_srv_conf_t *pscf;
+
+    pscf = ngx_pcalloc(cf->pool, sizeof(ngx_http_php_srv_conf_t));
+    if (pscf == NULL) {
+        return NULL;
+    }
+
+    pscf->keepalive_conf = ngx_pcalloc(cf->pool, sizeof(ngx_http_php_keepalive_conf_t));
+    if (pscf->keepalive_conf == NULL) {
+        return NULL;
+    }
+
+    pscf->keepalive_conf->max_cached = 0;
+
+    return pscf;
 }
 
 static void *

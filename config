@@ -11,6 +11,7 @@ NGX_PHP_SRCS="$ngx_addon_dir/src/ngx_http_php_module.c \
               $ngx_addon_dir/src/ngx_http_php_util.c \
               $ngx_addon_dir/src/ngx_http_php_variable.c \
               $ngx_addon_dir/src/ngx_http_php_header.c \
+              $ngx_addon_dir/src/ngx_http_php_keepalive.c \
               $ngx_addon_dir/src/ngx_php_debug.c \
               $ngx_addon_dir/src/php/impl/php_ngx.c \
               $ngx_addon_dir/src/php/impl/php_ngx_core.c \
@@ -32,6 +33,7 @@ NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_module.h \
               $ngx_addon_dir/src/ngx_http_php_util.h \
               $ngx_addon_dir/src/ngx_http_php_variable.h \
               $ngx_addon_dir/src/ngx_http_php_header.h \
+              $ngx_addon_dir/src/ngx_http_php_keepalive.h \
               $ngx_addon_dir/src/ngx_php_debug.h \
               $ngx_addon_dir/src/php/impl/php_ngx.h \
               $ngx_addon_dir/src/php/impl/php_ngx_core.h \
