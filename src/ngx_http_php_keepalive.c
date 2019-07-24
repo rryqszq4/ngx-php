@@ -56,7 +56,7 @@ ngx_int_t
 ngx_http_php_keepalive_get_peer(ngx_peer_connection_t *pc, void *data)
 {
 	ngx_http_php_keepalive_cache_t 	*item;
-	ngx_http_php_keepalive_conf_t 	*kc;
+	ngx_http_php_keepalive_conf_t 	*kc = data;
 	ngx_queue_t 					*q, *cache;
 	ngx_connection_t 				*c;
 
@@ -96,13 +96,15 @@ void
 ngx_http_php_keepalive_free_peer(ngx_peer_connection_t *pc, void *data, ngx_uint_t state)
 {
 	ngx_http_php_keepalive_cache_t 	*item;
-	ngx_http_php_keepalive_conf_t 	*kc;
+	ngx_http_php_keepalive_conf_t 	*kc = data;
 	ngx_queue_t 					*q;
 	ngx_connection_t 				*c;
 
 	if (state & NGX_PEER_FAILED) {
 
 	}
+
+	c = pc->connection;
 
 	if (ngx_queue_empty(&kc->free)) {
 		q = ngx_queue_last(&kc->cache);
@@ -154,13 +156,46 @@ ngx_http_php_keepalive_dummy_handler(ngx_event_t *ev)
 void 
 ngx_http_php_keepalive_close_handler(ngx_event_t *ev)
 {
+	ngx_http_php_keepalive_cache_t 	*item;
+	ngx_http_php_keepalive_conf_t 	*kc;
 
+	int 				n;
+   	char 				buf[1];
+	ngx_connection_t 	*c;
+
+	c = ev->data;
+
+	if (c->close) {
+		goto close;
+	}
+
+	n = recv(c->fd, buf, 1, MSG_PEEK);
+
+    if (n == -1 && ngx_socket_errno == NGX_EAGAIN) {
+        ev->ready = 0;
+
+        if (ngx_handle_read_event(c->read, 0, NGX_FUNC_LINE) != NGX_OK) {
+            goto close;
+        }
+
+        return;
+    }
+
+close:
+	item = c->data;
+	kc = item->keepalilve_conf;
+
+	ngx_http_php_keepalive_close(c);
+
+	ngx_queue_remove(&item->queue);
+	ngx_queue_insert_head(&kc->free, &item->queue);
 }
 
 void 
 ngx_http_php_keepalive_close(ngx_connection_t *c)
 {
-
+	ngx_destroy_pool(c->pool);
+	ngx_close_connection(c);
 }
 
 
