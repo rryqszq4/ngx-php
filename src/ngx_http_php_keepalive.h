@@ -51,7 +51,7 @@ typedef struct {
 
 } ngx_http_php_keepalive_cache_t;
 
-ngx_int_t ngx_http_php_keepalive_init(ngx_http_request_t *r, ngx_http_php_keepalive_conf_t *kc);
+ngx_int_t ngx_http_php_keepalive_init(ngx_pool_t *pool, ngx_http_php_keepalive_conf_t *kc);
 
 ngx_int_t ngx_http_php_keepalive_get_peer(ngx_peer_connection_t *pc, void *data);
 

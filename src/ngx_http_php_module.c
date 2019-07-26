@@ -425,6 +425,8 @@ ngx_http_php_create_srv_conf(ngx_conf_t *cf)
 
     pscf->keepalive_conf->max_cached = 0;
 
+    ngx_http_php_keepalive_init(cf->pool, pscf->keepalive_conf);
+
     return pscf;
 }
 

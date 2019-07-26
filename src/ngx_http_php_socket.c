@@ -47,6 +47,9 @@ static void ngx_http_php_socket_connected_handler(ngx_http_request_t *r,
 static ngx_int_t ngx_http_php_socket_get_peer(ngx_peer_connection_t *pc, 
     void *data);
 
+static void ngx_http_php_socket_free_peer(ngx_peer_connection_t *pc,
+    void *data, ngx_uint_t state);
+
 static void ngx_http_php_socket_finalize(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u);
 
@@ -99,7 +102,27 @@ static ngx_int_t
 ngx_http_php_socket_get_peer(ngx_peer_connection_t *pc, 
     void *data)
 {
+    ngx_http_php_keepalive_conf_t   *kc = data;
+    ngx_int_t                       rc;
+
+    if (kc->max_cached) {
+        rc = ngx_http_php_keepalive_get_peer(pc, kc);
+        if (rc != NGX_DECLINED) {
+            return NGX_AGAIN;
+        }
+    }
+
     return NGX_OK;
+}
+
+static void 
+ngx_http_php_socket_free_peer(ngx_peer_connection_t *pc,void *data, ngx_uint_t state)
+{
+    ngx_http_php_keepalive_conf_t   *kc = data;
+
+    if (kc->max_cached) {
+        ngx_http_php_keepalive_free_peer(pc, data, state);
+    }
 }
 
 static void 
@@ -208,8 +231,10 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     ngx_peer_connection_t           *peer;
     ngx_connection_t                *c;
     ngx_http_upstream_resolved_t    *ur;
+    ngx_http_php_srv_conf_t         *pscf;
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+    pscf = ngx_http_get_module_srv_conf(r, ngx_http_php_module);
 
     peer = &u->peer;
 
@@ -225,7 +250,9 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
         return NGX_ERROR;
     }
 
+    peer->data = pscf->keepalive_conf;
     peer->get = ngx_http_php_socket_get_peer;
+    peer->free = ngx_http_php_socket_free_peer;
 
     rc = ngx_event_connect_peer(peer);
 
@@ -333,6 +360,7 @@ ngx_http_php_socket_finalize(ngx_http_request_t *r,
     if (u->peer.free && u->peer.sockaddr) {
         u->peer.free(&u->peer, u->peer.data, 0);
         u->peer.sockaddr = NULL;
+        return ;
     }
 
     c = u->peer.connection;

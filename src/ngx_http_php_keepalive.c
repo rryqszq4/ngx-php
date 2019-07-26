@@ -30,12 +30,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_keepalive.h"
 
 ngx_int_t 
-ngx_http_php_keepalive_init(ngx_http_request_t *r, ngx_http_php_keepalive_conf_t *kc)
+ngx_http_php_keepalive_init(ngx_pool_t *pool, ngx_http_php_keepalive_conf_t *kc)
 {
 	ngx_http_php_keepalive_cache_t 	*cached;
 	ngx_uint_t 						i;
 
-	cached = ngx_pcalloc(kc->pool, sizeof(ngx_http_php_keepalive_cache_t) * kc->max_cached);
+	cached = ngx_pcalloc(pool, sizeof(ngx_http_php_keepalive_cache_t) * kc->max_cached);
 
 	if ( cached == NULL ) {
 		return NGX_ERROR;
@@ -71,6 +71,7 @@ ngx_http_php_keepalive_get_peer(ngx_peer_connection_t *pc, void *data)
 
 		if (ngx_memn2cmp((u_char *) &item->sockaddr, (u_char *) pc->sockaddr, item->socklen, pc->socklen) == 0)
 		{
+			printf("get_peer\n");
 			ngx_queue_remove(q);
 			ngx_queue_insert_head(&kc->free, q);
 
@@ -105,6 +106,12 @@ ngx_http_php_keepalive_free_peer(ngx_peer_connection_t *pc, void *data, ngx_uint
 	}
 
 	c = pc->connection;
+
+	if (ngx_handle_read_event(c->read, 0) != NGX_OK) {
+		return ;
+	}
+
+	printf("free_peer\n");
 
 	if (ngx_queue_empty(&kc->free)) {
 		q = ngx_queue_last(&kc->cache);
