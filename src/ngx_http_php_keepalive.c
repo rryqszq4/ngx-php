@@ -62,6 +62,8 @@ ngx_http_php_keepalive_get_peer(ngx_peer_connection_t *pc, void *data)
 
 	cache = &kc->cache;
 
+	ngx_php_debug("get_peer");
+
 	for (q = ngx_queue_head(cache); 
 		 q != ngx_queue_sentinel(cache);
 		 q = ngx_queue_next(q)) 
@@ -71,7 +73,7 @@ ngx_http_php_keepalive_get_peer(ngx_peer_connection_t *pc, void *data)
 
 		if (ngx_memn2cmp((u_char *) &item->sockaddr, (u_char *) pc->sockaddr, item->socklen, pc->socklen) == 0)
 		{
-			printf("get_peer\n");
+			ngx_php_debug("get_cache_peer");
 			ngx_queue_remove(q);
 			ngx_queue_insert_head(&kc->free, q);
 
@@ -86,11 +88,15 @@ ngx_http_php_keepalive_get_peer(ngx_peer_connection_t *pc, void *data)
 	        pc->connection = c;
 	        pc->cached = 1;
 
+	        if (ngx_add_event(c->read, NGX_READ_EVENT, NGX_CLEAR_EVENT) == NGX_ERROR){
+        		return NGX_ERROR;
+    		}
+
 	        return NGX_DONE;
 		}
 	}
 
-	return NGX_DECLINED;
+	return NGX_OK;
 }
 
 void 
@@ -111,7 +117,7 @@ ngx_http_php_keepalive_free_peer(ngx_peer_connection_t *pc, void *data, ngx_uint
 		return ;
 	}
 
-	printf("free_peer\n");
+	ngx_php_debug("free_peer");
 
 	if (ngx_queue_empty(&kc->free)) {
 		q = ngx_queue_last(&kc->cache);

@@ -107,8 +107,8 @@ ngx_http_php_socket_get_peer(ngx_peer_connection_t *pc,
 
     if (kc->max_cached) {
         rc = ngx_http_php_keepalive_get_peer(pc, kc);
-        if (rc != NGX_DECLINED) {
-            return NGX_AGAIN;
+        if (rc != NGX_OK) {
+            return NGX_DONE;
         }
     }
 
@@ -331,6 +331,9 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     
     ctx->phase_status = NGX_AGAIN;
     
+    ngx_php_debug("c->read->active:%d,c->read->timer_set:%d,c->read->ready:%d", c->read->active, c->read->timer_set, c->read->ready);
+    ngx_php_debug("c->write->active:%d,c->write->timer_set:%d,c->write->ready:%d", c->write->active, c->write->timer_set, c->write->ready);
+
     ngx_add_timer(c->write, 5 * 1000);
 
     return NGX_AGAIN;
