@@ -84,6 +84,8 @@ typedef struct ngx_http_php_srv_conf_s {
 
     ngx_http_php_keepalive_conf_t   *keepalive_conf;
 
+    ngx_uint_t                      keepalive_size;
+
 } ngx_http_php_srv_conf_t;
 
 typedef struct ngx_http_php_loc_conf_s {

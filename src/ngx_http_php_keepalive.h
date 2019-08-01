@@ -45,7 +45,7 @@ typedef struct {
 
 	ngx_http_php_keepalive_conf_t 	*keepalilve_conf;
 	ngx_queue_t 					queue;
-	ngx_connection_t 					*connection;
+	ngx_connection_t 				*connection;
 	struct sockaddr 				sockaddr;
 	socklen_t 						socklen;
 

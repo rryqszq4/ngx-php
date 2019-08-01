@@ -192,6 +192,14 @@ static ngx_command_t ngx_http_php_commands[] = {
      0,
      ngx_http_php_body_filter_inline_handler
     },
+
+    {ngx_string("php_keepalive"),
+     NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
+     ngx_http_php_conf_keepalive,
+     NGX_HTTP_SRV_CONF_OFFSET,
+     0,
+     NULL
+    },
 /*
 #if defined(NDK) && NDK
 
@@ -424,8 +432,6 @@ ngx_http_php_create_srv_conf(ngx_conf_t *cf)
     }
 
     pscf->keepalive_conf->max_cached = 0;
-
-    ngx_http_php_keepalive_init(cf->pool, pscf->keepalive_conf);
 
     return pscf;
 }
