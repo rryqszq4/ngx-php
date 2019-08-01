@@ -256,7 +256,7 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
 
     rc = ngx_event_connect_peer(peer);
 
-    ngx_php_debug("rc: %d %p", (int)rc, ctx->generator_closure);
+    ngx_php_debug("rc: %d %p, peer->cached:%d", (int)rc, ctx->generator_closure, peer->cached);
 
     if (rc == NGX_ERROR) {
 

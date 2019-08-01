@@ -93,6 +93,25 @@ PHP_FUNCTION(ngx_socket_create)
     RETURN_TRUE;
 }
 
+PHP_FUNCTION(ngx_socket_iskeepalive)
+{
+    ngx_http_request_t  *r;
+    ngx_http_php_ctx_t  *ctx;
+    ngx_http_php_socket_upstream_t  *u;
+    ngx_peer_connection_t           *peer;
+
+    r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+    u = ctx->upstream;
+    peer = &u->peer;
+
+    if (peer->cached) {
+        RETURN_TRUE;
+    }else {
+        RETURN_FALSE;
+    }
+}
+
 PHP_FUNCTION(ngx_socket_connect)
 {
     zval                *arg1;
