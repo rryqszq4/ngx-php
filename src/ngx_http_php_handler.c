@@ -209,8 +209,6 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
-    ctx->end_of_request = 1;
-
     if ( rc == NGX_OK || rc == NGX_HTTP_OK ) {
 
         chain = ctx->rputs_chain;
@@ -238,6 +236,8 @@ set_output:
         if ( rc != NGX_OK ) {
             return rc;
         }
+
+        ctx->end_of_request = 1;
 
         ngx_http_output_filter(r, chain->out);
 
@@ -349,8 +349,6 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
-    ctx->end_of_request = 1;
-
     if ( rc == NGX_OK || rc == NGX_HTTP_OK ) {
         chain = ctx->rputs_chain;
 
@@ -377,6 +375,8 @@ set_output:
         if ( rc != NGX_OK ) {
             return rc;
         }
+
+        ctx->end_of_request = 1;
 
         ngx_http_output_filter(r, chain->out);
 
@@ -518,8 +518,6 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
-    ctx->end_of_request = 1;
-
     if (rc == NGX_OK || rc == NGX_HTTP_OK) {
 
         chain = ctx->rputs_chain;
@@ -547,6 +545,8 @@ set_output:
         if (rc != NGX_OK) {
             return rc;
         }
+
+        ctx->end_of_request = 1;
 
         ngx_http_output_filter(r, chain->out);
 
@@ -662,8 +662,6 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
-    ctx->end_of_request = 1;
-
     if (rc == NGX_OK || rc == NGX_HTTP_OK) {
 
         chain = ctx->rputs_chain;
@@ -691,6 +689,8 @@ set_output:
         if (rc != NGX_OK) {
             return rc;
         }
+
+        ctx->end_of_request = 1;
 
         ngx_http_output_filter(r, chain->out);
 
@@ -881,8 +881,6 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
-    ctx->end_of_request = 1;
-
     if (rc == NGX_OK || rc == NGX_DECLINED) {
 
         chain = ctx->rputs_chain;
@@ -935,6 +933,8 @@ set_output:
         if (rc != NGX_OK){
             return rc;
         }
+
+        ctx->end_of_request = 1;
         
         ngx_http_output_filter(r, chain->out);
 
@@ -1062,8 +1062,6 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
-    ctx->end_of_request = 1;
-
     if (rc == NGX_OK || rc == NGX_DECLINED) {
 
         chain = ctx->rputs_chain;
@@ -1116,6 +1114,8 @@ set_output:
         if (rc != NGX_OK){
             return rc;
         }
+
+        ctx->end_of_request = 1;
 
         ngx_http_output_filter(r, chain->out);
 
