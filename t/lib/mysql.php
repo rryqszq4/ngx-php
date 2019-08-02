@@ -404,9 +404,12 @@ class mysql {
     public function connect($host="", $port="", $user="", $password="", $database="") {
         yield ngx_socket_connect($this->socket, $host, $port);
 
-        $scramble = ( yield from $this->handshake_packet() );
+        if (!ngx_socket_iskeepalive()){
 
-        yield from $this->auth_packet($scramble, $user, $password, $database);
+            $scramble = ( yield from $this->handshake_packet() );
+
+            yield from $this->auth_packet($scramble, $user, $password, $database);
+        }
     }
 
     public function query($sql) {

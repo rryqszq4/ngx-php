@@ -42,6 +42,7 @@ ngx_request_server_port
 ngx_request_server_name
 ngx_request_headers
 ngx_socket_create
+ngx_socket_iskeepalive
 ngx_socket_connect
 ngx_socket_close
 ngx_socket_send

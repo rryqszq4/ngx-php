@@ -351,6 +351,7 @@ static const zend_function_entry additional_functions[] = {
     PHP_FE(ngx_request_headers,             ngx_request_headers_arginfo)
 
     PHP_FE(ngx_socket_create,               arginfo_ngx_socket_create)
+    PHP_FE(ngx_socket_iskeepalive,          arginfo_ngx_socket_iskeepalive)
     PHP_FE(ngx_socket_connect,              arginfo_ngx_socket_connect)
     PHP_FE(ngx_socket_close,                arginfo_ngx_socket_close)
     PHP_FE(ngx_socket_send,                 arginfo_ngx_socket_send)
