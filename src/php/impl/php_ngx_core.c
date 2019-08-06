@@ -91,7 +91,7 @@ PHP_FUNCTION(ngx_query_args)
             parsing_value = 0;
         }
         
-        if (buf != last){
+        if (buf != last && *buf != '&'){
             buf++;
         }
     }
@@ -172,7 +172,7 @@ PHP_FUNCTION(ngx_post_args)
             parsing_value = 0;
         }
         
-        if (buf != last){
+        if (buf != last && *buf != '&'){
             buf++;
         }
     }
@@ -330,7 +330,7 @@ PHP_METHOD(ngx, query_args)
             parsing_value = 0;
         }
         
-        if (buf != last){
+        if (buf != last && *buf != '&'){
             buf++;
         }
     }
@@ -411,7 +411,7 @@ PHP_METHOD(ngx, post_args)
             parsing_value = 0;
         }
         
-        if (buf != last){
+        if (buf != last && *buf != '&'){
             buf++;
         }
     }
