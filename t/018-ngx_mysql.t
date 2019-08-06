@@ -17,7 +17,7 @@ location =/ngx_mysql {
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]));
+        echo implode(",",array_values($ret[0]))."\n";
         yield from $m->close();
 	';
 }
@@ -30,7 +30,7 @@ GET /ngx_mysql
 
 === TEST 2: test mysql keepalive
 test mysql keepalive
---- config
+--- http_config
 server {
 	listen 80;
 	server_name localhost;
@@ -42,7 +42,7 @@ server {
 	        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
 	        $sql = "select * from world.city order by ID asc limit 1 ;";
 	        $ret = yield from $m->query($sql);
-	        echo implode(",",array_values($ret[0]));
+	        echo implode(",",array_values($ret[0]))."\n";
 	        yield from $m->close();
 		';
 	}
