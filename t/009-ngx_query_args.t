@@ -24,3 +24,25 @@ array(2) {
   ["b"]=>
   string(1) "2"
 }
+
+
+
+=== TEST 2: ngx_query_args bug param is null
+ngx_query_args bug param is null
+--- config
+location = /ngx_query_args {
+    content_by_php '
+        echo "ngx::query_args()\n";
+        var_dump(ngx::query_args());
+    ';
+}
+--- request
+GET /ngx_query_args?a=&b=2
+--- response_body
+ngx::query_args()
+array(2) {
+  ["a"]=>
+  string(0) ""
+  ["b"]=>
+  string(1) "2"
+}
