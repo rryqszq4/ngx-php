@@ -306,7 +306,7 @@ PHP_FUNCTION(ngx_socket_recv)
     RETURN_LONG(retval);
 }
 
-PHP_FUNCTION(ngx_socket_set_timeout)
+PHP_FUNCTION(ngx_socket_settimeout)
 {
     ngx_http_request_t              *r;
     ngx_http_php_ctx_t              *ctx;
