@@ -311,105 +311,106 @@ Nginx API for php
 
 ngx_exit
 --------
-* **syntax:** `void ngx_exit(int $status)`
+* **syntax:** `ngx_exit(int $status) : void`
 
 ngx_query_args
 --------------
-* **syntax:** `array ngx_query_args(void)` or `array ngx::query_args(void)`
+* **syntax:** `ngx_query_args(void) : array` or `ngx::query_args(void) : array`
 
 ngx_post_args
 -------------
-* **syntax:** `array ngx_post_args(void)` or `array ngx::post_args(void)`
+* **syntax:** `ngx_post_args(void) : array` or `ngx::post_args(void) : array`
 
 ngx_log_error
 -------------
-* **syntax:** `void ngx_log_error(int $level, string $log_str)` or `void ngx_log::error(int $level, string $log_str)`
+* **syntax:** `ngx_log_error(int $level, string $log_str) : void` or `ngx_log::error(int $level, string $log_str) : void`
 
 ngx_request_method
 ------------------
-* **syntax:** `string ngx_request_method(void)` or `string ngx_request::method(void)`
+* **syntax:** `ngx_request_method(void) : string` or `ngx_request::method(void) : string`
 
 ngx_request_document_root
 -------------------------
-* **syntax:** `string ngx_request_document_root(void)` or `string ngx_request::document_root(void)`
+* **syntax:** `ngx_request_document_root(void) : string` or `ngx_request::document_root(void) : string`
 
 ngx_request_document_uri
 ------------------------
-* **syntax:** `string ngx_request_document_uri(void)` or `string ngx_request::document_uri(void)`
+* **syntax:** `ngx_request_document_uri(void) : string` or `ngx_request::document_uri(void) : string`
 
 ngx_request_script_name
 -----------------------
-* **syntax:** `string ngx_request_script_name(void)` or `string ngx_request::script_name(void)`
+* **syntax:** `ngx_request_script_name(void) : string` or `ngx_request::script_name(void) : string`
 
 ngx_request_script_filename
 ---------------------------
-* **syntax:** `string ngx_request_script_filename(void)` or `string ngx_request::script_filename(void)`
+* **syntax:** `ngx_request_script_filename(void) : string` or `ngx_request::script_filename(void) : string`
 
 ngx_request_query_string
 ------------------------
-* **syntax:** `string ngx_request_query_string(void)` or `string ngx_request::query_string(void)`
+* **syntax:** `ngx_request_query_string(void) : string` or `ngx_request::query_string(void) : string`
 
 ngx_request_uri
 ---------------
-* **syntax:** `string ngx_request_uri(void)` or `string ngx_request::uri(void)`
+* **syntax:** `ngx_request_uri(void) : string` or `ngx_request::uri(void) : string`
 
 ngx_request_server_protocol
 ---------------------------
-* **syntax:** `string ngx_request_server_protocol(void)` or `string ngx_request::server_protocol(void)`
+* **syntax:** `ngx_request_server_protocol(void) : string` or `ngx_request::server_protocol(void) : string`
 
 ngx_request_remote_addr
 -----------------------
-* **syntax:** `string ngx_request_remote_addr(void)` or `string ngx_request::remote_addr(void)`
+* **syntax:** `ngx_request_remote_addr(void) : string` or `ngx_request::remote_addr(void) : string`
 
 ngx_request_server_addr
 -----------------------
-* **syntax:** `string ngx_request_server_addr(void)` or `string ngx_request::server_addr(void)`
+* **syntax:** `ngx_request_server_addr(void) : string` or `ngx_request::server_addr(void) : string`
 
 ngx_request_remote_port
 -----------------------
-* **syntax:** `int ngx_request_remote_port(void)` or `int ngx_request::remote_port(void)`
+* **syntax:** `ngx_request_remote_port(void) : int` or `ngx_request::remote_port(void) : int`
 
 ngx_request_server_port
 -----------------------
-* **syntax:** `int ngx_request_server_port(void)` or `int ngx_request::server_port(void)`
+* **syntax:** `ngx_request_server_port(void) : int` or `ngx_request::server_port(void) : int`
 
 ngx_request_server_name
 -----------------------
-* **syntax:** `string ngx_request_server_name(void)` or `string ngx_request::server_name(void)`
+* **syntax:** `ngx_request_server_name(void) : string` or `ngx_request::server_name(void) : string`
 
 ngx_request_headers
 -------------------
-* **syntax:** `array ngx_request_headers(void)` or `array ngx_request::headers(void)`
+* **syntax:** `ngx_request_headers(void): array` or `ngx_request::headers(void) : array`
 
 ngx_var_get
 -----------
-* **syntax:** `string ngx_var_get(string $key)` or `string ngx_var::get(string $key)`
+* **syntax:** `ngx_var_get(string $key) : string` or `ngx_var::get(string $key) : string`
 
 ngx_var_set
 -----------
-* **syntax:** `void ngx_var_set(string $key, string $value)` or `void ngx_var::set(string $key, string $value)`
+* **syntax:** `ngx_var_set(string $key, string $value) : void` or `ngx_var::set(string $key, string $value) : void`
 
 ngx_header_set
 --------------
-* **syntax:** `bool ngx_header_set(string $key, string $value)`
+* **syntax:** `ngx_header_set(string $key, string $value) : bool`
 
 ngx_header_get
 --------------
-* **syntax:** `string ngx_header_get(string $key)`
+* **syntax:** `ngx_header_get(string $key) : string`
 
 ngx_header_gets
 ---------------
-* **syntax:** `array ngx_header_gets(void)`
+* **syntax:** `ngx_header_gets(void) : array`
 
 ngx_redirect
 ------------
-* **syntax:** `bool ngx_redirect(string $uri, int $status)`
+* **syntax:** `ngx_redirect(string $uri, int $status) : bool`
 
 
 Nginx non-blocking API for php
 ------------------------------
 * [yield ngx_sleep](#ngx_sleep)
 * [ngx_socket_create](#ngx_socket_create)
+* [ngx_socket_iskeepalive](#ngx_socket_iskeepalive)
 * [yield ngx_socket_connect](#ngx_socket_connect)
 * [yield ngx_socket_close](#ngx_socket_close)
 * [yield ngx_socket_send](#ngx_socket_send)
@@ -421,23 +422,27 @@ ngx_sleep
 
 ngx_socket_create
 -----------------
-* **syntax:** `resource ngx_socket_create(int $domain, int $type, int $protocol)`
+* **syntax:** `ngx_socket_create(int $domain, int $type, int $protocol) : resource`
+
+ngx_socket_iskeepalive
+----------------------
+* **syntax:** `ngx_socket_iskeepalive(void) : bool`
 
 ngx_socket_connect
 ------------------
-* **syntax:** `bool ( yield ngx_socket_connect(resource $socket, string $address, int $port) )`
+* **syntax:** `( yield ngx_socket_connect(resource $socket, string $address, int $port) ) : bool`
 
 ngx_socket_close
 ----------------
-* **syntax:** `bool ( yield ngx_socket_close(resource $socket) )`
+* **syntax:** `( yield ngx_socket_close(resource $socket) ) : bool`
 
 ngx_socket_send
 ---------------
-* **syntax:** `int ( yield ngx_socket_send(resource $socket, string $buf, int $len) )`
+* **syntax:** `( yield ngx_socket_send(resource $socket, string $buf, int $len) ) : int`
 
 ngx_socket_recv
 ---------------
-* **syntax:** `int ( yield ngx_socket_recv(resource $socket, string &$buf, int $len) )`
+* **syntax:** `( yield ngx_socket_recv(resource $socket, string &$buf, int $len) ) : int`
 
 
 Copyright and License
