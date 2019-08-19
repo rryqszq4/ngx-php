@@ -328,10 +328,12 @@ ngx_log_error
 ngx_request_method
 ------------------
 * **syntax:** `ngx_request_method(void) : string` or `ngx_request::method(void) : string`
+Which request method was used to access the page, such as 'GET','POST','PUT','DELETE' and so on.
 
 ngx_request_document_root
 -------------------------
 * **syntax:** `ngx_request_document_root(void) : string` or `ngx_request::document_root(void) : string`
+The document root directory under which the current script is executing, as defined in the server's configuration file.
 
 ngx_request_document_uri
 ------------------------
@@ -340,42 +342,55 @@ ngx_request_document_uri
 ngx_request_script_name
 -----------------------
 * **syntax:** `ngx_request_script_name(void) : string` or `ngx_request::script_name(void) : string`
+Contains the current script'path. This is useful for pages which need to point to the themselves.  
+The __FILE__ constant contains the full path and filename of the current (included) file.
 
 ngx_request_script_filename
 ---------------------------
 * **syntax:** `ngx_request_script_filename(void) : string` or `ngx_request::script_filename(void) : string`
+The absolute pathname of the currently executing script file name.
 
 ngx_request_query_string
 ------------------------
 * **syntax:** `ngx_request_query_string(void) : string` or `ngx_request::query_string(void) : string`
+The query string, if any, via which the page was accessed.
 
 ngx_request_uri
 ---------------
 * **syntax:** `ngx_request_uri(void) : string` or `ngx_request::uri(void) : string`
+The URI which was given in order to access this page, for instance, '/index.html'.
 
 ngx_request_server_protocol
 ---------------------------
 * **syntax:** `ngx_request_server_protocol(void) : string` or `ngx_request::server_protocol(void) : string`
+Name and revision of th information protocol via which the page was requested, such as 'HTTP/1.0'.
 
 ngx_request_remote_addr
 -----------------------
 * **syntax:** `ngx_request_remote_addr(void) : string` or `ngx_request::remote_addr(void) : string`
+The IP address from which the user is viewing the current page.
 
 ngx_request_server_addr
 -----------------------
 * **syntax:** `ngx_request_server_addr(void) : string` or `ngx_request::server_addr(void) : string`
+The IP address of the server under which the current script is executing.
 
 ngx_request_remote_port
 -----------------------
 * **syntax:** `ngx_request_remote_port(void) : int` or `ngx_request::remote_port(void) : int`
+The port being used on the user's machine to communicate with the web server.
 
 ngx_request_server_port
 -----------------------
 * **syntax:** `ngx_request_server_port(void) : int` or `ngx_request::server_port(void) : int`
+The port on the server machine being used by the web server for communication. For default setups,   
+this will be '80'; using SSL, for instance, will change this to whatever your defined secure HTTP port is.
 
 ngx_request_server_name
 -----------------------
 * **syntax:** `ngx_request_server_name(void) : string` or `ngx_request::server_name(void) : string`
+The name of the server host under which the current script is executing.   
+If the script is running on a virtual host, this will be the value defined for that virtual host.
 
 ngx_request_headers
 -------------------
