@@ -313,13 +313,22 @@ ngx_exit
 --------
 * **syntax:** `ngx_exit(int $status) : void`
 
+End of current request and return http status code.
+
 ngx_query_args
 --------------
 * **syntax:** `ngx_query_args(void) : array` or `ngx::query_args(void) : array`
 
+An associative array of variables passed to the current script via the URL parameters (aka. query string).  
+Instead of php official constant $_GET.
+
 ngx_post_args
 -------------
 * **syntax:** `ngx_post_args(void) : array` or `ngx::post_args(void) : array`
+
+An associative array of variables passed to the current script via the HTTP POST method  
+when using application/x-www-form-urlencoded or multipart/form-data as the HTTP Content-Type in the request.  
+Instead of php official constant $_POST.
 
 ngx_log_error
 -------------
@@ -447,9 +456,15 @@ ngx_sleep
 ---------
 * **syntax:** `yield ngx_sleep(int seconds)`
 
+Delays the program execution for the given number of seconds.
+
 ngx_socket_create
 -----------------
 * **syntax:** `ngx_socket_create(int $domain, int $type, int $protocol) : resource`
+
+Creates and returns a socket resource, also referred to as an endpoint of communication.  
+A typical network connection is made up of 2 sockets, one performing the role of the client,  
+and another performing the role of the server.
 
 ngx_socket_iskeepalive
 ----------------------
@@ -459,18 +474,31 @@ ngx_socket_connect
 ------------------
 * **syntax:** `( yield ngx_socket_connect(resource $socket, string $address, int $port) ) : bool`
 
+Initiate a connection to address using the socket resource socket, which must be a valid  
+socket resource created with ngx_socket_create().
+
 ngx_socket_close
 ----------------
 * **syntax:** `( yield ngx_socket_close(resource $socket) ) : bool`
+
+ngx_socket_close() closes the socket resource given by socket. This function is specific to  
+sockets and cannot be used on any other type of resources.
 
 ngx_socket_send
 ---------------
 * **syntax:** `( yield ngx_socket_send(resource $socket, string $buf, int $len) ) : int`
 
+The function ngx_socket_send() sends len bytes to the socket socket from buf.
+
 ngx_socket_recv
 ---------------
 * **syntax:** `( yield ngx_socket_recv(resource $socket, string &$buf, int $len) ) : int`
 
+The ngx_socket_recv() function receives len bytes of data in buf from socket. ngx_socket_recv() can be  
+used to gather data from connected sockets. 
+
+buf is passed by reference, so it must be specified as a variable in the argument list.  
+Data read from socket by ngx_socket_recv() will be returned in buf.
 
 Copyright and License
 ---------------------
