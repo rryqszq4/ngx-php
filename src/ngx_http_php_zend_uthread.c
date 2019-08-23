@@ -223,16 +223,35 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
     }
 
     func = fci_cache->function_handler;
+     
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
     fci->object = (func->common.fn_flags & ZEND_ACC_STATIC) ?
         NULL : fci_cache->object;
 
-    call = zend_vm_stack_push_call_frame( 
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
-        ZEND_CALL_TOP_FUNCTION,
-#else
-        ZEND_CALL_TOP_FUNCTION | ZEND_CALL_DYNAMIC,
-#endif
+    call = zend_vm_stack_push_call_frame(ZEND_CALL_TOP_FUNCTION,
         func, fci->param_count, fci_cache->called_scope, fci->object);
+#elif PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION >= 1 && PHP_MINOR_VERSION < 4
+    fci->object = (func->common.fn_flags & ZEND_ACC_STATIC) ?
+        NULL : fci_cache->object;
+
+    call = zend_vm_stack_push_call_frame(ZEND_CALL_TOP_FUNCTION | ZEND_CALL_DYNAMIC,
+        func, fci->param_count, fci_cache->called_scope, fci->object);
+#else
+    uint32_t call_info;
+    void *object_or_called_scope;
+    if ((func->common.fn_flags & ZEND_ACC_STATIC) || !fci_cache->object) {
+        fci->object = NULL;
+        object_or_called_scope = fci_cache->called_scope;
+        call_info = ZEND_CALL_TOP_FUNCTION | ZEND_CALL_DYNAMIC;
+    } else {
+        fci->object = fci_cache->object;
+        object_or_called_scope = fci->object;
+        call_info = ZEND_CALL_TOP_FUNCTION | ZEND_CALL_DYNAMIC | ZEND_CALL_HAS_THIS;
+    }
+    
+    call = zend_vm_stack_push_call_frame(call_info,
+        func, fci->param_count, object_or_called_scope);
+#endif
 
     if (UNEXPECTED(func->common.fn_flags & ZEND_ACC_DEPRECATED)) {
         zend_error(E_DEPRECATED, "Function %s%s%s() is deprecated",
