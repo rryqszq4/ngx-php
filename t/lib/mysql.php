@@ -3,7 +3,7 @@
  *  Copyright(c) 2017-2018 rryqszq4 rryqszq@gmail.com
  */
 
-namespace ngx\php;
+namespace php\ngx;
 
 class mysql {
 
@@ -21,19 +21,6 @@ class mysql {
 
     public function __construct() {
         $this->socket = ngx_socket_create();
-    }
-
-    private function set_byte3($n) {
-        return chr($n&0xff)
-                .chr(($n>>8)&0xff)
-                .chr(($n>>16)&0xff);
-    }
-
-    private function set_byte4($n){
-        return chr($n&0xff)
-                .chr(($n>>8)&0xff)
-                .chr(($n>>16)&0xff)
-                .chr(($n>>24)&0xff);
     }
 
     private function print_bin($result) {
@@ -95,54 +82,9 @@ class mysql {
 
     private function write_packet($data, $len, $chr=1) {
         $pack = substr(pack('V', $len), 0, 3).chr($chr).$data;
-        #var_dump("pack: ".$pack);
-
-        //$pack = substr_replace(pack("V", $len), chr(1), 3, 1).$data;
-        //var_dump(($pack == $pack1));
-
-        #$this->print_bin($pack);
 
         yield ngx_socket_send($this->socket, $pack, strlen($pack));
     }
-
-    /*private function read_packet_1($idx=0) {
-        yield ngx_socket_recv($this->socket, $result, 4);
-        $this->print_bin($result);
-        $len = unpack('v',substr($result, $idx, 3));
-        var_dump($len);
-        $len1 = $len = $len[1];
-        var_dump($len1);
-        $data = '';
-        yield ngx_socket_recv($this->socket, $data, $len);
-        $this->print_bin($data);
-        $len = ord($data[0]);
-        if ($len == 0x00) {
-            var_dump("OK packet");
-            //yield from $this->result_set_packet();
-        }else if ($len == 0xff){
-            var_dump("Error packet");
-        }else if ($len == 0xfe) {
-            var_dump("EOF packet");
-        }else{
-            var_dump("Data packet");
-            if ($len1 == 1 && $this->resultState == 1) {
-                var_dump("fields");
-                yield from $this->result_set_packet();
-                yield from $this->result_set_packet();
-                yield from $this->result_set_packet();
-                yield from $this->result_set_packet();
-                $this->resultState = 2;
-            }else if ($this->resultState == 2) {
-                var_dump("rows");
-
-
-            }
-        }
-
-        //$this->print_bin($result.$data);
-
-        $this->packet_data = $data;
-    }*/
 
     private function read_packet() {
         #var_dump("read_packet");
@@ -262,23 +204,12 @@ class mysql {
     private function auth_packet($scramble, $user, $password, $database) {
         // client 
         $client_flags = 0x3f7cf;
-        //$database = "sakila";
-        //$user = "root";
-        //$password = "123456";
+
         $stage1 = sha1($password,1);
         $stage2 = sha1($stage1,1);
         $stage3 = sha1($scramble.$stage2,1);
         $n = strlen($stage1);
-        /*$bytes = array();
-        for ($i = 0; $i < $n; $i++) {
-            $bytes[] = ord($stage3[$i]) ^ ord($stage1[$i]);
-        }
-
-
-        $token = '';
-        foreach ($bytes as $ch) {
-            $token .= chr($ch);
-        }*/
+        
         $token = $stage1 ^ $stage3;
 
 
@@ -325,17 +256,6 @@ class mysql {
         $message = substr($data, $start);
         #var_dump($message);
     }
-
-    /*private function result_set_packet() {
-        yield ngx_socket_recv($this->socket, $result, 4);
-        $this->print_bin($result);
-        $len = unpack('v',substr($result, 0, 3));
-        $len = $len[1];
-        yield ngx_socket_recv($this->socket, $result, $len);
-        $this->print_bin($result);
-        var_dump("data field");
-        $this->field_data_packet($result);
-    }*/
 
     private function field_data_packet($result) {
         $start = 0;

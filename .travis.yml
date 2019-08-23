@@ -24,6 +24,7 @@ addons:
       - libbz2-dev
       - libzip-dev
       - systemtap-sdt-dev
+      - libonig-dev
 compiler:
   - gcc
   - clang
@@ -39,6 +40,12 @@ env:
   - PHP_SRC_VERSION=7.2.21
     NGINX_SRC_VERSION=1.12.2
   - PHP_SRC_VERSION=7.3.8
+    NGINX_SRC_VERSION=1.12.2
+  - PHP_SRC_VERSION=7.4.0beta1
+    NGINX_SRC_VERSION=1.12.2
+  - PHP_SRC_VERSION=7.4.0beta2
+    NGINX_SRC_VERSION=1.12.2
+  - PHP_SRC_VERSION=7.4.0beta4
     NGINX_SRC_VERSION=1.12.2
   - PHP_SRC_VERSION=7.2.21
     NGINX_SRC_VERSION=1.12.2

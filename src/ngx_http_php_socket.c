@@ -363,7 +363,7 @@ ngx_http_php_socket_finalize(ngx_http_request_t *r,
     if (u->peer.free && u->peer.sockaddr) {
         u->peer.free(&u->peer, u->peer.data, 0);
         u->peer.sockaddr = NULL;
-        return ;
+        //return ;
     }
 
     c = u->peer.connection;

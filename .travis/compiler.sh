@@ -4,9 +4,15 @@ mkdir build
 cd build
 mkdir php
 mkdir nginx
+
 echo "php download ..."
-wget http://php.net/distributions/php-${PHP_SRC_VERSION}.tar.gz
+if [ ${PHP_SRC_VERSION:0:3} = "7.4" ]; then
+  wget https://downloads.php.net/~derick/php-${PHP_SRC_VERSION}.tar.gz
+else
+  wget http://php.net/distributions/php-${PHP_SRC_VERSION}.tar.gz
+fi
 echo "php download ... done"
+
 tar xf php-${PHP_SRC_VERSION}.tar.gz
 
 PHP_SRC=`pwd`'/php-'${PHP_SRC_VERSION}
@@ -27,7 +33,7 @@ echo "php install ..."
 --enable-sysvmsg \
 --enable-sysvshm \
 --with-curl \
---enable-mbregex \
+--disable-mbregex \
 --enable-mbstring \
 --with-mcrypt \
 --with-openssl \

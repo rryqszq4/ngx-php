@@ -13,7 +13,7 @@ test mysql
 location =/ngx_mysql {
 	content_by_php '
 		require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
-        $m = new ngx\php\mysql();
+        $m = new php\\ngx\mysql();
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
