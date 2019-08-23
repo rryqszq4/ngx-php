@@ -136,6 +136,8 @@ ngx_http_php_keepalive_free_peer(ngx_peer_connection_t *pc, void *data, ngx_uint
 	ngx_queue_insert_head(&kc->cache, q);
 	item->connection = c;
 
+	pc->connection = NULL;
+
 	if (c->read->timer_set) {
 		ngx_del_timer(c->read);
 	}
