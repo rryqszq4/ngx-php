@@ -239,6 +239,8 @@ php_ini_path
 * **context:** `http`
 * **phase:** `loading-config`
 
+This directive allows loading the official php configuration file php.ini, which will be used by subsequent PHP code.
+
 init_worker_by_php
 ------------------
 * **syntax:** `init_worker_by_php`_`<php script code>`_
@@ -251,17 +253,23 @@ rewrite_by_php
 * **context:** `http, server, location, location if`
 * **phase:** `rewrite`
 
+In the rewrite phase of nginx, you can execute inline php code.
+
 access_by_php
 -------------
 * **syntax:** `access_by_php`_`<php script code>`_
 * **context:** `http, server, location, location if`
 * **phase:** `access`
 
+In the access phase of nginx, you can execute inline php code.
+
 content_by_php
 --------------
 * **syntax:** `content_by_php`_`<php script code>`_
 * **context:** `http, server, location, location if`
 * **phase:** `content`
+
+In the content phase of nginx, you can execute inline php code.
 
 log_by_php
 ----------
@@ -417,30 +425,43 @@ ngx_request_headers
 -------------------
 * **syntax:** `ngx_request_headers(void): array` or `ngx_request::headers(void) : array`
 
+Get the header full information of the http request.
+
 ngx_var_get
 -----------
 * **syntax:** `ngx_var_get(string $key) : string` or `ngx_var::get(string $key) : string`
+
+Get the variables in the nginx configuration.
 
 ngx_var_set
 -----------
 * **syntax:** `ngx_var_set(string $key, string $value) : void` or `ngx_var::set(string $key, string $value) : void`
 
+Set the variables in the nginx configuration.
+
 ngx_header_set
 --------------
 * **syntax:** `ngx_header_set(string $key, string $value) : bool`
+
+Set the header information of the http response.
 
 ngx_header_get
 --------------
 * **syntax:** `ngx_header_get(string $key) : string`
 
+Get the header information of the http response.
+
 ngx_header_gets
 ---------------
 * **syntax:** `ngx_header_gets(void) : array`
+
+Get the header full information of the http response.
 
 ngx_redirect
 ------------
 * **syntax:** `ngx_redirect(string $uri, int $status) : bool`
 
+Set response header redirection.
 
 Nginx non-blocking API for php
 ------------------------------
