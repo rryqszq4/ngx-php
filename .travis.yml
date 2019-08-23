@@ -24,6 +24,7 @@ addons:
       - libbz2-dev
       - libzip-dev
       - systemtap-sdt-dev
+      - libonig-dev
 compiler:
   - gcc
   - clang
