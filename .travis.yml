@@ -55,6 +55,7 @@ services:
   - mysql
 install:
   - sudo cpanm -n Test::Nginx
+  - sudo gem install oniguruma
 before_script:
   - mysql -uroot -e 'create database ngx_php; grant all on ngx_php.* to "ngx_php"@"%" identified by "ngx_php"; flush privileges;'
   - if [ ! -d data-cache ]; then mkdir data-cache; fi

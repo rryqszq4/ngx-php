@@ -33,7 +33,7 @@ echo "php install ..."
 --enable-sysvmsg \
 --enable-sysvshm \
 --with-curl \
---enable-mbregex \
+--disable-mbregex \
 --enable-mbstring \
 --with-mcrypt \
 --with-openssl \
