@@ -22,7 +22,8 @@ NGX_PHP_SRCS="$ngx_addon_dir/src/ngx_http_php_module.c \
               $ngx_addon_dir/src/php/impl/php_ngx_sockets.c \
               $ngx_addon_dir/src/php/impl/php_ngx_header.c \
               "
-NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_module.h \
+NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_version.h \
+              $ngx_addon_dir/src/ngx_http_php_module.h \
               $ngx_addon_dir/src/ngx_http_php_core.h \
               $ngx_addon_dir/src/ngx_http_php_directive.h \
               $ngx_addon_dir/src/ngx_http_php_handler.h \
