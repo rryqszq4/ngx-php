@@ -1,3 +1,16 @@
+ngx_php7 0.0.19 changes:                                                            26 Aug 2019
+    * Add nginx directive php_keepalive.
+
+    * Add php impl ngx_socket_iskeepalive.
+
+    * Fixed parse failure when query_args is null.
+
+    * Fixed set end of request position error.
+
+    * Fixed error about php-7.4.0beta4.
+
+    * Document update.
+
 ngx_php7 0.0.18 changes:                                                            10 Jun 2019
     * Fixed error about php-7.3.6
 

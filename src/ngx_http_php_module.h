@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ngx_http.h>
 #include <nginx.h>
 
+#include "ngx_http_php_version.h"
 #include "ngx_http_php_keepalive.h"
 
 #if defined(NDK) && NDK
@@ -46,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define NGX_HTTP_PHP_MODULE_NAME "ngx_php"
-#define NGX_HTTP_PHP_MODULE_VERSION  "0.0.18"
+
 
 #ifndef NGX_HTTP_PERMANENT_REDIRECT
 #   define NGX_HTTP_PERMANENT_REDIRECT  308
