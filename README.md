@@ -17,6 +17,18 @@ There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree
 
 [Benchmarks about ngx_php7 and php](https://www.techempower.com/benchmarks/#section=test&runid=76a34044-54d6-4349-adfe-863c2d5ae756&hw=ph&test=plaintext&l=zik073-7)  
 
+Table of contents
+-----------------
+* [What's different with official php](#What's-different-with-official-php)
+* [Requirement](#Requirement)
+* [Installation](#Installation)
+* [Synopsis](#Synopsis)
+* [Test](#Test)
+* [Directives](#Directives)
+* [Nginx API for php](#Nginx-API-for-php)
+* [Nginx non-blocking API for php](#Nginx-non-blocking-API-for-php)
+* [Copyright and License](#Copyright-and-License)
+
 What's different with official php
 ----------------------------------
 * Global variable is unsafe in per request
@@ -26,6 +38,7 @@ What's different with official php
 
 Requirement
 -----------
+- Linux only
 - PHP-7.0.* ~ PHP-7.3.*
 - nginx-1.4.7 ~ nginx-1.14.2 and mainline 1.15.7
 
@@ -232,6 +245,7 @@ Directives
 * [log_by_php](#log_by_php)
 * [header_filter_by_php](#header_filter_by_php)
 * [body_filter_by_php](#body_filter_by_php)
+* [php_keepalive](#php_keepalive)
 
 php_ini_path
 ------------
@@ -289,6 +303,12 @@ body_filter_by_php
 * **context:** `http, server, location, location if`
 * **phase:** `output-body-filter`
 
+php_keepalive
+-------------
+* **syntax:** `php_keepalive`_`<size>`
+* **default:** `0`
+* **context:** `http, server`
+In php, set upstream connection pool size.
 
 Nginx API for php
 -----------------
