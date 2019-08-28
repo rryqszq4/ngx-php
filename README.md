@@ -19,7 +19,7 @@ There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree
 
 Table of contents
 -----------------
-* [What's different with official php](#What's-different-with-official-php)
+* [What's different with official php](#Whats-different-with-official-php)
 * [Requirement](#Requirement)
 * [Installation](#Installation)
 * [Synopsis](#Synopsis)
