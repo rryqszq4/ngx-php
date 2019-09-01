@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_core.h"
 #include "ngx_http_php_directive.h"
-
+#include "ngx_http_php_variable.h"
 
 char *
 ngx_http_php_ini_path(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
@@ -445,6 +445,105 @@ ngx_http_php_log_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     plcf->log_inline_code = code;
     plcf->log_handler = cmd->post;
     pmcf->enabled_log_handler = 1;
+
+    return NGX_CONF_OK;
+}
+
+static ngx_int_t
+ngx_http_php_variable_handler(ngx_http_request_t *r, ngx_http_variable_value_t *v,
+    uintptr_t data)
+{
+    ngx_http_php_variable_t *pv = (ngx_http_php_variable_t *) data;
+
+    ngx_http_php_var_set((char *)pv->key.data, pv->key.len, (char *)pv->handler.data, pv->handler.len);
+    
+    return NGX_OK;
+
+}
+
+char *
+ngx_http_php_set_inline2(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+{
+    ngx_int_t                   index;
+    ngx_str_t                   *value;
+    ngx_str_t                   handler;
+    ngx_http_variable_t         *v;
+    ngx_http_php_variable_t     *pv;
+    //ngx_http_php_main_conf_t    *pmcf;
+
+    value = cf->args->elts;
+
+    if (value[1].data[0] != '$') {
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                           "invalid variable name \"%V\"", &value[1]);
+        return NGX_CONF_ERROR;
+    }
+
+    value[1].len--;
+    value[1].data++;
+
+    v = ngx_http_add_variable(cf, &value[1], NGX_HTTP_VAR_CHANGEABLE);
+    if (v == NULL) {
+        return NGX_CONF_ERROR;
+    }
+
+    pv = ngx_palloc(cf->pool, sizeof(ngx_http_php_variable_t));
+    if (pv == NULL) {
+        return NGX_CONF_ERROR;
+    }
+
+    index = ngx_http_get_variable_index(cf, &value[1]);
+    if (index == NGX_ERROR) {
+        return NGX_CONF_ERROR;
+    }
+
+    //pmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_php_module);
+
+    pv->code = ngx_http_php_code_from_string(cf->pool, &value[2]);
+    if (pv->code == NGX_CONF_UNSET_PTR){
+        return NGX_CONF_ERROR;
+    }
+
+    php_ngx_module_init();
+
+#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 2
+    zend_startup_module(&php_ngx_module_entry);
+#else
+    EG(current_module) = &php_ngx_module_entry;
+    EG(current_module)->type = MODULE_PERSISTENT;
+#endif
+
+    php_ngx_request_init(TSRMLS_C);
+
+        zval retval;
+        zend_eval_string_ex(pv->code->code.string, &retval, "ngx_php run code return", 1 TSRMLS_CC);
+
+        if (Z_TYPE(retval) == IS_TRUE || 
+            Z_TYPE(retval) == IS_FALSE ||  
+            Z_TYPE(retval) == IS_LONG ||
+            Z_TYPE(retval) == IS_DOUBLE ||
+            Z_TYPE(retval) == IS_STRING ){
+
+            convert_to_string(&retval);
+
+            handler.data = ngx_pnalloc(cf->pool, Z_STRLEN(retval));
+            ngx_memcpy(handler.data, Z_STRVAL(retval), Z_STRLEN(retval));
+            handler.len = Z_STRLEN(retval);
+        } else {
+            handler.data = NULL;
+            handler.len = 0;
+        }
+
+        zval_dtor(&retval);
+
+    php_ngx_request_shutdown(TSRMLS_C);
+    php_ngx_module_shutdown(TSRMLS_C);
+
+    pv->key = value[1];
+    pv->handler = handler;
+
+    v->get_handler = ngx_http_php_variable_handler;
+    v->data = (uintptr_t) pv;
 
     return NGX_CONF_OK;
 }

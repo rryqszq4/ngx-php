@@ -262,6 +262,15 @@ static ngx_command_t ngx_http_php_commands[] = {
      0,
      NULL
     },
+
+    {ngx_string("php_set"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_2MORE,
+     ngx_http_php_set_inline2,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     NULL
+    },
 /*
 #if defined(NDK) && NDK
 

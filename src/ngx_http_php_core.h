@@ -61,6 +61,12 @@ typedef struct ngx_http_php_code_s {
     ngx_str_t code_id;
 } ngx_http_php_code_t;
 
+typedef struct {
+    ngx_http_php_code_t *code;
+    ngx_str_t key;
+    ngx_str_t handler;
+} ngx_http_php_variable_t;
+
 #if defined(NDK) && NDK
 typedef struct {
     size_t size;
