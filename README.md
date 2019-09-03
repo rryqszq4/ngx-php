@@ -257,7 +257,9 @@ Directives
 php_ini_path
 ------------
 **syntax:** `php_ini_path`_`<php.ini file path>`_
+
 **context:** `http`
+
 **phase:** `loading-config`
 
 This directive allows loading the official php configuration file php.ini, which will be used by subsequent PHP code.
@@ -265,13 +267,17 @@ This directive allows loading the official php configuration file php.ini, which
 init_worker_by_php
 ------------------
 **syntax:** `init_worker_by_php`_`<php script code>`_
+
 **context:** `http`
+
 **phase:** `starting-worker`
 
 rewrite_by_php
 --------------
 **syntax:** `rewrite_by_php`_`<php script code>`_
+
 **context:** `http, server, location, location if`
+
 **phase:** `rewrite`
 
 In the rewrite phase of nginx, you can execute inline php code.
@@ -279,7 +285,9 @@ In the rewrite phase of nginx, you can execute inline php code.
 access_by_php
 -------------
 **syntax:** `access_by_php`_`<php script code>`_
+
 **context:** `http, server, location, location if`
+
 **phase:** `access`
 
 In the access phase of nginx, you can execute inline php code.
@@ -287,7 +295,9 @@ In the access phase of nginx, you can execute inline php code.
 content_by_php
 --------------
 **syntax:** `content_by_php`_`<php script code>`_
+
 **context:** `http, server, location, location if`
+
 **phase:** `content`
 
 In the content phase of nginx, you can execute inline php code.
@@ -295,33 +305,43 @@ In the content phase of nginx, you can execute inline php code.
 log_by_php
 ----------
 **syntax:** `log_by_php`_`<php script code>`_
+
 **context:** `http, server, location, location if`
+
 **phase:** `log`
 
 header_filter_by_php
 --------------------
 **syntax:** `header_filter_by_php`_`<php script code>`_
+
 **context:** `http, server, location, location if`
+
 **phase:** `output-header-filter`
 
 body_filter_by_php
 ------------------
 **syntax:** `body_filter_by_php`_`<php script code>`_
+
 **context:** `http, server, location, location if`
+
 **phase:** `output-body-filter`
 
 php_keepalive
 -------------
 **syntax:** `php_keepalive`_`<size>`_
+
 **default:** `0`
+
 **context:** `http, server`
 
 In php, set upstream connection pool size.
 
 php_set
 -------
-**syntax:** `php_set`_`$variable`__`<php script code>`_
+**syntax:** `php_set`_`$variable`_ _`<php script code>`_
+
 **context:** `http, server, location, location if`
+
 **phase:** `loading-config`
 
 Installs a php handler for the specified variable.
