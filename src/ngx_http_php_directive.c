@@ -507,7 +507,7 @@ ngx_http_php_set_inline2(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     php_ngx_module_init();
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 2
-    zend_startup_module(&php_ngx_module_entry);
+    //zend_startup_module(&php_ngx_module_entry);
 #else
     EG(current_module) = &php_ngx_module_entry;
     EG(current_module)->type = MODULE_PERSISTENT;
