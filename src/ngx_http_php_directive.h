@@ -53,6 +53,8 @@ char *ngx_http_php_stack_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *
 char *ngx_http_php_log_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 char *ngx_http_php_log_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
+char *ngx_http_php_set_inline2(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+
 #if defined(NDK) && NDK
 
 char *ngx_http_php_set_inline(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);

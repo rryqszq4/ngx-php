@@ -17,6 +17,18 @@ There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree
 
 [Benchmarks about ngx_php7 and php](https://www.techempower.com/benchmarks/#section=test&runid=76a34044-54d6-4349-adfe-863c2d5ae756&hw=ph&test=plaintext&l=zik073-7)  
 
+Table of contents
+-----------------
+* [What's different with official php](#Whats-different-with-official-php)
+* [Requirement](#Requirement)
+* [Installation](#Installation)
+* [Synopsis](#Synopsis)
+* [Test](#Test)
+* [Directives](#Directives)
+* [Nginx API for php](#Nginx-API-for-php)
+* [Nginx non-blocking API for php](#Nginx-non-blocking-API-for-php)
+* [Copyright and License](#Copyright-and-License)
+
 What's different with official php
 ----------------------------------
 * Global variable is unsafe in per request
@@ -26,6 +38,7 @@ What's different with official php
 
 Requirement
 -----------
+- Linux only
 - PHP-7.0.* ~ PHP-7.3.*
 - nginx-1.4.7 ~ nginx-1.14.2 and mainline 1.15.7
 
@@ -232,63 +245,106 @@ Directives
 * [log_by_php](#log_by_php)
 * [header_filter_by_php](#header_filter_by_php)
 * [body_filter_by_php](#body_filter_by_php)
+* [php_keepalive](#php_keepalive)
+* [php_rewrite](#php_rewrite)
+* [php_access](#php_access)
+* [php_content](#php_content)
+* [php_log](#php_log)
+* [php_header_filter](#php_header_filter)
+* [php_body_filter](#php_body_filter)
+* [php_set](#php_set)
 
 php_ini_path
 ------------
-* **syntax:** `php_ini_path`_`<php.ini file path>`_
-* **context:** `http`
-* **phase:** `loading-config`
+**syntax:** `php_ini_path`_`<php.ini file path>`_
+
+**context:** `http`
+
+**phase:** `loading-config`
 
 This directive allows loading the official php configuration file php.ini, which will be used by subsequent PHP code.
 
 init_worker_by_php
 ------------------
-* **syntax:** `init_worker_by_php`_`<php script code>`_
-* **context:** `http`
-* **phase:** `starting-worker`
+**syntax:** `init_worker_by_php`_`<php script code>`_
+
+**context:** `http`
+
+**phase:** `starting-worker`
 
 rewrite_by_php
 --------------
-* **syntax:** `rewrite_by_php`_`<php script code>`_
-* **context:** `http, server, location, location if`
-* **phase:** `rewrite`
+**syntax:** `rewrite_by_php`_`<php script code>`_
+
+**context:** `http, server, location, location if`
+
+**phase:** `rewrite`
 
 In the rewrite phase of nginx, you can execute inline php code.
 
 access_by_php
 -------------
-* **syntax:** `access_by_php`_`<php script code>`_
-* **context:** `http, server, location, location if`
-* **phase:** `access`
+**syntax:** `access_by_php`_`<php script code>`_
+
+**context:** `http, server, location, location if`
+
+**phase:** `access`
 
 In the access phase of nginx, you can execute inline php code.
 
 content_by_php
 --------------
-* **syntax:** `content_by_php`_`<php script code>`_
-* **context:** `http, server, location, location if`
-* **phase:** `content`
+**syntax:** `content_by_php`_`<php script code>`_
+
+**context:** `http, server, location, location if`
+
+**phase:** `content`
 
 In the content phase of nginx, you can execute inline php code.
 
 log_by_php
 ----------
-* **syntax:** `log_by_php`_`<php script code>`_
-* **context:** `http, server, location, location if`
-* **phase:** `log`
+**syntax:** `log_by_php`_`<php script code>`_
+
+**context:** `http, server, location, location if`
+
+**phase:** `log`
 
 header_filter_by_php
 --------------------
-* **syntax:** `header_filter_by_php`_`<php script code>`_
-* **context:** `http, server, location, location if`
-* **phase:** `output-header-filter`
+**syntax:** `header_filter_by_php`_`<php script code>`_
+
+**context:** `http, server, location, location if`
+
+**phase:** `output-header-filter`
 
 body_filter_by_php
 ------------------
-* **syntax:** `body_filter_by_php`_`<php script code>`_
-* **context:** `http, server, location, location if`
-* **phase:** `output-body-filter`
+**syntax:** `body_filter_by_php`_`<php script code>`_
 
+**context:** `http, server, location, location if`
+
+**phase:** `output-body-filter`
+
+php_keepalive
+-------------
+**syntax:** `php_keepalive`_`<size>`_
+
+**default:** `0`
+
+**context:** `http, server`
+
+In php, set upstream connection pool size.
+
+php_set
+-------
+**syntax:** `php_set`_`$variable`_ _`<php script code>`_
+
+**context:** `http, server, location, location if`
+
+**phase:** `loading-config`
+
+Installs a php handler for the specified variable.
 
 Nginx API for php
 -----------------

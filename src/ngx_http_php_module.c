@@ -94,6 +94,14 @@ static ngx_command_t ngx_http_php_commands[] = {
      NULL
     },
 
+    {ngx_string("php_worker_init"),
+     NGX_HTTP_MAIN_CONF|NGX_CONF_TAKE1,
+     ngx_http_php_init_worker_inline_phase,
+     NGX_HTTP_MAIN_CONF_OFFSET,
+     0,
+     NULL
+    },
+
     {ngx_string("rewrite_by_php_file"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
@@ -104,6 +112,15 @@ static ngx_command_t ngx_http_php_commands[] = {
     },
 
     {ngx_string("rewrite_by_php"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_rewrite_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_rewrite_inline_handler
+    },
+
+    {ngx_string("php_rewrite"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
      ngx_http_php_rewrite_inline_phase,
@@ -130,6 +147,15 @@ static ngx_command_t ngx_http_php_commands[] = {
      ngx_http_php_access_inline_handler
     },
 
+    {ngx_string("php_access"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_access_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_access_inline_handler
+    },
+
     {ngx_string("content_by_php_file"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
@@ -140,6 +166,15 @@ static ngx_command_t ngx_http_php_commands[] = {
     },
 
     {ngx_string("content_by_php"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_content_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_content_inline_handler
+    },
+
+    {ngx_string("php_content"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
      ngx_http_php_content_inline_phase,
@@ -175,7 +210,25 @@ static ngx_command_t ngx_http_php_commands[] = {
      ngx_http_php_log_inline_handler
     },
 
+    {ngx_string("php_log"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_log_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_log_inline_handler
+    },
+
     {ngx_string("header_filter_by_php"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_header_filter_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_header_filter_inline_handler
+    },
+
+    {ngx_string("php_header_filter"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
      ngx_http_php_header_filter_inline_phase,
@@ -193,10 +246,28 @@ static ngx_command_t ngx_http_php_commands[] = {
      ngx_http_php_body_filter_inline_handler
     },
 
+    {ngx_string("php_body_filter"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_TAKE1,
+     ngx_http_php_body_filter_inline_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     ngx_http_php_body_filter_inline_handler
+    },
+
     {ngx_string("php_keepalive"),
      NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
      ngx_http_php_conf_keepalive,
      NGX_HTTP_SRV_CONF_OFFSET,
+     0,
+     NULL
+    },
+
+    {ngx_string("php_set"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
+        |NGX_CONF_2MORE,
+     ngx_http_php_set_inline2,
+     NGX_HTTP_LOC_CONF_OFFSET,
      0,
      NULL
     },
