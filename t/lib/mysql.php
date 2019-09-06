@@ -318,7 +318,7 @@ class mysql {
             $row[$field['column']] = $value;
         }
         #var_dump($row);
-        $this->rows[] = $row;
+        $this->resultRows[] = $row;
     }
 
     public function connect($host="", $port="", $user="", $password="", $database="") {
@@ -333,6 +333,7 @@ class mysql {
     }
 
     public function query($sql) {
+        $this->resultRows = [];
         $req = chr(0x03).$sql;
         $pack_len = strlen($sql) + 1;
         
@@ -341,7 +342,7 @@ class mysql {
         // result set packet
         yield from $this->read_packet();
 
-        return $this->rows;
+        return $this->resultRows;
     }
 
     public function close() {
