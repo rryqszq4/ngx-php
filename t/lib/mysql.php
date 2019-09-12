@@ -11,8 +11,6 @@ class mysql {
 
     private $socket = null;
 
-    private $packet_data = null;
-
     private $headerNum = 0;
     private $headerCurr = 0;
     private $resultState = 0;
