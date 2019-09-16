@@ -48,12 +48,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
-#define ngx_http_php_fnthread_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
+#define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
 	call_user_function(function_table, object, function_name, retval_ptr, param_count, params)
 #else
-#define ngx_http_php_fnthread_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
+#define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
 	__ngx_http_php_call_user_function_ex(object, function_name, retval_ptr, param_count, params, 1)
-#define ngx_http_php_fnthread_call_user_function_ex(function_table, object, function_name, retval_ptr, param_count, params, no_separation, symbol_table) \
+#define ngx_http_php_call_user_function_ex(function_table, object, function_name, retval_ptr, param_count, params, no_separation, symbol_table) \
 	__ngx_http_php_call_user_function_ex(object, function_name, retval_ptr, param_count, params, no_separation)
 #endif
 
@@ -66,10 +66,9 @@ void ngx_http_php_fnthread_body_filter_inline_routine(ngx_http_request_t *r);
 
 void ngx_http_php_fnthread_file_routine(ngx_http_request_t *r);
 
+
 void ngx_http_php_fnthread_create(ngx_http_request_t *r, char *func_prefix);
-
 void ngx_http_php_fnthread_resume(ngx_http_request_t *r);
-
 void ngx_http_php_fnthread_exit(ngx_http_request_t *r);
 
 #endif
