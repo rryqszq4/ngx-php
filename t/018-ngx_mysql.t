@@ -25,3 +25,24 @@ location =/ngx_mysql {
 GET /ngx_mysql
 --- response_body
 1,Kabul,AFG,Kabol,1780000
+
+
+__DATA__
+=== TEST 2: test function ngx_socket_clear
+test clear
+--- config
+location =/ngx_mysql {
+	content_by_php '
+		require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+        $m = new php\\ngx\mysql();
+        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        $sql = "select * from world.city order by ID asc limit 1 ;";
+        $ret = yield from $m->query($sql);
+        echo implode(",",array_values($ret[0]))."\n";
+        $m->clear();
+	';
+}
+--- request
+GET /ngx_mysql
+--- response_body
+1,Kabul,AFG,Kabol,1780000
