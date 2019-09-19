@@ -31,7 +31,7 @@ __DATA__
 === TEST 2: test function ngx_socket_clear
 test clear
 --- config
-location =/ngx_mysql {
+location =/ngx_mysql_clear {
 	content_by_php '
 		require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
@@ -43,6 +43,6 @@ location =/ngx_mysql {
 	';
 }
 --- request
-GET /ngx_mysql
+GET /ngx_mysql_clear
 --- response_body
 1,Kabul,AFG,Kabol,1780000
