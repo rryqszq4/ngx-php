@@ -27,7 +27,7 @@ GET /ngx_mysql
 1,Kabul,AFG,Kabol,1780000
 
 
-__DATA__
+
 === TEST 2: test function ngx_socket_clear
 test clear
 --- config
