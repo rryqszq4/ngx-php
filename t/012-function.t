@@ -47,6 +47,7 @@ ngx_socket_connect
 ngx_socket_close
 ngx_socket_send
 ngx_socket_recv
+ngx_socket_clear
 ngx_var_get
 ngx_var_set
 ngx_header_set

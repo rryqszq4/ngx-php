@@ -861,6 +861,8 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
     ngx_int_t                           rc;
     ngx_http_php_ctx_t                  *ctx;
     ngx_http_php_socket_upstream_t      *u;
+    ngx_connection_t                    *c;
+    ngx_event_t                         *rev;
 
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
                    "php tcp receive");
@@ -880,6 +882,9 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
         return NGX_ERROR;
     }
 
+    c = u->peer.connection;
+    rev = c->read;
+
     rc = ngx_http_php_socket_upstream_recv(r, u);
 
     ngx_php_debug("%d", u->enabled_receive);
@@ -887,8 +892,20 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
     if (u->enabled_receive == 0) {
         u->enabled_receive = 1;
     }else {
-        ctx->delay_time = 0;
-        ngx_http_php_sleep(r);
+        //ctx->delay_time = 0;
+        //ngx_http_php_sleep(r);
+        ngx_php_debug("c->read->active: %d, c->read->ready: %d, c->read->eof: %d, c->read->write: %d", 
+            c->read->active, c->read->ready, c->read->eof, c->read->write);
+
+        ngx_php_debug("r->connection->read->active: %d, r->connection->read->ready: %d, r->connection->read->eof: %d, r->connection->read->write: %d", 
+            r->connection->read->active, r->connection->read->ready, r->connection->read->eof, r->connection->read->write);
+
+        ngx_php_debug("c->write->active: %d, c->write->ready: %d, c->write->eof: %d, c->write->write: %d", 
+            c->write->active, c->write->ready, c->write->eof, c->write->write);
+
+        if ( ngx_add_event(rev, NGX_READ_EVENT, NGX_CLEAR_EVENT) == NGX_ERROR) {
+            return NGX_ERROR;
+        }
     }
 
     if (rc == NGX_AGAIN) {

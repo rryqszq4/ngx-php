@@ -347,6 +347,10 @@ class mysql {
         yield ngx_socket_close($this->socket);
     }
 
+    public function clear() {
+        ngx_socket_clear($this->socket);
+    }
+
 }
 
 ?>
