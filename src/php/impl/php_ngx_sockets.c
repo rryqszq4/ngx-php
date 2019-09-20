@@ -332,6 +332,40 @@ PHP_FUNCTION(ngx_socket_settimeout)
     RETURN_TRUE;
 }
 
+PHP_FUNCTION(ngx_socket_clear)
+{
+    zval                *arg1;
+    //php_ngx_socket_t    *php_sock;
+
+    ngx_http_request_t  *r;
+    ngx_http_php_ctx_t  *ctx;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &arg1) == FAILURE) {
+        RETURN_FALSE;
+    }
+
+    /*if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
+        RETURN_FALSE;
+    }*/
+    //php_sock = Z_RES_P(arg1)->ptr;
+    //efree(php_sock);
+
+
+    r = ngx_php_request;
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+    
+    if ( !ctx ) {
+        RETURN_FALSE;
+    } 
+
+    efree(ctx->php_socket);
+    ctx->php_socket = NULL;
+
+    ngx_http_php_socket_clear(r);
+
+    RETURN_TRUE;
+}
+
 void php_impl_ngx_sockets_init(int module_number TSRMLS_DC)
 {
     //le_socket = zend_register_list_destructors_ex(php_ngx_socket_destroy, NULL, le_socket_name, module_number);

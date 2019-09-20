@@ -90,6 +90,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_setkeepalive, 0, 0, 1)
 	ZEND_ARG_INFO(0, size)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_clear, 0, 0, 1)
+	ZEND_ARG_INFO(0, socket)
+ZEND_END_ARG_INFO()
+
 PHP_FUNCTION(ngx_socket_create);
 PHP_FUNCTION(ngx_socket_iskeepalive);
 PHP_FUNCTION(ngx_socket_connect);
@@ -100,6 +104,7 @@ PHP_FUNCTION(ngx_socket_write);
 PHP_FUNCTION(ngx_socket_close);
 PHP_FUNCTION(ngx_socket_settimeout);
 PHP_FUNCTION(ngx_socket_setkeepalive);
+PHP_FUNCTION(ngx_socket_clear);
 
 void php_impl_ngx_sockets_init(int module_number TSRMLS_DC);
 

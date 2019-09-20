@@ -11,8 +11,6 @@ class mysql {
 
     private $socket = null;
 
-    private $packet_data = null;
-
     private $headerNum = 0;
     private $headerCurr = 0;
     private $resultState = 0;
@@ -21,6 +19,12 @@ class mysql {
 
     public function __construct() {
         $this->socket = ngx_socket_create();
+    }
+
+    public function __destruct() {
+        if ( $this->socket ) {
+            ngx_socket_clear($this->socket);
+        }
     }
 
     private function print_bin($result) {
@@ -318,7 +322,7 @@ class mysql {
             $row[$field['column']] = $value;
         }
         #var_dump($row);
-        $this->rows[] = $row;
+        $this->resultRows[] = $row;
     }
 
     public function connect($host="", $port="", $user="", $password="", $database="") {
@@ -333,6 +337,7 @@ class mysql {
     }
 
     public function query($sql) {
+        $this->resultRows = [];
         $req = chr(0x03).$sql;
         $pack_len = strlen($sql) + 1;
         
@@ -341,11 +346,19 @@ class mysql {
         // result set packet
         yield from $this->read_packet();
 
-        return $this->rows;
+        return $this->resultRows;
     }
 
     public function close() {
         yield ngx_socket_close($this->socket);
+
+        unset($this->socket);
+    }
+
+    public function clear() {
+        ngx_socket_clear($this->socket);
+
+        unset($this->socket);
     }
 
 }

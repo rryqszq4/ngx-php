@@ -375,20 +375,20 @@ Nginx API for php
 
 ngx_exit
 --------
-* **syntax:** `ngx_exit(int $status) : void`
+**syntax:** `ngx_exit(int $status) : void`
 
 End of current request and return http status code.
 
 ngx_query_args
 --------------
-* **syntax:** `ngx_query_args(void) : array` or `ngx::query_args(void) : array`
+**syntax:** `ngx_query_args(void) : array` or `ngx::query_args(void) : array`
 
 An associative array of variables passed to the current script via the URL parameters (aka. query string).  
 Instead of php official constant $_GET.
 
 ngx_post_args
 -------------
-* **syntax:** `ngx_post_args(void) : array` or `ngx::post_args(void) : array`
+**syntax:** `ngx_post_args(void) : array` or `ngx::post_args(void) : array`
 
 An associative array of variables passed to the current script via the HTTP POST method  
 when using application/x-www-form-urlencoded or multipart/form-data as the HTTP Content-Type in the request.  
@@ -396,126 +396,126 @@ Instead of php official constant $_POST.
 
 ngx_log_error
 -------------
-* **syntax:** `ngx_log_error(int $level, string $log_str) : void` or `ngx_log::error(int $level, string $log_str) : void`
+**syntax:** `ngx_log_error(int $level, string $log_str) : void` or `ngx_log::error(int $level, string $log_str) : void`
 
 ngx_request_method
 ------------------
-* **syntax:** `ngx_request_method(void) : string` or `ngx_request::method(void) : string`
+**syntax:** `ngx_request_method(void) : string` or `ngx_request::method(void) : string`
 
 Which request method was used to access the page, such as 'GET','POST','PUT','DELETE' and so on.
 
 ngx_request_document_root
 -------------------------
-* **syntax:** `ngx_request_document_root(void) : string` or `ngx_request::document_root(void) : string`
+**syntax:** `ngx_request_document_root(void) : string` or `ngx_request::document_root(void) : string`
 
 The document root directory under which the current script is executing, as defined in the server's configuration file.
 
 ngx_request_document_uri
 ------------------------
-* **syntax:** `ngx_request_document_uri(void) : string` or `ngx_request::document_uri(void) : string`
+**syntax:** `ngx_request_document_uri(void) : string` or `ngx_request::document_uri(void) : string`
 
 ngx_request_script_name
 -----------------------
-* **syntax:** `ngx_request_script_name(void) : string` or `ngx_request::script_name(void) : string`
+**syntax:** `ngx_request_script_name(void) : string` or `ngx_request::script_name(void) : string`
 
 Contains the current script'path. This is useful for pages which need to point to the themselves.  
 The __FILE__ constant contains the full path and filename of the current (included) file.
 
 ngx_request_script_filename
 ---------------------------
-* **syntax:** `ngx_request_script_filename(void) : string` or `ngx_request::script_filename(void) : string`
+**syntax:** `ngx_request_script_filename(void) : string` or `ngx_request::script_filename(void) : string`
 
 The absolute pathname of the currently executing script file name.
 
 ngx_request_query_string
 ------------------------
-* **syntax:** `ngx_request_query_string(void) : string` or `ngx_request::query_string(void) : string`
+**syntax:** `ngx_request_query_string(void) : string` or `ngx_request::query_string(void) : string`
 
 The query string, if any, via which the page was accessed.
 
 ngx_request_uri
 ---------------
-* **syntax:** `ngx_request_uri(void) : string` or `ngx_request::uri(void) : string`
+**syntax:** `ngx_request_uri(void) : string` or `ngx_request::uri(void) : string`
 
 The URI which was given in order to access this page, for instance, '/index.html'.
 
 ngx_request_server_protocol
 ---------------------------
-* **syntax:** `ngx_request_server_protocol(void) : string` or `ngx_request::server_protocol(void) : string`
+**syntax:** `ngx_request_server_protocol(void) : string` or `ngx_request::server_protocol(void) : string`
 
 Name and revision of th information protocol via which the page was requested, such as 'HTTP/1.0'.
 
 ngx_request_remote_addr
 -----------------------
-* **syntax:** `ngx_request_remote_addr(void) : string` or `ngx_request::remote_addr(void) : string`
+**syntax:** `ngx_request_remote_addr(void) : string` or `ngx_request::remote_addr(void) : string`
 
 The IP address from which the user is viewing the current page.
 
 ngx_request_server_addr
 -----------------------
-* **syntax:** `ngx_request_server_addr(void) : string` or `ngx_request::server_addr(void) : string`
+**syntax:** `ngx_request_server_addr(void) : string` or `ngx_request::server_addr(void) : string`
 
 The IP address of the server under which the current script is executing.
 
 ngx_request_remote_port
 -----------------------
-* **syntax:** `ngx_request_remote_port(void) : int` or `ngx_request::remote_port(void) : int`
+**syntax:** `ngx_request_remote_port(void) : int` or `ngx_request::remote_port(void) : int`
 
 The port being used on the user's machine to communicate with the web server.
 
 ngx_request_server_port
 -----------------------
-* **syntax:** `ngx_request_server_port(void) : int` or `ngx_request::server_port(void) : int`
+**syntax:** `ngx_request_server_port(void) : int` or `ngx_request::server_port(void) : int`
 
 The port on the server machine being used by the web server for communication. For default setups,  
 this will be '80'; using SSL, for instance, will change this to whatever your defined secure HTTP port is.
 
 ngx_request_server_name
 -----------------------
-* **syntax:** `ngx_request_server_name(void) : string` or `ngx_request::server_name(void) : string`
+**syntax:** `ngx_request_server_name(void) : string` or `ngx_request::server_name(void) : string`
 
 The name of the server host under which the current script is executing.   
 If the script is running on a virtual host, this will be the value defined for that virtual host.
 
 ngx_request_headers
 -------------------
-* **syntax:** `ngx_request_headers(void): array` or `ngx_request::headers(void) : array`
+**syntax:** `ngx_request_headers(void): array` or `ngx_request::headers(void) : array`
 
 Get the header full information of the http request.
 
 ngx_var_get
 -----------
-* **syntax:** `ngx_var_get(string $key) : string` or `ngx_var::get(string $key) : string`
+**syntax:** `ngx_var_get(string $key) : string` or `ngx_var::get(string $key) : string`
 
 Get the variables in the nginx configuration.
 
 ngx_var_set
 -----------
-* **syntax:** `ngx_var_set(string $key, string $value) : void` or `ngx_var::set(string $key, string $value) : void`
+**syntax:** `ngx_var_set(string $key, string $value) : void` or `ngx_var::set(string $key, string $value) : void`
 
 Set the variables in the nginx configuration.
 
 ngx_header_set
 --------------
-* **syntax:** `ngx_header_set(string $key, string $value) : bool`
+**syntax:** `ngx_header_set(string $key, string $value) : bool`
 
 Set the header information of the http response.
 
 ngx_header_get
 --------------
-* **syntax:** `ngx_header_get(string $key) : string`
+**syntax:** `ngx_header_get(string $key) : string`
 
 Get the header information of the http response.
 
 ngx_header_gets
 ---------------
-* **syntax:** `ngx_header_gets(void) : array`
+**syntax:** `ngx_header_gets(void) : array`
 
 Get the header full information of the http response.
 
 ngx_redirect
 ------------
-* **syntax:** `ngx_redirect(string $uri, int $status) : bool`
+**syntax:** `ngx_redirect(string $uri, int $status) : bool`
 
 Set response header redirection.
 
@@ -528,16 +528,17 @@ Nginx non-blocking API for php
 * [yield ngx_socket_close](#ngx_socket_close)
 * [yield ngx_socket_send](#ngx_socket_send)
 * [yield ngx_socket_recv](#ngx_socket_recv)
+* [ngx_socket_clear](#ngx_socket_clear)
 
 ngx_sleep
 ---------
-* **syntax:** `yield ngx_sleep(int seconds)`
+**syntax:** `yield ngx_sleep(int seconds)`
 
 Delays the program execution for the given number of seconds.
 
 ngx_socket_create
 -----------------
-* **syntax:** `ngx_socket_create(int $domain, int $type, int $protocol) : resource`
+**syntax:** `ngx_socket_create(int $domain, int $type, int $protocol) : resource`
 
 Creates and returns a socket resource, also referred to as an endpoint of communication.  
 A typical network connection is made up of 2 sockets, one performing the role of the client,  
@@ -545,37 +546,63 @@ and another performing the role of the server.
 
 ngx_socket_iskeepalive
 ----------------------
-* **syntax:** `ngx_socket_iskeepalive(void) : bool`
+**syntax:** `ngx_socket_iskeepalive(void) : bool`
 
 ngx_socket_connect
 ------------------
-* **syntax:** `( yield ngx_socket_connect(resource $socket, string $address, int $port) ) : bool`
+**syntax:** `( yield ngx_socket_connect(resource $socket, string $address, int $port) ) : bool`
 
 Initiate a connection to address using the socket resource socket, which must be a valid  
 socket resource created with ngx_socket_create().
 
 ngx_socket_close
 ----------------
-* **syntax:** `( yield ngx_socket_close(resource $socket) ) : bool`
+**syntax:** `( yield ngx_socket_close(resource $socket) ) : bool`
 
 ngx_socket_close() closes the socket resource given by socket. This function is specific to  
 sockets and cannot be used on any other type of resources.
 
 ngx_socket_send
 ---------------
-* **syntax:** `( yield ngx_socket_send(resource $socket, string $buf, int $len) ) : int`
+**syntax:** `( yield ngx_socket_send(resource $socket, string $buf, int $len) ) : int`
 
 The function ngx_socket_send() sends len bytes to the socket socket from buf.
 
 ngx_socket_recv
 ---------------
-* **syntax:** `( yield ngx_socket_recv(resource $socket, string &$buf, int $len) ) : int`
+**syntax:** `( yield ngx_socket_recv(resource $socket, string &$buf, int $len) ) : int`
 
 The ngx_socket_recv() function receives len bytes of data in buf from socket. ngx_socket_recv() can be  
 used to gather data from connected sockets. 
 
 buf is passed by reference, so it must be specified as a variable in the argument list.  
 Data read from socket by ngx_socket_recv() will be returned in buf.
+
+ngx_socket_clear
+----------------
+**syntax:** `ngx_socket_recv(resource $socket) : bool`
+
+Close the socket resource and is blocking but hight performance.
+
+Nginx constant
+--------------
+NGX_OK
+NGX_ERROR
+NGX_AGAIN
+NGX_BUSY
+NGX_DONE
+NGX_DECLINED
+NGX_ABORT
+
+NGX_LOG_STDERR
+NGX_LOG_EMERG
+NGX_LOG_ALERT
+NGX_LOG_CRIT
+NGX_LOG_ERR
+NGX_LOG_WARN
+NGX_LOG_NOTICE
+NGX_LOG_INFO
+NGX_LOG_DEBUG
 
 Copyright and License
 ---------------------
