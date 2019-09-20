@@ -21,6 +21,12 @@ class mysql {
         $this->socket = ngx_socket_create();
     }
 
+    public function __destruct() {
+        if ( $this->socket ) {
+            ngx_socket_clear($this->socket);
+        }
+    }
+
     private function print_bin($result) {
         $hex_arr="";
         $bin_arr="";
@@ -345,10 +351,14 @@ class mysql {
 
     public function close() {
         yield ngx_socket_close($this->socket);
+
+        unset($this->socket);
     }
 
     public function clear() {
         ngx_socket_clear($this->socket);
+
+        unset($this->socket);
     }
 
 }
