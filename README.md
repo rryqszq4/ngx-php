@@ -27,6 +27,7 @@ Table of contents
 * [Directives](#Directives)
 * [Nginx API for php](#Nginx-API-for-php)
 * [Nginx non-blocking API for php](#Nginx-non-blocking-API-for-php)
+* [Nginx constants](Nginx-constants)
 * [Copyright and License](#Copyright-and-License)
 
 What's different with official php
@@ -585,7 +586,7 @@ ngx_socket_clear
 Close the socket resource and is blocking but hight performance.
 
 Nginx constants
---------------
+---------------
 * [log constants for php](#log-constants-for-php)
 * [status constants for php](#status-constants-for-php)
 
