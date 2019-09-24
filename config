@@ -21,6 +21,7 @@ NGX_PHP_SRCS="$ngx_addon_dir/src/ngx_http_php_module.c \
               $ngx_addon_dir/src/php/impl/php_ngx_var.c \
               $ngx_addon_dir/src/php/impl/php_ngx_sockets.c \
               $ngx_addon_dir/src/php/impl/php_ngx_header.c \
+              $ngx_addon_dir/src/php/impl/php_ngx_cookie.c \
               "
 NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_version.h \
               $ngx_addon_dir/src/ngx_http_php_module.h \
@@ -44,6 +45,7 @@ NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_version.h \
               $ngx_addon_dir/src/php/impl/php_ngx_var.h \
               $ngx_addon_dir/src/php/impl/php_ngx_sockets.h \
               $ngx_addon_dir/src/php/impl/php_ngx_header.h \
+              $ngx_addon_dir/src/php/impl/php_ngx_cookie.h \
               "
 
 if [ -z "$PHP_CONFIG" ]; then

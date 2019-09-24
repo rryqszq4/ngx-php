@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "php_ngx_sockets.h"
 #include "php_ngx_var.h"
 #include "php_ngx_header.h"
+#include "php_ngx_cookie.h"
 
 #include "../../ngx_http_php_module.h"
 
@@ -366,6 +367,10 @@ static const zend_function_entry additional_functions[] = {
     PHP_FE(ngx_header_gets,                 ngx_header_gets_arginfo)
 
     PHP_FE(ngx_redirect,                    ngx_redirect_arginfo)
+
+    PHP_FE(ngx_cookie_gets,                 ngx_cookie_gets_arginfo)
+    PHP_FE(ngx_cookie_get,                  ngx_cookie_get_arginfo)
+    PHP_FE(ngx_cookie_set,                  ngx_cookie_set_arginfo)
 
     {NULL, NULL, NULL, 0, 0}
 };

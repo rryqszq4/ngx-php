@@ -26,30 +26,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-#ifndef __PHP_NGX_HEADER_H__
-#define __PHP_NGX_HEADER_H__
+#ifndef __PHP_NGX_COOKIE_H__
+#define __PHP_NGX_COOKIE_H__
 
 #include <php.h>
 #include <php_ini.h>
 #include <ext/standard/info.h>
 #include <ngx_http.h>
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_header_set_arginfo, 0, 0, 2)
+ZEND_BEGIN_ARG_INFO_EX(ngx_cookie_gets_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_cookie_get_arginfo, 0, 0, 1)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(ngx_cookie_set_arginfo, 0, 0, 2)
     ZEND_ARG_INFO(0, key)
     ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_header_get_arginfo, 0, 0, 1)
-    ZEND_ARG_INFO(0, key)
-ZEND_END_ARG_INFO()
+PHP_FUNCTION(ngx_cookie_gets);
+PHP_FUNCTION(ngx_cookie_get);
+PHP_FUNCTION(ngx_cookie_set);
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_header_gets_arginfo, 0, 0, 0)
-ZEND_END_ARG_INFO()
-
-PHP_FUNCTION(ngx_header_set);
-PHP_FUNCTION(ngx_header_get);
-PHP_FUNCTION(ngx_header_gets);
-
-void php_impl_ngx_header_init(int module_number TSRMLS_DC);
+void ngx_impl_ngx_cookie_init(int module_number TSRMLS_DC);
 
 #endif
