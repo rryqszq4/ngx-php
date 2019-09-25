@@ -373,6 +373,9 @@ Nginx API for php
 * [ngx_header_get](#ngx_header_get)
 * [ngx_header_gets](#ngx_header_gets)
 * [ngx_redirect](#ngx_redirect)
+* [ngx_cookie_gets](#ngx_cookie_gets)
+* [ngx_cookie_get](#ngx_cookie_get)
+* [ngx_cookie_set](#ngx_cookie_set)
 
 ngx_exit
 --------
@@ -519,6 +522,19 @@ ngx_redirect
 **syntax:** `ngx_redirect(string $uri, int $status) : bool`
 
 Set response header redirection.
+
+ngx_cookie_gets
+---------------
+**syntax:** `ngx_cookie_gets(void) : string`
+
+ngx_cookie_get
+--------------
+**syntax:** `ngx_cookie_get(string key) : string`
+
+ngx_cookie_set
+--------------
+**syntax:** `ngx_cookie_set(string data): bool`
+
 
 Nginx non-blocking API for php
 ------------------------------
