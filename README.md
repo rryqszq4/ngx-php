@@ -27,6 +27,7 @@ Table of contents
 * [Directives](#Directives)
 * [Nginx API for php](#Nginx-API-for-php)
 * [Nginx non-blocking API for php](#Nginx-non-blocking-API-for-php)
+* [Nginx constants](Nginx-constants)
 * [Copyright and License](#Copyright-and-License)
 
 What's different with official php
@@ -372,6 +373,9 @@ Nginx API for php
 * [ngx_header_get](#ngx_header_get)
 * [ngx_header_gets](#ngx_header_gets)
 * [ngx_redirect](#ngx_redirect)
+* [ngx_cookie_gets](#ngx_cookie_gets)
+* [ngx_cookie_get](#ngx_cookie_get)
+* [ngx_cookie_set](#ngx_cookie_set)
 
 ngx_exit
 --------
@@ -519,6 +523,19 @@ ngx_redirect
 
 Set response header redirection.
 
+ngx_cookie_gets
+---------------
+**syntax:** `ngx_cookie_gets(void) : string`
+
+ngx_cookie_get
+--------------
+**syntax:** `ngx_cookie_get(string key) : string`
+
+ngx_cookie_set
+--------------
+**syntax:** `ngx_cookie_set(string data): bool`
+
+
 Nginx non-blocking API for php
 ------------------------------
 * [yield ngx_sleep](#ngx_sleep)
@@ -584,25 +601,36 @@ ngx_socket_clear
 
 Close the socket resource and is blocking but hight performance.
 
-Nginx constant
---------------
-NGX_OK
-NGX_ERROR
-NGX_AGAIN
-NGX_BUSY
-NGX_DONE
-NGX_DECLINED
-NGX_ABORT
+Nginx constants
+---------------
+* [log constants for php](#log-constants-for-php)
+* [status constants for php](#status-constants-for-php)
 
-NGX_LOG_STDERR
-NGX_LOG_EMERG
-NGX_LOG_ALERT
-NGX_LOG_CRIT
-NGX_LOG_ERR
-NGX_LOG_WARN
-NGX_LOG_NOTICE
-NGX_LOG_INFO
-NGX_LOG_DEBUG
+log constants for php
+---------------------
+name | value
+-|-
+NGX_OK          | 0
+NGX_ERROR       | -1
+NGX_AGAIN       | -2
+NGX_BUSY        | -3
+NGX_DONE        | -4
+NGX_DECLINED    | -5
+NGX_ABORT       | -6
+
+status constants for php
+------------------------
+name | value
+-|-
+NGX_LOG_STDERR  | 0
+NGX_LOG_EMERG   | 1
+NGX_LOG_ALERT   | 2
+NGX_LOG_CRIT    | 3
+NGX_LOG_ERR     | 4
+NGX_LOG_WARN    | 5
+NGX_LOG_NOTICE  | 6
+NGX_LOG_INFO    | 7
+NGX_LOG_DEBUG   | 8
 
 Copyright and License
 ---------------------
