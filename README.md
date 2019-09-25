@@ -176,7 +176,7 @@ http {
                 yield ngx_socket_recv($fd, $recv_buf);
                 var_dump($recv_buf);
                 
-                unset($fd);
+                yield ngx_socket_close($fd);
             ';
         }
 
