@@ -84,6 +84,8 @@ class Redis {
         }
         $payload = '*'.count($args)."\r\n{$payload}";
 
+        #var_dump($payload);
+
         yield ngx_socket_send($this->socket, $payload, strlen($payload));
     }
 
@@ -95,6 +97,10 @@ class Redis {
         } while (!empty($buf));
         #var_dump($data);
 
+        return $this->data_parse($data);
+    }
+
+    private function data_parse($data) {
         $prefix = ord($data[0]);
 
         if ($prefix == 36) { // '$' 
@@ -103,14 +109,35 @@ class Redis {
                 return null;
             }
             
-            return substr($data, strpos($data, "\r\n")+2, -2);
+            $token = strtok($data, "\r\n");
+            $token = strtok("\r\n");
+            return $token;
 
         }else if ($prefix == 43) { // '+'
             return trim(substr($data, 1));
         }else if ($prefix == 42) { // '*'
+            $size = intval(substr($data, 1));
+            if ($size < 0) {
+                return null;
+            }
+
+            $output = array();
+            $data = substr($data, strpos($data, "\r\n")+2);
+            for($i = 0; $i < $size; $i++) {
+                $res = $this->data_parse($data);
+                #var_dump($data);
+                if (!empty($res)) {
+                    $output[$i] = $res;
+                }else {
+                    $output[$i] = null;
+                }
+                $data = substr($data, strpos($data, "\r\n")+2);
+                $data = substr($data, strpos($data, "\r\n")+2);
+            }
+            return $output;
 
         }else if ($prefix == 58) { // ':'
-
+            return intval(substr($data, 1));
         }else if ($prefix == 45) { // '-'
             return false;
         }else {
@@ -119,6 +146,10 @@ class Redis {
     }
 
     public function __call($name, $params) {
+        if (!in_array($name, $this->commands)) {
+            return false;
+        }
+
         array_unshift($params, $name);
         #var_dump($params);
         yield from $this->write_data(...$params);
