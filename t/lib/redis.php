@@ -94,7 +94,9 @@ class Redis {
             $buf = '';
             yield ngx_socket_recv($this->socket, $buf);
             $data .= $buf;
-        } while (!empty($buf));
+            #var_dump($buf);
+            
+        } while (strlen($buf) >= 1024);
         #var_dump($data);
 
         return $this->data_parse($data);
