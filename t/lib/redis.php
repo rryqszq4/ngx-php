@@ -11,7 +11,7 @@ class Redis {
 
     protected $socket = null;
 
-    protected $commands = array(
+    protected static $commands = array(
         "get",
         "set",
         "mget",
@@ -103,52 +103,55 @@ class Redis {
     }
 
     private function data_parse($data) {
-        $prefix = ord($data[0]);
 
-        if ($prefix == 36) { // '$' 
-            $size = intval(substr($data, 1));
-            if ($size < 0) {
-                return null;
-            }
-            
-            $token = strtok($data, "\r\n");
-            $token = strtok("\r\n");
-            return $token;
-
-        }else if ($prefix == 43) { // '+'
-            return trim(substr($data, 1));
-        }else if ($prefix == 42) { // '*'
-            $size = intval(substr($data, 1));
-            if ($size < 0) {
-                return null;
-            }
-
-            $output = array();
-            $data = substr($data, strpos($data, "\r\n")+2);
-            for($i = 0; $i < $size; $i++) {
-                $res = $this->data_parse($data);
-                #var_dump($data);
-                if (!empty($res)) {
-                    $output[$i] = $res;
-                }else {
-                    $output[$i] = null;
+        switch(ord($data[0])) {
+            case 36: // '$'
+                $size = intval(substr($data, 1));
+                if ($size < 0) {
+                    return null;
                 }
-                $data = substr($data, strpos($data, "\r\n")+2);
-                $data = substr($data, strpos($data, "\r\n")+2);
-            }
-            return $output;
+                
+                $token = strtok($data, "\r\n");
+                $token = strtok("\r\n");
+                return $token;
 
-        }else if ($prefix == 58) { // ':'
-            return intval(substr($data, 1));
-        }else if ($prefix == 45) { // '-'
-            return false;
-        }else {
-            return null;
+            case 43: // '+'
+                return trim(substr($data, 1));
+            
+            case 42: // '*'
+                $size = intval(substr($data, 1));
+                if ($size < 0) {
+                    return null;
+                }
+
+                $output = array();
+                $data = substr($data, strpos($data, "\r\n")+2);
+                for($i = 0; $i < $size; $i++) {
+                    $res = $this->data_parse($data);
+                    #var_dump($data);
+                    if (!empty($res)) {
+                        $output[$i] = $res;
+                    }else {
+                        $output[$i] = null;
+                    }
+                    $data = substr($data, strpos($data, "\r\n")+2);
+                    $data = substr($data, strpos($data, "\r\n")+2);
+                }
+                return $output;
+            
+            case 58: // ':'
+                return intval(substr($data, 1));
+            
+            case 45: // '-'
+                return false;
+            
+            default:
+                return null;
         }
     }
 
     public function __call($name, $params) {
-        if (!in_array($name, $this->commands)) {
+        if (!in_array($name, self::$commands)) {
             return false;
         }
 
@@ -156,11 +159,7 @@ class Redis {
         #var_dump($params);
         yield from $this->write_data(...$params);
 
-        $result = ( yield from $this->read_data() );
-
-        return $result;
+        return ( yield from $this->read_data() );
     }
 
 }
-
-?>
