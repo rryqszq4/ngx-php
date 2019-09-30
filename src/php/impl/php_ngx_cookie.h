@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ext/standard/info.h>
 #include <ngx_http.h>
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_cookie_gets_arginfo, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(ngx_cookie_get_all_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(ngx_cookie_get_arginfo, 0, 0, 1)
@@ -46,7 +46,7 @@ ZEND_BEGIN_ARG_INFO_EX(ngx_cookie_set_arginfo, 0, 0, 2)
     ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
-PHP_FUNCTION(ngx_cookie_gets);
+PHP_FUNCTION(ngx_cookie_get_all);
 PHP_FUNCTION(ngx_cookie_get);
 PHP_FUNCTION(ngx_cookie_set);
 

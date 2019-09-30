@@ -6,15 +6,15 @@ run_tests();
 
 __DATA__
 
-=== TEST 1: test ngx_cookie_gets
+=== TEST 1: test ngx_cookie_get_all
 --- config
-	location = /ngx_cookie_gets {
+	location = /ngx_cookie_get_all {
 		php_content '
-			echo ngx_cookie_gets()."\n";
+			echo ngx_cookie_get_all()."\n";
 		';
 	}
 --- request
-GET /ngx_cookie_gets
+GET /ngx_cookie_get_all
 --- more_headers
 Cookie: foo=ngx_php; bar=ngx_cookie
 --- response_body
