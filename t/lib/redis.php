@@ -11,7 +11,7 @@ class Redis {
 
     protected $socket = null;
 
-    protected $commands = array(
+    protected static $commands = array(
         "get",
         "set",
         "mget",
@@ -148,7 +148,7 @@ class Redis {
     }
 
     public function __call($name, $params) {
-        if (!in_array($name, $this->commands)) {
+        if (!in_array($name, self::$commands)) {
             return false;
         }
 
