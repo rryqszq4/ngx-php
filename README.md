@@ -516,7 +516,7 @@ Get the header information of the http response.
 
 ngx_header_gets
 ---------------
-**syntax:** `ngx_header_get_all(void) : array`
+**syntax:** `ngx_header_gets(void) : array`
 
 Get the header full information of the http response.
 
@@ -528,7 +528,7 @@ Set response header redirection.
 
 ngx_cookie_get_all
 ------------------
-**syntax:** `ngx_cookie_gets(void) : string`
+**syntax:** `ngx_cookie_get_all(void) : string`
 
 ngx_cookie_get
 --------------
