@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "php_ngx_cookie.h"
 #include "../../ngx_http_php_module.h"
 
-PHP_FUNCTION(ngx_cookie_gets)
+PHP_FUNCTION(ngx_cookie_get_all)
 {
     ngx_http_request_t  *r;
     ngx_list_part_t     *part;

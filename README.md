@@ -27,7 +27,7 @@ Table of contents
 * [Directives](#Directives)
 * [Nginx API for php](#Nginx-API-for-php)
 * [Nginx non-blocking API for php](#Nginx-non-blocking-API-for-php)
-* [Nginx constants](Nginx-constants)
+* [Nginx constants](#Nginx-constants)
 * [Copyright and License](#Copyright-and-License)
 
 What's different with official php
@@ -133,30 +133,30 @@ http {
 
         location = /ngx_request {
             content_by_php '
-                echo ngx_request::document_uri();
+                echo ngx_request_document_uri();
             ';
         }
 
         # curl /ngx_get?a=1&b=2
         location = /ngx_get {
             content_by_php '
-                echo "ngx::query_args()\n";
-                var_dump(ngx::query_args());
+                echo "ngx_query_args()\n";
+                var_dump(ngx_query_args());
             ';
         }
 
         # curl -d 'a=1&b=2' /ngx_post
         location = /ngx_post {
             content_by_php '
-                echo "ngx::post_args()\n";
-                var_dump(ngx::post_args());
+                echo "ngx_post_args()\n";
+                var_dump(ngx_post_args());
             ';
         }
 
         location = /ngx_sleep {
             content_by_php '
                 echo "ngx_sleep start\n";
-                yield ngx::sleep(1);
+                yield ngx_sleep(1);
                 echo "ngx_sleep end\n";
             ';
         }
@@ -165,14 +165,17 @@ http {
             default_type 'application/json;charset=UTF-8';
             content_by_php '
                 $fd = ngx_socket_create();
-                var_dump($fd);
+
                 yield ngx_socket_connect($fd, "hq.sinajs.cn", 80);
+
                 $send_buf = "GET /list=s_sh000001 HTTP/1.0\r\n
                                             Host: hq.sinajs.cn\r\nConnection: close\r\n\r\n";
                 yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
+
                 $recv_buf = "";
                 yield ngx_socket_recv($fd, $recv_buf);
                 var_dump($recv_buf);
+                
                 yield ngx_socket_close($fd);
             ';
         }
@@ -180,7 +183,7 @@ http {
         location = /ngx_var {
             set $a 1234567890;
             content_by_php '
-                $a = ngx_var::get("a");
+                $a = ngx_var_get("a");
                 var_dump($a);
             ';
         }
@@ -202,7 +205,7 @@ http {
         # run any php file in root
         location = / {
             content_by_php '
-                include ngx_var::get("uri");
+                include ngx_var_get("uri");
             ';
         }
 
@@ -373,7 +376,7 @@ Nginx API for php
 * [ngx_header_get](#ngx_header_get)
 * [ngx_header_gets](#ngx_header_gets)
 * [ngx_redirect](#ngx_redirect)
-* [ngx_cookie_gets](#ngx_cookie_gets)
+* [ngx_cookie_get_all](#ngx_cookie_get_all)
 * [ngx_cookie_get](#ngx_cookie_get)
 * [ngx_cookie_set](#ngx_cookie_set)
 
@@ -511,9 +514,9 @@ ngx_header_get
 
 Get the header information of the http response.
 
-ngx_header_gets
----------------
-**syntax:** `ngx_header_gets(void) : array`
+ngx_header_get_all
+------------------
+**syntax:** `ngx_header_get_all(void) : array`
 
 Get the header full information of the http response.
 
