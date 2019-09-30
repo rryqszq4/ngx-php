@@ -156,9 +156,7 @@ class Redis {
         #var_dump($params);
         yield from $this->write_data(...$params);
 
-        $result = ( yield from $this->read_data() );
-
-        return $result;
+        return ( yield from $this->read_data() );
     }
 
 }
