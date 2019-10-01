@@ -374,7 +374,7 @@ Nginx API for php
 * [ngx_var_set](#ngx_var_set)
 * [ngx_header_set](#ngx_header_set)
 * [ngx_header_get](#ngx_header_get)
-* [ngx_header_gets](#ngx_header_gets)
+* [ngx_header_get_all](#ngx_header_get_all)
 * [ngx_redirect](#ngx_redirect)
 * [ngx_cookie_get_all](#ngx_cookie_get_all)
 * [ngx_cookie_get](#ngx_cookie_get)
@@ -514,9 +514,9 @@ ngx_header_get
 
 Get the header information of the http response.
 
-ngx_header_get_all
-------------------
-**syntax:** `ngx_header_get_all(void) : array`
+ngx_header_gets
+---------------
+**syntax:** `ngx_header_gets(void) : array`
 
 Get the header full information of the http response.
 
@@ -526,9 +526,9 @@ ngx_redirect
 
 Set response header redirection.
 
-ngx_cookie_gets
----------------
-**syntax:** `ngx_cookie_gets(void) : string`
+ngx_cookie_get_all
+------------------
+**syntax:** `ngx_cookie_get_all(void) : string`
 
 ngx_cookie_get
 --------------

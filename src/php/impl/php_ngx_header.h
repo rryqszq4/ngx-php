@@ -43,12 +43,12 @@ ZEND_BEGIN_ARG_INFO_EX(ngx_header_get_arginfo, 0, 0, 1)
     ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(ngx_header_gets_arginfo, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(ngx_header_get_all_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 PHP_FUNCTION(ngx_header_set);
 PHP_FUNCTION(ngx_header_get);
-PHP_FUNCTION(ngx_header_gets);
+PHP_FUNCTION(ngx_header_get_all);
 
 void php_impl_ngx_header_init(int module_number TSRMLS_DC);
 
