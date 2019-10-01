@@ -111,7 +111,7 @@ PHP_FUNCTION(ngx_header_get)
     }
 }
 
-PHP_FUNCTION(ngx_header_gets)
+PHP_FUNCTION(ngx_header_get_all)
 {
     ngx_http_request_t  *r;
     ngx_list_part_t     *part;

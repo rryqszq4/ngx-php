@@ -364,7 +364,7 @@ static const zend_function_entry additional_functions[] = {
 
     PHP_FE(ngx_header_set,                  ngx_header_set_arginfo)
     PHP_FE(ngx_header_get,                  ngx_header_get_arginfo)
-    PHP_FE(ngx_header_gets,                 ngx_header_gets_arginfo)
+    PHP_FE(ngx_header_get_all,              ngx_header_get_all_arginfo)
 
     PHP_FE(ngx_redirect,                    ngx_redirect_arginfo)
 

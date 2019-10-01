@@ -52,7 +52,7 @@ ngx_var_get
 ngx_var_set
 ngx_header_set
 ngx_header_get
-ngx_header_gets
+ngx_header_get_all
 ngx_redirect
 ngx_cookie_get_all
 ngx_cookie_get
