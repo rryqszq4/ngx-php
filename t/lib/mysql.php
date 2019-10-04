@@ -312,10 +312,9 @@ class mysql {
             $len = $this->length_encoded_integer($data, $start);
             #var_dump($len);
             
-            $value = substr($data, $start, $len);
             #var_dump($value);
+            $row[$field['column']] = substr($data, $start, $len);
             $start += $len;
-            $row[$field['column']] = $value;
         }
         #var_dump($row);
         $this->resultRows[] = $row;
