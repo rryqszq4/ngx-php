@@ -30,9 +30,10 @@ class mysql {
     private function print_bin($result) {
         $hex_arr="";
         $bin_arr="";
-        for ($i = 0,$j=1; $i < strlen($result);$i++,$j++) {
+        $len = strlen($result);
+        for ($i = 0,$j=1; $i < $len ;$i++,$j++) {
                 $bytes[] = ord($result[$i]);
-                if ($j % 8 == 0) {
+                if ($j % 8 === 0) {
                     $hex_arr .= bin2hex(chr($bytes[$i]))."   ";
                 }else {
                     $hex_arr .= bin2hex(chr($bytes[$i]))." ";
@@ -43,14 +44,13 @@ class mysql {
                     $bin_arr .= chr($bytes[$i]);
                 }
 
-                if ($j == strlen($result)) {
+                if ($j === $len) {
                     echo "{$hex_arr}   {$bin_arr}\n";
                 }
 
-                if ($j % 16 == 0) {
+                if ($j % 16 === 0) {
                     echo "{$hex_arr}   {$bin_arr}\n";
-                    $hex_arr="";
-                    $bin_arr="";
+                    $hex_arr = $bin_arr = "";
                 }
                 //var_dump(bin2hex(chr($bytes[$i])).'   '.chr($bytes[$i]));
         }
