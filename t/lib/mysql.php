@@ -60,28 +60,30 @@ class mysql {
     private function length_encoded_integer($data, &$start) {
         $first = ord(substr($data, $start, 1));
         #var_dump($first);
-        if ($first <= 250) {
-            $start += 1;
-            return $first;
-        }
-        if ($first === 251) {
-            $start += 1;
-            return null;
-        }
-        if ($first === 252) {
-            $ret = unpack('v', substr($data, $start, 2));
-            $start += 2;
-            return $ret[1];
-        }
-        if ($first === 253) {
-            $ret = unpack('V', substr($data, $start, 3)."\0");
-            $start += 3;
-            return $ret[1];
-        }
+        switch($first) {
+            case ($first <= 250):
+                $start += 1;
+                return $first;
 
-        $ret = unpack('P', substr($data, $start, 8));
-        $start += 8;
-        return $ret[1];
+            case 251:
+                $start += 1;
+                return null;
+
+            case 252:
+                $ret = unpack('v', substr($data, $start, 2))[1];
+                $start += 2;
+                return $ret;
+
+            case 253:
+                $ret = unpack('V', substr($data, $start, 3)."\0")[1];
+                $start += 3;
+                return $ret;
+            
+            default:
+                $ret = unpack('P', substr($data, $start, 8))[1];
+                $start += 8;
+                return $ret;
+        }
     }
 
     private function write_packet($data, $len, $chr=1) {
@@ -107,48 +109,48 @@ class mysql {
         }
         if ($field_count === 0x00) {
             #var_dump("OK packet");
-            $this->ok_packet($data);
+                $this->ok_packet($data);
         }else if ($field_count === 0xff) {
             #var_dump("Error packet");
-            $this->error_packet($data);
+                $this->error_packet($data);
         }else if ($field_count === 0xfe) {
             #var_dump("EOF packet");
             if ($this->resultState == 2) {
-                yield from $this->read_packet();
-            }
-            if ($this->resultState == 201) {
-                $this->resultState = 0;
-            }
-        }else {
-            #var_dump("Data packet");
-            if ($field_count == 1 && $this->resultState == 0) {
-                #var_dump("header set");
-                $this->headerNum = ord($data);
-                #var_dump($this->headerNum);
-                $this->resultState = 1;
-                yield from $this->read_packet();
-            }else if ($this->resultState == 1) {
-                #var_dump('fields');
-                if ($this->headerCurr < $this->headerNum - 1) {
-                    $this->field_data_packet($data);
-                    $this->headerCurr++;
-                    yield from $this->read_packet();
-                }else {
-                    $this->field_data_packet($data);
-                    $this->headerCurr++;
-                    $this->resultState = 2;
                     yield from $this->read_packet();
                 }
-            }else if ($this->resultState == 2 || $this->resultState == 201) {
-                $this->resultState = 201;
-                #var_dump("rows");
-                #var_dump($data);
-                $this->row_data_packet($data);
+            if ($this->resultState == 201) {
+                    $this->resultState = 0;
+                }
+        }else {
+        #var_dump("Data packet");
+            if ($field_count == 1 && $this->resultState == 0) {
+            #var_dump("header set");
+            $this->headerNum = ord($data);
+            #var_dump($this->headerNum);
+            $this->resultState = 1;
+            yield from $this->read_packet();
+            }else if ($this->resultState == 1) {
+            #var_dump('fields');
+            if ($this->headerCurr < $this->headerNum - 1) {
+                $this->field_data_packet($data);
+                $this->headerCurr++;
                 yield from $this->read_packet();
             }else {
-                return $data;
+                $this->field_data_packet($data);
+                $this->headerCurr++;
+                $this->resultState = 2;
+                yield from $this->read_packet();
             }
+            }else if ($this->resultState == 2 || $this->resultState == 201) {
+            $this->resultState = 201;
+            #var_dump("rows");
+            #var_dump($data);
+            $this->row_data_packet($data);
+            yield from $this->read_packet();
+        }else {
+            return $data;
         }
+    }
     }
 
     private function handshake_packet() {
