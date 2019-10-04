@@ -177,19 +177,16 @@ class mysql {
 
         #var_dump($scramble);
 
-        $capabilities = unpack('v', substr($data, $pos+9, 2));
-        $capabilities = $capabilities[1];
+        $capabilities = unpack('v', substr($data, $pos+9, 2))[1];
         #var_dump("server capabilities: ".$capabilities);
 
         $server_lang = ord(substr($data, $pos+9+2,1));
         #var_dump("server lang: ".$server_lang);
 
-        $server_status = unpack('v', substr($data, $pos+9+2+1, 2));
-        $server_status = $server_status[1];
+        $server_status = unpack('v', substr($data, $pos+9+2+1, 2))[1];
         #var_dump("server status: ".$server_status);
 
-        $more_capabilites = unpack('v', substr($data, $pos+9+2+1+2,2));
-        $more_capabilites = $more_capabilites[1];
+        $more_capabilites = unpack('v', substr($data, $pos+9+2+1+2,2))[1];
         #var_dump("more capabilities: ".$more_capabilites);
 
         $capabilities = $capabilities | ($more_capabilites << 16);
@@ -198,11 +195,10 @@ class mysql {
         $scramble_2 = substr($data, $pos+9+2+1+2+2+1+10, 21-8-1);
         #var_dump($scramble_2);
 
-        $scramble = $scramble.$scramble_2;
         #var_dump("scramble: ".$scramble);
         #var_dump(strlen($scramble));
 
-        return $scramble;
+        return $scramble.$scramble_2;
     }
 
     private function auth_packet($scramble, $user, $password, $database) {
