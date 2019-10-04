@@ -260,17 +260,17 @@ class mysql {
     private function field_data_packet($result) {
         $start = 0;
         $field = array();
-        $field['catalog'] = $catalog = $this->parse_field_data($result, $start);
+        $field['catalog'] = $this->parse_field_data($result, $start);
         #var_dump($catalog);
-        $field['db'] = $db = $this->parse_field_data($result, $start);
+        $field['db'] = $this->parse_field_data($result, $start);
         #var_dump($db);
-        $field['table'] = $table = $this->parse_field_data($result, $start);
+        $field['table'] = $this->parse_field_data($result, $start);
         #var_dump($table);
-        $field['ori_table'] = $ori_table = $this->parse_field_data($result, $start);
+        $field['ori_table'] = $this->parse_field_data($result, $start);
         #var_dump($ori_table);
-        $field['column'] = $column = $this->parse_field_data($result, $start);
+        $field['column'] = $this->parse_field_data($result, $start);
         #var_dump($column);
-        $field['ori_column'] = $ori_column = $this->parse_field_data($result, $start);
+        $field['ori_column'] = $this->parse_field_data($result, $start);
         #var_dump($ori_column);
 
         #$this->print_bin(substr($result, $start));
@@ -279,19 +279,19 @@ class mysql {
         // 0xC0
         $start += 1;
         #$this->print_bin(substr($result, $start, 2));
-        $field['charset'] = $charset = unpack('v', substr($result, $start, 2))[1];
+        $field['charset'] = unpack('v', substr($result, $start, 2))[1];
         #var_dump($charset);
         $start += 2;
-        $field['length'] = $length = unpack('V', substr($result, $start, 4))[1];
+        $field['length'] = unpack('V', substr($result, $start, 4))[1];
         #var_dump($length);
         $start += 4;
-        $field['type'] = $type = ord(substr($result, $start, 1));
+        $field['type'] = ord(substr($result, $start, 1));
         #var_dump($type);
         $start += 1;
-        $field['flag'] = $flag = unpack('v', substr($result, $start, 2))[1];
+        $field['flag'] = unpack('v', substr($result, $start, 2))[1];
         #var_dump($flag);
         $start += 2;
-        $field['decimals'] = $decimals = unpack('v', substr($result, $start, 2))[1];
+        $field['decimals'] = unpack('v', substr($result, $start, 2))[1];
         #var_dump($decimals);
 
         $this->resultFields[] = $field;
