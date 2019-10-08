@@ -9,6 +9,8 @@ class Redis {
 
     const VERSION = "0.1.0";
 
+    public $isDebug = 0;
+
     protected $socket = null;
 
     protected static $commands = array(
@@ -78,13 +80,19 @@ class Redis {
 
     private function write_data(...$args) {
         $payload = '';
-        #var_dump($args);
+
+        if ($this->isDebug == 1) {
+            var_dump($args);
+        }
+
         foreach ($args as $arg) {
             $payload .= '$'.strlen($arg)."\r\n{$arg}\r\n";
         }
         $payload = '*'.count($args)."\r\n{$payload}";
 
-        #var_dump($payload);
+        if ($this->isDebug == 1) {
+            var_dump($payload);
+        }
 
         yield ngx_socket_send($this->socket, $payload, strlen($payload));
     }
@@ -94,10 +102,16 @@ class Redis {
             $buf = '';
             yield ngx_socket_recv($this->socket, $buf);
             $data .= $buf;
-            #var_dump($buf);
-            
+
+            if ($this->isDebug == 1) {
+                var_dump($buf);
+            }
+
         } while (strlen($buf) >= 1024);
-        #var_dump($data);
+
+        if ($this->isDebug == 1) {
+            var_dump($data);
+        }
 
         return $this->data_parse($data);
     }
@@ -110,14 +124,14 @@ class Redis {
                 if ($size < 0) {
                     return null;
                 }
-                
+
                 $token = strtok($data, "\r\n");
                 $token = strtok("\r\n");
                 return $token;
 
             case 43: // '+'
                 return trim(substr($data, 1));
-            
+
             case 42: // '*'
                 $size = intval(substr($data, 1));
                 if ($size < 0) {
@@ -128,7 +142,11 @@ class Redis {
                 $data = substr($data, strpos($data, "\r\n")+2);
                 for($i = 0; $i < $size; $i++) {
                     $res = $this->data_parse($data);
-                    #var_dump($data);
+
+                    if ($this->isDebug == 1) {
+                        var_dump($data);
+                    }
+
                     if (!empty($res)) {
                         $output[$i] = $res;
                     }else {
@@ -138,13 +156,13 @@ class Redis {
                     $data = substr($data, strpos($data, "\r\n")+2);
                 }
                 return $output;
-            
+
             case 58: // ':'
                 return intval(substr($data, 1));
-            
+
             case 45: // '-'
                 return false;
-            
+
             default:
                 return null;
         }
@@ -156,7 +174,11 @@ class Redis {
         }
 
         array_unshift($params, $name);
-        #var_dump($params);
+
+        if ($this->isDebug == 1) {
+            var_dump($params);
+        }
+
         yield from $this->write_data(...$params);
 
         return ( yield from $this->read_data() );
