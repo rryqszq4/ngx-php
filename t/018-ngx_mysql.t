@@ -11,15 +11,15 @@ __DATA__
 test mysql
 --- config
 location =/ngx_mysql {
-	content_by_php '
-		require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+    content_by_php '
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",array_values($ret[0]))."\n";
         yield from $m->close();
-	';
+    ';
 }
 --- request
 GET /ngx_mysql
@@ -32,15 +32,15 @@ GET /ngx_mysql
 test clear
 --- config
 location =/ngx_mysql_clear {
-	content_by_php '
-		require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+    content_by_php '
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",array_values($ret[0]))."\n";
         $m->clear();
-	';
+    ';
 }
 --- request
 GET /ngx_mysql_clear
@@ -53,17 +53,45 @@ GET /ngx_mysql_clear
 test unset
 --- config
 location =/ngx_mysql_destruct {
-        content_by_php '
-                require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+    content_by_php '
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",array_values($ret[0]))."\n";
         unset($m);
-        ';
+    ';
 }
 --- request
 GET /ngx_mysql_destruct
 --- response_body
+1,Kabul,AFG,Kabol,1780000
+
+
+
+=== TEST 4: test double query
+double query
+--- config
+location =/ngx_mysql_destruct {
+    content_by_php '
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+        $m = new php\\ngx\mysql();
+        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        $sql = "select * from world.city order by ID asc limit 1 ;";
+        $ret = yield from $m->query($sql);
+        echo implode(",",array_values($ret[0]))."\n";
+        
+        $ret = yield from $m->query($sql);
+        echo implode(",",array_values($ret[0]))."\n";
+
+        $ret = yield from $m->query($sql);
+        echo implode(",",array_values($ret[0]))."\n";
+    ';
+}
+--- request
+GET /ngx_mysql_destruct
+--- response_body
+1,Kabul,AFG,Kabol,1780000
+1,Kabul,AFG,Kabol,1780000
 1,Kabul,AFG,Kabol,1780000
