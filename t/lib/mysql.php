@@ -27,6 +27,14 @@ class mysql {
         }
     }
 
+    private function reset(){
+        $this->headerNum = 0;
+        $this->headerCurr = 0;
+        $this->resultState = 0;
+        $this->resultFields = [];
+        $this->resultRows = [];
+    }
+
     private function print_bin($result) {
         $hex_arr="";
         $bin_arr="";
@@ -105,6 +113,7 @@ class mysql {
         if ($field_count != 1) {
             $field_count = ord(substr($data, 0, 1));
         }
+        #var_dump("field_count: ".$field_count."   ".$this->resultState);
         if ($field_count === 0x00) {
             #var_dump("OK packet");
             $this->ok_packet($data);
@@ -112,7 +121,7 @@ class mysql {
             #var_dump("Error packet");
             $this->error_packet($data);
         }else if ($field_count === 0xfe) {
-            #var_dump("EOF packet");
+            #var_dump("EOF packet ".$this->resultState);
             if ($this->resultState == 2) {
                 yield from $this->read_packet();
             }
@@ -128,7 +137,7 @@ class mysql {
                 $this->resultState = 1;
                 yield from $this->read_packet();
             }else if ($this->resultState == 1) {
-                #var_dump('fields');
+                #var_dump('fields '.$this->headerCurr."   ".$this->headerNum);
                 if ($this->headerCurr < $this->headerNum - 1) {
                     $this->field_data_packet($data);
                     $this->headerCurr++;
@@ -337,7 +346,8 @@ class mysql {
     }
 
     public function query($sql) {
-        $this->resultRows = [];
+        $this->reset();
+
         $req = chr(0x03).$sql;
         $pack_len = strlen($sql) + 1;
         
