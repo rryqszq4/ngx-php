@@ -5,6 +5,8 @@
 
 namespace php\ngx;
 
+// mysql protocol
+// https://dev.mysql.com/doc/internals/en/client-server-protocol.html
 class mysql {
 
     const VERSION = "0.1.0";
