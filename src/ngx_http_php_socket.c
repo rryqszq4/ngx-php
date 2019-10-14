@@ -334,7 +334,7 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     ngx_php_debug("c->read->active:%d,c->read->timer_set:%d,c->read->ready:%d", c->read->active, c->read->timer_set, c->read->ready);
     ngx_php_debug("c->write->active:%d,c->write->timer_set:%d,c->write->ready:%d", c->write->active, c->write->timer_set, c->write->ready);
 
-    ngx_add_timer(c->write, 5 * 1000);
+    ngx_add_timer(c->write, u->connect_timeout);
 
     return NGX_AGAIN;
 }
@@ -388,7 +388,16 @@ static void
 ngx_http_php_socket_connected_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u)
 {
+    ngx_connection_t            *c;
+
     ngx_php_debug("php socket connected handler");
+    
+    c = u->peer.connection;
+
+    if (c->write->timer_set) {
+        ngx_del_timer(c->write);
+    }
+
     u->read_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_dummy_handler;
     u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_dummy_handler;
 }
@@ -464,7 +473,7 @@ ngx_http_php_socket_upstream_send(ngx_http_request_t *r,
 
     u->write_event_handler = (ngx_http_php_socket_upstream_handler_pt) ngx_http_php_socket_send_handler;
 
-    ngx_add_timer(c->write, 5 * 1000);
+    ngx_add_timer(c->write, u->write_timeout);
 
     if (ngx_handle_write_event(c->write, 0) != NGX_OK) {
         return NGX_ERROR;
@@ -515,6 +524,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     ngx_buf_t                           *b;
     size_t                              size;
     ssize_t                             n;
+    unsigned                            read;
 
     ngx_http_php_ctx_t                  *ctx;
 
@@ -528,6 +538,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     ngx_php_debug("php socket receive data");
 
     b = &u->buffer;
+    read = 0;
 
     if (b->start == NULL) {
         b->start = ngx_palloc(r->pool, u->buffer_size);
@@ -539,6 +550,13 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     }
 
     for (;;) {
+        if (read && !rev->ready) {
+            //rc = NGX_AGAIN;
+            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
+                        "000");
+            break;
+        }
+
         size = b->end - b->last;
 
         if (size == 0) {
@@ -546,20 +564,24 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
             break;
         }
 
-        if (!rev->ready) {
+        if (rev->active && !rev->ready) {
             ngx_php_debug("recv ready: %d", rev->ready);
-            if (ngx_handle_read_event(rev, 0) != NGX_OK) {
+            //rc = NGX_AGAIN;
+            break;
+            /*if (ngx_handle_read_event(rev, 0) != NGX_OK) {
                 n = -1;
                 break;
-            }
+            }*/
 
             //ngx_add_timer(rev, 1000);
         }
 
         n = c->recv(c, b->last, size);
 
+        read = 1;
+
         ngx_php_debug("recv: %s, %d, %d", b->pos, (int)n, (int) size);
-        
+
         if (n == NGX_ERROR) {
             ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
                           "php socket recv error");
@@ -577,7 +599,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         }
 
         if (n == NGX_AGAIN) {
-            //continue;
+            //rc = NGX_AGAIN;
             break;
         }
 
@@ -610,13 +632,13 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         return NGX_ERROR;
     }
 #endif
-/*
-    if (rev->active) {
-        ngx_add_timer(rev, 5 * 1000);
+
+    /*if (rev->active) {
+        ngx_add_timer(rev, u->read_timeout);
     }else if (rev->timer_set) {
         ngx_del_timer(rev);
-    }
-*/
+    }*/
+
     return NGX_AGAIN;
 
 }
@@ -635,6 +657,12 @@ ngx_http_php_socket_upstream_recv_handler(ngx_http_request_t *r,
     ngx_php_debug("php socket receive handler.");
 
     u->enabled_receive = 1;
+
+/*#if 1
+    if (c->read->timer_set) {
+        ngx_del_timer(c->read);
+    }
+#endif*/
 
     if (u->buffer.start != NULL) {
         (void) ngx_http_php_socket_upstream_recv(r, u);
