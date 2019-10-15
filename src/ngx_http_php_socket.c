@@ -631,11 +631,11 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     }
 #endif
 
-    /*if (rev->active) {
+    if (rev->active) {
         ngx_add_timer(rev, u->read_timeout);
     }else if (rev->timer_set) {
         ngx_del_timer(rev);
-    }*/
+    }
 
     return NGX_AGAIN;
 
@@ -645,10 +645,10 @@ static void
 ngx_http_php_socket_upstream_recv_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u)
 {
-    //ngx_connection_t                    *c;
+    ngx_connection_t                    *c;
     //ngx_http_php_loc_conf_t             *plcf;
 
-    //c = u->peer.connection;
+    c = u->peer.connection;
 
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
                    "php socket receive handler.");
@@ -656,11 +656,11 @@ ngx_http_php_socket_upstream_recv_handler(ngx_http_request_t *r,
 
     u->enabled_receive = 1;
 
-/*#if 1
+#if 1
     if (c->read->timer_set) {
         ngx_del_timer(c->read);
     }
-#endif*/
+#endif
 
     if (u->buffer.start != NULL) {
         (void) ngx_http_php_socket_upstream_recv(r, u);
@@ -703,15 +703,15 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
 
     u = ctx->upstream;
 
-    if (u->connect_timeout > 0) {
+    if (u->connect_timeout <= 0) {
         u->connect_timeout = 60000;
     }
 
-    if (u->read_timeout > 0) {
+    if (u->read_timeout <= 0) {
         u->read_timeout = 60000;
     }
     
-    if (u->write_timeout > 0) {
+    if (u->write_timeout <= 0) {
         u->write_timeout = 60000;
     }
 
