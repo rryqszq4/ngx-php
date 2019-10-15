@@ -552,8 +552,6 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     for (;;) {
         if (read && !rev->ready) {
             //rc = NGX_AGAIN;
-            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
-                        "000");
             break;
         }
 

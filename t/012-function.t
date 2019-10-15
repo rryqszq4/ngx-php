@@ -26,6 +26,7 @@ ngx_exit
 ngx_query_args
 ngx_post_args
 ngx_sleep
+ngx_msleep
 ngx_log_error
 ngx_request_method
 ngx_request_document_root
