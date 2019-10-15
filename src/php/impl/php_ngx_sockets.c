@@ -88,6 +88,11 @@ PHP_FUNCTION(ngx_socket_create)
     r = ngx_php_request;
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
     ctx->php_socket = php_sock;
+
+    if (ctx->upstream == NULL){
+        ctx->upstream = ngx_pcalloc(r->pool, sizeof(ngx_http_php_socket_upstream_t));
+    }
+
     ngx_http_set_ctx(r, ctx, ngx_http_php_module);
 
     RETURN_TRUE;
@@ -311,7 +316,7 @@ PHP_FUNCTION(ngx_socket_settimeout)
     ngx_http_request_t              *r;
     ngx_http_php_ctx_t              *ctx;
     ngx_http_php_socket_upstream_t  *u;
-    long                            timeout;
+    long                            timeout = 60000;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout) == FAILURE) {
         RETURN_FALSE;

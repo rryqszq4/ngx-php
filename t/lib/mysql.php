@@ -102,9 +102,13 @@ class mysql {
 
     private function read_packet() {
         #var_dump("read_packet");
+        //$i = 0;
         //do {
+        //   if ($i > 0) {usleep(1000);}
+        //   if ($i > 1000) {break;}
             $data = '';
             yield ngx_socket_recv($this->socket, $data, 4);
+        //    $i++;
         //} while (empty($data));
         #$this->print_bin($data);
         $field_count = unpack('v', substr($data, 0, 3))[1];
