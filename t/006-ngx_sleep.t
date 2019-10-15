@@ -41,3 +41,21 @@ GET /nginx_sleep
 --- response_body
 ngx_sleep start
 ngx_sleep end
+
+
+
+=== TEST 3: msleep function
+msleep function
+--- config
+location =/ngx_msleep {
+    content_by_php '
+        echo "ngx_msleep start\n";
+        yield ngx_msleep(1);
+        echo "ngx_msleep end\n";
+    ';
+}
+--- request
+GET /ngx_msleep
+--- response_body
+ngx_msleep start
+ngx_msleep end
