@@ -100,13 +100,14 @@ GET /ngx_mysql_destruct
 
 === TEST 5: test mysql sleep
 mysql sleep
+--- timeout: 10
 --- config
 location =/ngx_mysql_sleep {
     content_by_php '
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
-        $sql = "select sleep(3) as sleep;";
+        $sql = "select sleep(5) as sleep;";
         $ret = yield from $m->query($sql);
         echo $ret[0]["sleep"]."\n";
     ';
