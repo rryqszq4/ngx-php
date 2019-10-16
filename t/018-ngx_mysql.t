@@ -108,7 +108,7 @@ location =/ngx_mysql_sleep {
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select sleep(3) as sleep;";
         $ret = yield from $m->query($sql);
-        echo $ret[0]["sleep"];
+        echo $ret[0]["sleep"]."\n";
     ';
 }
 --- request
