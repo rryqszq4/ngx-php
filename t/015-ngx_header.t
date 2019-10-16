@@ -28,9 +28,9 @@ Testing ngx_header!
 location = /ngx_header {
 	content_by_php '
 		$str = "Testing ngx_header!\n";
-		echo $str;
-		echo $str;
 		ngx_header_set("Content-Length", strlen($str));
+		echo $str;
+		echo $str;
 	';
 }
 --- request
