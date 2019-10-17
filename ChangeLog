@@ -1,3 +1,18 @@
+ngx_php7 0.0.20 changes:                                                            17 Oct 2019
+    * Add directive php_set, php_rewrite, php_access, php_content, php_log, php_header_filter, php_body_filter and php_body_filter.
+
+    * Add impl ngx_cookie_set, ngx_cookie_get, ngx_cookie_get_all.
+
+    * Add impl ngx_msleep.
+
+    * Add redis non-block driver.
+
+    * Fixed remove time event and usage of read event.
+
+    * Fixed in mysql driver more than double query will fail. Should be reset.
+
+    * Fixed ngx_php tcp socket timeout.
+
 ngx_php7 0.0.19 changes:                                                            26 Aug 2019
     * Add nginx directive php_keepalive.
 

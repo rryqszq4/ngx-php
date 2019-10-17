@@ -542,6 +542,7 @@ ngx_cookie_set
 Nginx non-blocking API for php
 ------------------------------
 * [yield ngx_sleep](#ngx_sleep)
+* [yield ngx_msleep](#ngx_msleep)
 * [ngx_socket_create](#ngx_socket_create)
 * [ngx_socket_iskeepalive](#ngx_socket_iskeepalive)
 * [yield ngx_socket_connect](#ngx_socket_connect)
@@ -555,6 +556,12 @@ ngx_sleep
 **syntax:** `yield ngx_sleep(int seconds)`
 
 Delays the program execution for the given number of seconds.
+
+ngx_msleep
+---------
+**syntax:** `yield ngx_msleep(int milliseconds)`
+
+Delays the program execution for the given number of milliseconds.
 
 ngx_socket_create
 -----------------

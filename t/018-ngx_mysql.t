@@ -95,3 +95,24 @@ GET /ngx_mysql_destruct
 1,Kabul,AFG,Kabol,1780000
 1,Kabul,AFG,Kabol,1780000
 1,Kabul,AFG,Kabol,1780000
+
+
+
+=== TEST 5: test mysql sleep
+mysql sleep
+--- timeout: 10
+--- config
+location =/ngx_mysql_sleep {
+    content_by_php '
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+        $m = new php\\ngx\mysql();
+        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        $sql = "select sleep(5) as sleep;";
+        $ret = yield from $m->query($sql);
+        echo $ret[0]["sleep"]."\n";
+    ';
+}
+--- request
+GET /ngx_mysql_sleep
+--- response_body
+0
