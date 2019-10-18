@@ -134,8 +134,7 @@ class Redis {
                 }
                 
                 $token = \strtok($data, "\r\n");
-                $token = \strtok("\r\n");
-                return $token;
+                return \strtok("\r\n");
 
             case 43: // '+'
                 return \trim(\substr($data, 1));
