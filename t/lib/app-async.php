@@ -1,6 +1,6 @@
 <?php
 
-require_once '/mnt/hgfs/github/ngx_php7/t/lib/mysql.php';
+require_once __DIR__.'/mysql.php';
 define('DBIP', gethostbyname('localhost'));
 define('DB_HOST', gethostbyname('tfb-database'));
 define('DB_PORT', '3306');
@@ -30,7 +30,7 @@ function fortune()
     }
 
     echo '<!DOCTYPE html><html><head><title>Fortunes</title></head><body><table><tr><th>id</th><th>message</th></tr>',
-        $html,
+    $html,
         '</table></body></html>';
 
     unset($my);
