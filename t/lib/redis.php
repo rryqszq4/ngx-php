@@ -12,7 +12,12 @@ class Redis {
      */
     const VERSION = '0.1.0';
 
-    public $isDebug = 0;
+    /**
+     * Show debug info
+     *
+     * @var bool
+     */
+    public $isDebug = false;
 
     /**
      * @var resource
@@ -92,8 +97,8 @@ class Redis {
     private function write_data(...$args) {
         $payload = '';
 
-        if ($this->isDebug == 1) {
-            var_dump($args);
+        if ($this->isDebug) {
+            \var_dump($args);
         }
 
         foreach ($args as $arg) {
@@ -101,8 +106,8 @@ class Redis {
         }
         $payload = '*'.count($args)."\r\n{$payload}";
 
-        if ($this->isDebug == 1) {
-            var_dump($payload);
+        if ($this->isDebug) {
+            \var_dump($payload);
         }
 
         yield ngx_socket_send($this->socket, $payload, strlen($payload));
@@ -114,14 +119,14 @@ class Redis {
             yield ngx_socket_recv($this->socket, $buf);
             $data .= $buf;
 
-            if ($this->isDebug == 1) {
-                var_dump($buf);
+            if ($this->isDebug) {
+                \var_dump($buf);
             }
 
         } while (strlen($buf) >= 1024);
 
-        if ($this->isDebug == 1) {
-            var_dump($data);
+        if ($this->isDebug) {
+            \var_dump($data);
         }
 
         return $this->data_parse($data);
@@ -154,8 +159,8 @@ class Redis {
                 for($i = 0; $i < $size; $i++) {
                     $res = $this->data_parse($data);
 
-                    if ($this->isDebug == 1) {
-                        var_dump($data);
+                    if ($this->isDebug) {
+                        \var_dump($data);
                     }
 
                     if (!empty($res)) {
@@ -186,8 +191,8 @@ class Redis {
 
         array_unshift($params, $name);
 
-        if ($this->isDebug == 1) {
-            var_dump($params);
+        if ($this->isDebug) {
+            \var_dump($params);
         }
 
         yield from $this->write_data(...$params);
