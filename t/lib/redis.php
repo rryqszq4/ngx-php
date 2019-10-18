@@ -142,7 +142,7 @@ class Redis
                     return;
                 }
 
-                $token = \strtok($data, "\r\n");
+                \strtok($data, "\r\n");
 
                 return \strtok("\r\n");
 
