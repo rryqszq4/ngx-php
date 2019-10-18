@@ -5,13 +5,14 @@
 
 namespace php\ngx;
 
-class Redis {
+class Redis
+{
 
     /**
      * @var string
      */
     const VERSION = '0.1.0';
-    
+
     /**
      * Show debug info
      *
@@ -68,33 +69,39 @@ class Redis {
         'sort'
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->socket = \ngx_socket_create();
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->socket) {
             \ngx_socket_clear($this->socket);
         }
     }
 
-    public function connect($host="", $port="") {
+    public function connect($host = '', $port = '')
+    {
         yield \ngx_socket_connect($this->socket, $host, $port);
     }
 
-    public function close() {
+    public function close()
+    {
         yield \ngx_socket_close($this->socket);
 
         unset($this->socket);
     }
 
-    public function clear() {
+    public function clear()
+    {
         \ngx_socket_clear($this->socket);
 
         unset($this->socket);
     }
 
-    private function write_data(...$args) {
+    private function write_data(...$args)
+    {
         $payload = '';
 
         $this->debug($args);
@@ -109,7 +116,8 @@ class Redis {
         yield \ngx_socket_send($this->socket, $payload, \strlen($payload));
     }
 
-    private function read_data() {
+    private function read_data()
+    {
         do {
             $buf = '';
             yield \ngx_socket_recv($this->socket, $buf);
@@ -124,57 +132,65 @@ class Redis {
         return $this->data_parse($data);
     }
 
-    private function data_parse($data) {
-
-        switch(\ord($data[0])) {
-            case 36: // '$'
+    private function data_parse($data)
+    {
+        switch (\ord($data[0])) {
+            case 36:
+                // '$'
                 $size = \intval(\substr($data, 1));
                 if ($size < 0) {
-                    return null;
+                    return;
                 }
-                
+
                 $token = \strtok($data, "\r\n");
+
                 return \strtok("\r\n");
 
-            case 43: // '+'
+            case 43:
+                // '+'
                 return \trim(\substr($data, 1));
-            
-            case 42: // '*'
+
+            case 42:
+                // '*'
                 $size = \intval(\substr($data, 1));
                 if ($size < 0) {
-                    return null;
+                    return;
                 }
 
                 $output = [];
-                $data = \substr($data, \strpos($data, "\r\n")+2);
-                for($i = 0; $i < $size; $i++) {
+                $data   = \substr($data, \strpos($data, "\r\n") + 2);
+                for ($i = 0; $i < $size; ++$i) {
                     $res = $this->data_parse($data);
-                    
+
                     $this->debug($data);
 
-                    if (!empty($res)) {
+                    if ( ! empty($res)) {
                         $output[$i] = $res;
-                    }else {
+                    } else {
                         $output[$i] = null;
                     }
-                    $data = \substr($data, \strpos($data, "\r\n")+2);
-                    $data = \substr($data, \strpos($data, "\r\n")+2);
+                    $data = \substr($data, \strpos($data, "\r\n") + 2);
+                    $data = \substr($data, \strpos($data, "\r\n") + 2);
                 }
+
                 return $output;
-            
-            case 58: // ':'
+
+            case 58:
+                // ':'
                 return \intval(\substr($data, 1));
-            
-            case 45: // '-'
+
+            case 45:
+                // '-'
                 return false;
-            
+
             default:
-                return null;
+                return;
         }
     }
 
-    public function __call($name, $params) {
-        if (!\in_array($name, self::$commands)) {
+    public function __call($name, $params)
+    {
+        if ( ! \in_array($name, self::$commands)) {
             return false;
         }
 
@@ -184,10 +200,11 @@ class Redis {
 
         yield from $this->write_data(...$params);
 
-        return ( yield from $this->read_data() );
+        return (yield from $this->read_data());
     }
 
-    protected function debug($data) {
+    protected function debug($data)
+    {
         if ($this->isDebug) {
             \var_dump($data);
         }
