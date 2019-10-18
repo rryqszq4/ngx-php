@@ -30,7 +30,7 @@ function fortune()
     }
 
     echo '<!DOCTYPE html><html><head><title>Fortunes</title></head><body><table><tr><th>id</th><th>message</th></tr>',
-    $html,
+        $html,
         '</table></body></html>';
 
     unset($my);
