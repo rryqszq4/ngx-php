@@ -21,7 +21,7 @@ class Redis
     public $isDebug = false;
 
     /**
-     * @var resource
+     * @var resource|null
      */
     protected $socket = null;
 
@@ -90,14 +90,14 @@ class Redis
     {
         yield \ngx_socket_close($this->socket);
 
-        unset($this->socket);
+        $this->socket = null;
     }
 
     public function clear()
     {
         \ngx_socket_clear($this->socket);
 
-        unset($this->socket);
+        $this->socket = null;
     }
 
     private function write_data(...$args)
