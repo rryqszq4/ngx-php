@@ -48,7 +48,7 @@ class mysql
         $len     = strlen($result);
         for ($i = 0, $j = 1; $i < $len; $i++, $j++) {
             $bytes[] = \ord($result[$i]);
-            if ($j % 8 == 0) {
+            if ($j % 8 === 0) {
                 $hex_arr .= \bin2hex(\chr($bytes[$i])).'   ';
             } else {
                 $hex_arr .= \bin2hex(\chr($bytes[$i])).' ';
@@ -145,7 +145,7 @@ class mysql
             if ($this->resultState === 2) {
                 yield from $this->read_packet();
             }
-            if ($this->resultState == 201) {
+            if ($this->resultState === 201) {
                 $this->resultState = 0;
             }
         } else {
