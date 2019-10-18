@@ -7,50 +7,61 @@ namespace php\ngx;
 
 class Redis {
 
-    const VERSION = "0.1.0";
+    /**
+     * @var string
+     */
+    const VERSION = '0.1.0';
 
     public $isDebug = 0;
 
+    /**
+     * @var resource
+     */
     protected $socket = null;
 
-    protected static $commands = array(
-        "get",
-        "set",
-        "mget",
-        "mset",
-        "del",
-        "incr",
-        "decr",
-        "llen",
-        "lindex",
-        "lpop",
-        "lpush",
-        "lrange",
-        "linsert",
-        "hexists",
-        "hget",
-        "hset",
-        "hmget",
-        "hdel",
-        "smembers",
-        "sismember",
-        "sadd",
-        "srem",
-        "sdiff",
-        "sinter",
-        "sunion",
-        "zrange",
-        "zrangebyscore",
-        "zrank",
-        "zadd",
-        "zrem",
-        "zincrby",
-        "auth",
-        "eval",
-        "expire",
-        "script",
-        "sort"
-    );
+    /**
+     * Avaiable redis commands.
+     *
+     * @var string[]
+     */
+    protected static $commands = [
+        'get',
+        'set',
+        'mget',
+        'mset',
+        'del',
+        'incr',
+        'decr',
+        'llen',
+        'lindex',
+        'lpop',
+        'lpush',
+        'lrange',
+        'linsert',
+        'hexists',
+        'hget',
+        'hset',
+        'hmget',
+        'hdel',
+        'smembers',
+        'sismember',
+        'sadd',
+        'srem',
+        'sdiff',
+        'sinter',
+        'sunion',
+        'zrange',
+        'zrangebyscore',
+        'zrank',
+        'zadd',
+        'zrem',
+        'zincrby',
+        'auth',
+        'eval',
+        'expire',
+        'script',
+        'sort'
+    ];
 
     public function __construct() {
         $this->socket = ngx_socket_create();
