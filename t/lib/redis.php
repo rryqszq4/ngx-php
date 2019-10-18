@@ -97,18 +97,14 @@ class Redis {
     private function write_data(...$args) {
         $payload = '';
 
-        if ($this->isDebug) {
-            \var_dump($args);
-        }
+        $this->debug($args);
 
         foreach ($args as $arg) {
             $payload .= '$'.\strlen($arg)."\r\n{$arg}\r\n";
         }
         $payload = '*'.\count($args)."\r\n{$payload}";
 
-        if ($this->isDebug) {
-            \var_dump($payload);
-        }
+        $this->debug($payload);
 
         yield \ngx_socket_send($this->socket, $payload, \strlen($payload));
     }
@@ -119,15 +115,11 @@ class Redis {
             yield \ngx_socket_recv($this->socket, $buf);
             $data .= $buf;
 
-            if ($this->isDebug) {
-                \var_dump($buf);
-            }
+            $this->debug($buf);
 
         } while (\strlen($buf) >= 1024);
 
-        if ($this->isDebug) {
-            \var_dump($data);
-        }
+        $this->debug($data);
 
         return $this->data_parse($data);
     }
@@ -159,9 +151,7 @@ class Redis {
                 for($i = 0; $i < $size; $i++) {
                     $res = $this->data_parse($data);
                     
-                    if ($this->isDebug) {
-                        \var_dump($data);
-                    }
+                    $this->debug($data);
 
                     if (!empty($res)) {
                         $output[$i] = $res;
@@ -191,13 +181,16 @@ class Redis {
 
         \array_unshift($params, $name);
 
-        if ($this->isDebug) {
-            \var_dump($params);
-        }
+        $this->debug($params);
 
         yield from $this->write_data(...$params);
 
         return ( yield from $this->read_data() );
     }
 
+    protected function debug($data) {
+        if ($this->isDebug) {
+            \var_dump($data);
+        }
+    }
 }
