@@ -5,183 +5,208 @@
 
 namespace php\ngx;
 
-class Redis {
+class Redis
+{
 
-    const VERSION = "0.1.0";
+    /**
+     * @var string
+     */
+    const VERSION = '0.1.0';
 
-    public $isDebug = 0;
+    /**
+     * Show debug info
+     *
+     * @var bool
+     */
+    public $isDebug = false;
 
+    /**
+     * @var resource|null
+     */
     protected $socket = null;
 
-    protected static $commands = array(
-        "get",
-        "set",
-        "mget",
-        "mset",
-        "del",
-        "incr",
-        "decr",
-        "llen",
-        "lindex",
-        "lpop",
-        "lpush",
-        "lrange",
-        "linsert",
-        "hexists",
-        "hget",
-        "hset",
-        "hmget",
-        "hdel",
-        "smembers",
-        "sismember",
-        "sadd",
-        "srem",
-        "sdiff",
-        "sinter",
-        "sunion",
-        "zrange",
-        "zrangebyscore",
-        "zrank",
-        "zadd",
-        "zrem",
-        "zincrby",
-        "auth",
-        "eval",
-        "expire",
-        "script",
-        "sort"
-    );
+    /**
+     * Avaiable redis commands.
+     *
+     * @var string[]
+     */
+    protected static $commands = [
+        'get',
+        'set',
+        'mget',
+        'mset',
+        'del',
+        'incr',
+        'decr',
+        'llen',
+        'lindex',
+        'lpop',
+        'lpush',
+        'lrange',
+        'linsert',
+        'hexists',
+        'hget',
+        'hset',
+        'hmget',
+        'hdel',
+        'smembers',
+        'sismember',
+        'sadd',
+        'srem',
+        'sdiff',
+        'sinter',
+        'sunion',
+        'zrange',
+        'zrangebyscore',
+        'zrank',
+        'zadd',
+        'zrem',
+        'zincrby',
+        'auth',
+        'eval',
+        'expire',
+        'script',
+        'sort'
+    ];
 
-    public function __construct() {
-        $this->socket = ngx_socket_create();
+    public function __construct()
+    {
+        $this->socket = \ngx_socket_create();
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->socket) {
-            ngx_socket_clear($this->socket);
+            \ngx_socket_clear($this->socket);
         }
     }
 
-    public function connect($host="", $port="") {
-        yield ngx_socket_connect($this->socket, $host, $port);
+    public function connect($host = '', $port = '')
+    {
+        yield \ngx_socket_connect($this->socket, $host, $port);
     }
 
-    public function close() {
-        yield ngx_socket_close($this->socket);
+    public function close()
+    {
+        yield \ngx_socket_close($this->socket);
 
-        unset($this->socket);
+        $this->socket = null;
     }
 
-    public function clear() {
-        ngx_socket_clear($this->socket);
+    public function clear()
+    {
+        \ngx_socket_clear($this->socket);
 
-        unset($this->socket);
+        $this->socket = null;
     }
 
-    private function write_data(...$args) {
+    private function write_data(...$args)
+    {
         $payload = '';
 
-        if ($this->isDebug == 1) {
-            var_dump($args);
-        }
+        $this->debug($args);
 
         foreach ($args as $arg) {
-            $payload .= '$'.strlen($arg)."\r\n{$arg}\r\n";
+            $payload .= '$'.\strlen($arg)."\r\n{$arg}\r\n";
         }
-        $payload = '*'.count($args)."\r\n{$payload}";
+        $payload = '*'.\count($args)."\r\n{$payload}";
 
-        if ($this->isDebug == 1) {
-            var_dump($payload);
-        }
+        $this->debug($payload);
 
-        yield ngx_socket_send($this->socket, $payload, strlen($payload));
+        yield \ngx_socket_send($this->socket, $payload, \strlen($payload));
     }
 
-    private function read_data() {
+    private function read_data()
+    {
         do {
             $buf = '';
-            yield ngx_socket_recv($this->socket, $buf);
+            yield \ngx_socket_recv($this->socket, $buf);
             $data .= $buf;
 
-            if ($this->isDebug == 1) {
-                var_dump($buf);
-            }
+            $this->debug($buf);
 
-        } while (strlen($buf) >= 1024);
+        } while (\strlen($buf) >= 1024);
 
-        if ($this->isDebug == 1) {
-            var_dump($data);
-        }
+        $this->debug($data);
 
         return $this->data_parse($data);
     }
 
-    private function data_parse($data) {
-
-        switch(ord($data[0])) {
-            case 36: // '$'
-                $size = intval(substr($data, 1));
+    private function data_parse($data)
+    {
+        switch (\ord($data[0])) {
+            case 36:
+                // '$'
+                $size = \intval(\substr($data, 1));
                 if ($size < 0) {
-                    return null;
+                    return;
                 }
 
-                $token = strtok($data, "\r\n");
-                $token = strtok("\r\n");
-                return $token;
+                \strtok($data, "\r\n");
 
-            case 43: // '+'
-                return trim(substr($data, 1));
+                return \strtok("\r\n");
 
-            case 42: // '*'
-                $size = intval(substr($data, 1));
+            case 43:
+                // '+'
+                return \trim(\substr($data, 1));
+
+            case 42:
+                // '*'
+                $size = \intval(\substr($data, 1));
                 if ($size < 0) {
-                    return null;
+                    return;
                 }
 
-                $output = array();
-                $data = substr($data, strpos($data, "\r\n")+2);
-                for($i = 0; $i < $size; $i++) {
+                $output = [];
+                $data   = \substr($data, \strpos($data, "\r\n") + 2);
+                for ($i = 0; $i < $size; ++$i) {
                     $res = $this->data_parse($data);
 
-                    if ($this->isDebug == 1) {
-                        var_dump($data);
-                    }
+                    $this->debug($data);
 
-                    if (!empty($res)) {
+                    if ( ! empty($res)) {
                         $output[$i] = $res;
-                    }else {
+                    } else {
                         $output[$i] = null;
                     }
-                    $data = substr($data, strpos($data, "\r\n")+2);
-                    $data = substr($data, strpos($data, "\r\n")+2);
+                    $data = \substr($data, \strpos($data, "\r\n") + 2);
+                    $data = \substr($data, \strpos($data, "\r\n") + 2);
                 }
+
                 return $output;
 
-            case 58: // ':'
-                return intval(substr($data, 1));
+            case 58:
+                // ':'
+                return \intval(\substr($data, 1));
 
-            case 45: // '-'
+            case 45:
+                // '-'
                 return false;
 
             default:
-                return null;
+                return;
         }
     }
 
-    public function __call($name, $params) {
-        if (!in_array($name, self::$commands)) {
+    public function __call($name, $params)
+    {
+        if ( ! \in_array($name, self::$commands)) {
             return false;
         }
 
-        array_unshift($params, $name);
+        \array_unshift($params, $name);
 
-        if ($this->isDebug == 1) {
-            var_dump($params);
-        }
+        $this->debug($params);
 
         yield from $this->write_data(...$params);
 
-        return ( yield from $this->read_data() );
+        return (yield from $this->read_data());
     }
 
+    protected function debug($data)
+    {
+        if ($this->isDebug) {
+            \var_dump($data);
+        }
+    }
 }
