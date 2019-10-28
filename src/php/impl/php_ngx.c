@@ -260,8 +260,8 @@ static void php_ngx_register_variables(zval *track_vars_array TSRMLS_DC)
 }*/
 
 sapi_module_struct php_ngx_module = {
-    "php-ngx",                                         /* name */
-    "PHP Embedded Library for nginx-module",            /* pretty name */
+    "cli-server",                                       /* sapi type */
+    "php-ngx",                                          /* name */
 
     php_ngx_startup,                                    /* startup */
     php_module_shutdown_wrapper,                        /* shutdown */
