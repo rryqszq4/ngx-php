@@ -128,7 +128,7 @@ class mysql
         $field_count = \unpack('v', \substr($data, 0, 3))[1];
         #var_dump("field_count: ".$field_count);
         //$data = '';
-        yield ngx_socket_recv($this->socket, $data, $field_count);
+        yield \ngx_socket_recv($this->socket, $data, $field_count);
         #$this->print_bin($data);
         if ($field_count !== 1) {
             $field_count = \ord(\substr($data, 0, 1));
@@ -228,11 +228,10 @@ class mysql
         $scramble_2 = \substr($data, $pos + 9 + 2 + 1 + 2 + 2 + 1 + 10, 21 - 8 - 1);
         #var_dump($scramble_2);
 
-        $scramble = $scramble.$scramble_2;
         #var_dump("scramble: ".$scramble);
         #var_dump(strlen($scramble));
 
-        return $scramble;
+        return $scramble.$scramble_2;
     }
 
     private function auth_packet($scramble, $user, $password, $database)
@@ -248,10 +247,11 @@ class mysql
         $token = $stage1 ^ $stage3;
 
         $req = \pack('VV', $client_flags, 1048576)
-        .\chr(0)
-        .\str_repeat("\0", 23)
-        .$user."\0"
-        .\chr(\strlen($token)).$token
+            .\chr(0)
+            .\str_repeat("\0", 23)
+            .$user."\0"
+            .\chr(\strlen($token))
+            .$token
             .$database."\0";
         #var_dump($req);
 
