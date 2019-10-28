@@ -49,10 +49,9 @@ function dbquery()
         $query_count = $params['queries'] > 500 ? 500 : $params['queries'];
     }
 
-    $arr = [];
-    while (0 < $query_count--) {
-        $rand  = mt_rand(1, 10000);
-        $arr[] = (yield from $my->query("SELECT id,randomNumber FROM World WHERE id = {$rand}"))[0];
+    while ($query_count--) {
+            $rand = mt_rand(1, 10000);
+            $arr[] = (yield from $my->query("SELECT id,randomNumber FROM World WHERE id = {$rand}"))[0];
     }
 
     unset($my);
@@ -87,8 +86,7 @@ function update()
         $query_count = $params['queries'] > 500 ? 500 : $params['queries'];
     }
 
-    $arr = [];
-    while (0 < $query_count--) {
+    while ($query_count--) {
         $id = mt_rand(1, 10000);
 
         $world                 = (yield from $my->query("SELECT id, randomNumber FROM World WHERE id = {$id}"))[0];
