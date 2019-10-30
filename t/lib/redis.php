@@ -118,6 +118,7 @@ class Redis
 
     private function read_data()
     {
+        $data = '';
         do {
             $buf = '';
             yield \ngx_socket_recv($this->socket, $buf);
