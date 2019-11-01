@@ -174,6 +174,14 @@ static ngx_command_t ngx_http_php_commands[] = {
      ngx_http_php_content_inline_handler
     },
 
+    {ngx_string("content_by_php_block"),
+     NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF|NGX_CONF_BLOCK|NGX_CONF_NOARGS,
+     ngx_http_php_content_block_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     NULL
+    },
+
     {ngx_string("php_content"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
