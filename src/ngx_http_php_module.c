@@ -174,6 +174,22 @@ static ngx_command_t ngx_http_php_commands[] = {
      ngx_http_php_content_inline_handler
     },
 
+    {ngx_string("rewrite_by_php_block"),
+     NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF|NGX_CONF_BLOCK|NGX_CONF_NOARGS,
+     ngx_http_php_rewrite_block_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     NULL
+    },
+
+    {ngx_string("access_by_php_block"),
+     NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF|NGX_CONF_BLOCK|NGX_CONF_NOARGS,
+     ngx_http_php_access_block_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     NULL
+    },
+
     {ngx_string("content_by_php_block"),
      NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF|NGX_CONF_BLOCK|NGX_CONF_NOARGS,
      ngx_http_php_content_block_phase,
