@@ -33,11 +33,37 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_variable.h"
 #include "ngx_http_php_handler.h"
 
+static char *ngx_http_php_init_worke_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+
 static char *ngx_http_php_rewrite_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 static char *ngx_http_php_access_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 static char *ngx_http_php_content_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+
+static char *
+ngx_http_php_init_worke_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+{
+    ngx_http_php_main_conf_t *pmcf;
+    ngx_str_t *value;
+    ngx_http_php_code_t *code;
+
+    pmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_php_module);
+    if (pmcf->init_inline_code != NGX_CONF_UNSET_PTR){
+        return "is duplicated";
+    }
+
+    value = cf->args->elts;
+
+    code = ngx_http_php_code_from_string(cf->pool, &value[1]);
+    if (code == NGX_CONF_UNSET_PTR){
+        return NGX_CONF_ERROR;
+    }
+    pmcf->init_worker_inline_code = code;
+    pmcf->enabled_init_worker_handler = 1;
+
+    return NGX_CONF_OK;
+}
 
 static char *
 ngx_http_php_rewrite_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
@@ -422,6 +448,22 @@ ngx_http_php_content_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf
     pmcf->enabled_content_handler = 1;
 
     return NGX_CONF_OK;
+}
+
+char *
+ngx_http_php_init_worker_block_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+{
+    char        *rv;
+    ngx_conf_t   save;
+
+    save = *cf;
+    cf->handler = ngx_http_php_init_worker_block_phase_handler;
+    cf->handler_conf = conf;
+
+    rv = ngx_php_conf_parse(cf, NULL);
+    *cf = save;
+
+    return rv;
 }
 
 char *

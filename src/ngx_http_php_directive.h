@@ -39,6 +39,7 @@ char *ngx_http_php_init_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *c
 char *ngx_http_php_init_file_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 char *ngx_http_php_init_worker_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+char *ngx_http_php_init_worker_block_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 char *ngx_http_php_rewrite_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 char *ngx_http_php_rewrite_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
