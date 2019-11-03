@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_variable.h"
 #include "ngx_http_php_handler.h"
 
-static char *ngx_http_php_init_worke_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+static char *ngx_http_php_init_worker_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 static char *ngx_http_php_rewrite_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
@@ -42,7 +42,7 @@ static char *ngx_http_php_access_block_phase_handler(ngx_conf_t *cf, ngx_command
 static char *ngx_http_php_content_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 static char *
-ngx_http_php_init_worke_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+ngx_http_php_init_worker_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_http_php_main_conf_t *pmcf;
     ngx_str_t *value;
