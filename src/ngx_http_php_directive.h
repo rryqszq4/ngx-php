@@ -58,6 +58,7 @@ char *ngx_http_php_stack_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *
 
 char *ngx_http_php_log_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 char *ngx_http_php_log_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+char *ngx_http_php_log_block_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 char *ngx_http_php_set_inline2(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
@@ -71,7 +72,10 @@ char *ngx_http_php_set_run_file(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 #endif
 
 char *ngx_http_php_header_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+char *ngx_http_php_header_filter_block_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+
 char *ngx_http_php_body_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+char *ngx_http_php_body_filter_block_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 char *ngx_http_php_conf_keepalive(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
