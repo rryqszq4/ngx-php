@@ -1,3 +1,24 @@
+ngx_php7 0.0.21 changes:                                                            4 Nov 2019
+    * Add directive init_worker_by_php_block.
+    
+    * Add directive rewrite_by_php_block.
+    
+    * Add directive access_by_php_block.
+
+    * Add directive content_by_php_block.
+
+    * Add directive log_by_php_block.
+
+    * Add directive header_filter_by_php_block.
+
+    * Add directive body_by_php_block.
+
+    * Fixed support startup opcache, thanks joanhey.
+
+    * Optimize mysql driver.
+
+    * Optimize redis driver.
+
 ngx_php7 0.0.20 changes:                                                            17 Oct 2019
     * Add directive php_set, php_rewrite, php_access, php_content, php_log, php_header_filter, php_body_filter and php_body_filter.
 
