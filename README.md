@@ -243,19 +243,20 @@ Directives
 ----------
 * [php_ini_path](#php_ini_path)
 * [init_worker_by_php](#init_worker_by_php)
+* [init_worker_by_php_block](#init_worker_by_php_block)
 * [rewrite_by_php](#rewrite_by_php)
+* [rewrite_by_php_block](#rewrite_by_php_block)
 * [access_by_php](#access_by_php)
+* [access_by_php_block](#access_by_php_block)
 * [content_by_php](#content_by_php)
+* [content_by_php_block](#content_by_php_block)
 * [log_by_php](#log_by_php)
+* [log_by_php_block](#log_by_php_block)
 * [header_filter_by_php](#header_filter_by_php)
+* [header_filter_by_php_block](#header_filter_by_php_block)
 * [body_filter_by_php](#body_filter_by_php)
+* [body_filter_by_php_block](#body_filter_by_php_block)
 * [php_keepalive](#php_keepalive)
-* [php_rewrite](#php_rewrite)
-* [php_access](#php_access)
-* [php_content](#php_content)
-* [php_log](#php_log)
-* [php_header_filter](#php_header_filter)
-* [php_body_filter](#php_body_filter)
 * [php_set](#php_set)
 
 php_ini_path
@@ -276,11 +277,29 @@ init_worker_by_php
 
 **phase:** `starting-worker`
 
+init_worker_by_php_block
+------------------------
+**syntax:** `init_worker_by_php_block`_`{php script code}`_
+
+**context:** `http`
+
+**phase:** `starting-worker`
+
 rewrite_by_php
 --------------
 **syntax:** `rewrite_by_php`_`<php script code>`_
 
 **context:** `http, server, location, location if`
+
+**phase:** `rewrite`
+
+In the rewrite phase of nginx, you can execute inline php code.
+
+rewrite_by_php_block
+--------------------
+**syntax:** `rewrite_by_php_block`_`{php script code}`_
+
+**context:** `location, location if`
 
 **phase:** `rewrite`
 
@@ -296,11 +315,31 @@ access_by_php
 
 In the access phase of nginx, you can execute inline php code.
 
+access_by_php_block
+-------------------
+**syntax:** `access_by_php_block`_`{php script code}`_
+
+**context:** `location, location if`
+
+**phase:** `access`
+
+In the access phase of nginx, you can execute inline php code.
+
 content_by_php
 --------------
 **syntax:** `content_by_php`_`<php script code>`_
 
 **context:** `http, server, location, location if`
+
+**phase:** `content`
+
+In the content phase of nginx, you can execute inline php code.
+
+content_by_php_block
+--------------------
+**syntax:** `content_by_php_block`_`{php script code}`_
+
+**context:** `location, location if`
 
 **phase:** `content`
 
@@ -314,6 +353,14 @@ log_by_php
 
 **phase:** `log`
 
+log_by_php_block
+----------------
+**syntax:** `log_by_php_block`_`{php script code}`_
+
+**context:** `location, location if`
+
+**phase:** `log`
+
 header_filter_by_php
 --------------------
 **syntax:** `header_filter_by_php`_`<php script code>`_
@@ -322,11 +369,27 @@ header_filter_by_php
 
 **phase:** `output-header-filter`
 
+header_filter_by_php_block
+--------------------------
+**syntax:** `header_filter_by_php_block`_`{php script code}`_
+
+**context:** `location, location if`
+
+**phase:** `output-header-filter`
+
 body_filter_by_php
 ------------------
 **syntax:** `body_filter_by_php`_`<php script code>`_
 
 **context:** `http, server, location, location if`
+
+**phase:** `output-body-filter`
+
+body_filter_by_php_block
+------------------------
+**syntax:** `body_filter_by_php_block`_`{php script code}`_
+
+**context:** `location, location if`
 
 **phase:** `output-body-filter`
 
