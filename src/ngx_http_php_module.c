@@ -509,6 +509,7 @@ ngx_http_php_create_main_conf(ngx_conf_t *cf)
     pmcf->ini_path.len = 0;
     pmcf->init_code = NGX_CONF_UNSET_PTR;
     pmcf->init_inline_code = NGX_CONF_UNSET_PTR;
+    pmcf->init_worker_inline_code = NGX_CONF_UNSET_PTR;
 
     return pmcf;
 }

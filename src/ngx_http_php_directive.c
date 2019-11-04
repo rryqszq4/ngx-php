@@ -49,16 +49,17 @@ ngx_http_php_init_worker_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd,
     ngx_http_php_code_t *code;
 
     pmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_php_module);
-    if (pmcf->init_inline_code != NGX_CONF_UNSET_PTR){
+    if (pmcf->init_worker_inline_code != NGX_CONF_UNSET_PTR){
         return "is duplicated";
     }
 
     value = cf->args->elts;
 
-    code = ngx_http_php_code_from_string(cf->pool, &value[1]);
+    code = ngx_http_php_code_from_string(cf->pool, &value[0]);
     if (code == NGX_CONF_UNSET_PTR){
         return NGX_CONF_ERROR;
     }
+    
     pmcf->init_worker_inline_code = code;
     pmcf->enabled_init_worker_handler = 1;
 
@@ -86,7 +87,7 @@ ngx_http_php_rewrite_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, voi
 
     value = cf->args->elts;
 
-    code = ngx_http_php_code_from_string(cf->pool, &value[1]);
+    code = ngx_http_php_code_from_string(cf->pool, &value[0]);
     if (code == NGX_CONF_UNSET_PTR){
         return NGX_CONF_ERROR;
     }
@@ -119,7 +120,7 @@ ngx_http_php_access_block_phase_handler(ngx_conf_t *cf, ngx_command_t *cmd, void
 
     value = cf->args->elts;
 
-    code = ngx_http_php_code_from_string(cf->pool, &value[1]);
+    code = ngx_http_php_code_from_string(cf->pool, &value[0]);
     if (code == NGX_CONF_UNSET_PTR){
         return NGX_CONF_ERROR;
     }
@@ -236,7 +237,7 @@ ngx_http_php_init_worker_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *
     ngx_http_php_code_t *code;
 
     pmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_php_module);
-    if (pmcf->init_inline_code != NGX_CONF_UNSET_PTR){
+    if (pmcf->init_worker_inline_code != NGX_CONF_UNSET_PTR){
         return "is duplicated";
     }
 
