@@ -206,6 +206,30 @@ static ngx_command_t ngx_http_php_commands[] = {
      NULL
     },
 
+    {ngx_string("log_by_php_block"),
+     NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF|NGX_CONF_BLOCK|NGX_CONF_NOARGS,
+     ngx_http_php_log_block_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     NULL
+    },
+
+    {ngx_string("header_filter_by_php_block"),
+     NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF|NGX_CONF_BLOCK|NGX_CONF_NOARGS,
+     ngx_http_php_header_filter_block_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     NULL
+    },
+
+    {ngx_string("body_filter_by_php_block"),
+     NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF|NGX_CONF_BLOCK|NGX_CONF_NOARGS,
+     ngx_http_php_body_filter_block_phase,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     0,
+     NULL
+    },
+
     {ngx_string("php_content"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_TAKE1,
