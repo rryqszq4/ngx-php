@@ -447,6 +447,9 @@ ngx_exit
 --------
 **syntax:** `ngx_exit(int $status) : void`
 
+**parameters:**
+- `status: int`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 End of current request and return http status code.
@@ -454,6 +457,9 @@ End of current request and return http status code.
 ngx_query_args
 --------------
 **syntax:** `ngx_query_args(void) : array` or `ngx::query_args(void) : array`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -463,6 +469,9 @@ Instead of php official constant $_GET.
 ngx_post_args
 -------------
 **syntax:** `ngx_post_args(void) : array` or `ngx::post_args(void) : array`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -474,11 +483,18 @@ ngx_log_error
 -------------
 **syntax:** `ngx_log_error(int $level, string $log_str) : void` or `ngx_log::error(int $level, string $log_str) : void`
 
+**parameters:**
+- `level: int`
+- `log_str: string`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_request_method
 ------------------
 **syntax:** `ngx_request_method(void) : string` or `ngx_request::method(void) : string`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -488,6 +504,9 @@ ngx_request_document_root
 -------------------------
 **syntax:** `ngx_request_document_root(void) : string` or `ngx_request::document_root(void) : string`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 The document root directory under which the current script is executing, as defined in the server's configuration file.
@@ -496,11 +515,17 @@ ngx_request_document_uri
 ------------------------
 **syntax:** `ngx_request_document_uri(void) : string` or `ngx_request::document_uri(void) : string`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_request_script_name
 -----------------------
 **syntax:** `ngx_request_script_name(void) : string` or `ngx_request::script_name(void) : string`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -511,6 +536,9 @@ ngx_request_script_filename
 ---------------------------
 **syntax:** `ngx_request_script_filename(void) : string` or `ngx_request::script_filename(void) : string`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 The absolute pathname of the currently executing script file name.
@@ -518,6 +546,9 @@ The absolute pathname of the currently executing script file name.
 ngx_request_query_string
 ------------------------
 **syntax:** `ngx_request_query_string(void) : string` or `ngx_request::query_string(void) : string`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -527,6 +558,9 @@ ngx_request_uri
 ---------------
 **syntax:** `ngx_request_uri(void) : string` or `ngx_request::uri(void) : string`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 The URI which was given in order to access this page, for instance, '/index.html'.
@@ -534,6 +568,9 @@ The URI which was given in order to access this page, for instance, '/index.html
 ngx_request_server_protocol
 ---------------------------
 **syntax:** `ngx_request_server_protocol(void) : string` or `ngx_request::server_protocol(void) : string`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -543,6 +580,9 @@ ngx_request_remote_addr
 -----------------------
 **syntax:** `ngx_request_remote_addr(void) : string` or `ngx_request::remote_addr(void) : string`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 The IP address from which the user is viewing the current page.
@@ -550,6 +590,9 @@ The IP address from which the user is viewing the current page.
 ngx_request_server_addr
 -----------------------
 **syntax:** `ngx_request_server_addr(void) : string` or `ngx_request::server_addr(void) : string`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -559,6 +602,9 @@ ngx_request_remote_port
 -----------------------
 **syntax:** `ngx_request_remote_port(void) : int` or `ngx_request::remote_port(void) : int`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 The port being used on the user's machine to communicate with the web server.
@@ -566,6 +612,9 @@ The port being used on the user's machine to communicate with the web server.
 ngx_request_server_port
 -----------------------
 **syntax:** `ngx_request_server_port(void) : int` or `ngx_request::server_port(void) : int`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -576,6 +625,9 @@ ngx_request_server_name
 -----------------------
 **syntax:** `ngx_request_server_name(void) : string` or `ngx_request::server_name(void) : string`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 The name of the server host under which the current script is executing.   
@@ -585,6 +637,9 @@ ngx_request_headers
 -------------------
 **syntax:** `ngx_request_headers(void): array` or `ngx_request::headers(void) : array`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 Get the header full information of the http request.
@@ -592,6 +647,9 @@ Get the header full information of the http request.
 ngx_var_get
 -----------
 **syntax:** `ngx_var_get(string $key) : string` or `ngx_var::get(string $key) : string`
+
+**parameters:**
+- `key: string`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -601,6 +659,10 @@ ngx_var_set
 -----------
 **syntax:** `ngx_var_set(string $key, string $value) : void` or `ngx_var::set(string $key, string $value) : void`
 
+**parameters:**
+- `key: string`
+- `value: string`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 Set the variables in the nginx configuration.
@@ -608,6 +670,10 @@ Set the variables in the nginx configuration.
 ngx_header_set
 --------------
 **syntax:** `ngx_header_set(string $key, string $value) : bool`
+
+**parameters:**
+- `key: string`
+- `value: string`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -617,6 +683,9 @@ ngx_header_get
 --------------
 **syntax:** `ngx_header_get(string $key) : string`
 
+**parameters:**
+- `key: string`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 Get the header information of the http response.
@@ -624,6 +693,9 @@ Get the header information of the http response.
 ngx_header_gets
 ---------------
 **syntax:** `ngx_header_gets(void) : array`
+
+**parameters:**
+- `void`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -633,6 +705,10 @@ ngx_redirect
 ------------
 **syntax:** `ngx_redirect(string $uri, int $status) : bool`
 
+**parameters:**
+- `uri: string`
+- `status: int`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 Set response header redirection.
@@ -641,17 +717,26 @@ ngx_cookie_get_all
 ------------------
 **syntax:** `ngx_cookie_get_all(void) : string`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_cookie_get
 --------------
-**syntax:** `ngx_cookie_get(string key) : string`
+**syntax:** `ngx_cookie_get(string $key) : string`
+
+**parameters:**
+- `key: string`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_cookie_set
 --------------
-**syntax:** `ngx_cookie_set(string data): bool`
+**syntax:** `ngx_cookie_set(string $data): bool`
+
+**parameters:**
+- `data: string`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -672,6 +757,9 @@ ngx_sleep
 ---------
 **syntax:** `yield ngx_sleep(int seconds)`
 
+**parameters:**
+- `secodes: int`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 Delays the program execution for the given number of seconds.
@@ -680,6 +768,9 @@ ngx_msleep
 ---------
 **syntax:** `yield ngx_msleep(int milliseconds)`
 
+**parameters:**
+- `milliseconds: int`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 Delays the program execution for the given number of milliseconds.
@@ -687,6 +778,11 @@ Delays the program execution for the given number of milliseconds.
 ngx_socket_create
 -----------------
 **syntax:** `ngx_socket_create(int $domain, int $type, int $protocol) : resource`
+
+**parameters:**
+- `domain: int`
+- `type: int`
+- `protocol: int`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -698,11 +794,19 @@ ngx_socket_iskeepalive
 ----------------------
 **syntax:** `ngx_socket_iskeepalive(void) : bool`
 
+**parameters:**
+- `void`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_socket_connect
 ------------------
 **syntax:** `( yield ngx_socket_connect(resource $socket, string $address, int $port) ) : bool`
+
+**parameters:**
+- `socket: resource`
+- `address: string`
+- `port: int`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -713,6 +817,9 @@ ngx_socket_close
 ----------------
 **syntax:** `( yield ngx_socket_close(resource $socket) ) : bool`
 
+**parameters:**
+- `socket: resource`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_socket_close() closes the socket resource given by socket. This function is specific to  
@@ -722,6 +829,11 @@ ngx_socket_send
 ---------------
 **syntax:** `( yield ngx_socket_send(resource $socket, string $buf, int $len) ) : int`
 
+**parameters:**
+- `socket: resource`
+- `buf: string`
+- `len: int`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 The function ngx_socket_send() sends len bytes to the socket socket from buf.
@@ -729,6 +841,11 @@ The function ngx_socket_send() sends len bytes to the socket socket from buf.
 ngx_socket_recv
 ---------------
 **syntax:** `( yield ngx_socket_recv(resource $socket, string &$buf, int $len) ) : int`
+
+**parameters:**
+- `socket: resource`
+- `buf: string`
+- `len: int`
 
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
@@ -742,13 +859,16 @@ ngx_socket_clear
 ----------------
 **syntax:** `ngx_socket_recv(resource $socket) : bool`
 
+**parameters:**
+- `socket: resource`
+
 **context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 Close the socket resource and is blocking but hight performance.
 
 Nginx constants
 ---------------
-* [version constants](version-constants)
+* [version constants](#version-constants)
 * [log constants for php](#log-constants-for-php)
 * [status constants for php](#status-constants-for-php)
 * [http status constants for php](#http-status-constants-for-php)
