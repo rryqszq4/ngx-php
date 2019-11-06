@@ -566,7 +566,7 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
 
     ngx_php_set_request_status(NGX_DECLINED);
 
-#if (NGX_DEBUG)
+#if 0 && (NGX_DEBUG)
     if (plcf->content_inline_code->code_id.data != NULL) {
         ngx_pfree(r->pool, plcf->content_inline_code->code_id.data);
 
@@ -592,7 +592,7 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
     ngx_php_debug("%*s, %d", (int)inline_code.len, inline_code.data, (int)inline_code.len);
 
     zend_first_try {
-#if (NGX_DEBUG)
+#if 0 && (NGX_DEBUG)
         ngx_http_php_zend_eval_stringl_ex(
             (char *)inline_code.data, 
             inline_code.len, 
