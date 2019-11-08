@@ -110,10 +110,12 @@ class mysql
     {
         $pack = \substr(\pack('V', $len), 0, 3).\chr($chr).$data;
 
+        ngx_log_error(NGX_LOG_DEBUG, "write=============================$data");
+
         yield \ngx_socket_send($this->socket, $pack, \strlen($pack));
     }
 
-    private function read_packet()
+    private function read_packet($wait=0)
     {
         #var_dump("read_packet");
         //$i = 0;
@@ -122,13 +124,17 @@ class mysql
         //   if ($i > 1000) {break;}
         $data = '';
         yield \ngx_socket_recv($this->socket, $data, 4);
+        ngx_log_error(NGX_LOG_DEBUG, "read=============================$data");
         //    $i++;
         //} while (empty($data));
         #$this->print_bin($data);
         $field_count = \unpack('v', \substr($data, 0, 3))[1];
         #var_dump("field_count: ".$field_count);
+
         //$data = '';
-        yield \ngx_socket_recv($this->socket, $data, $field_count);
+        yield \ngx_socket_recvwait($this->socket, $data, $field_count);
+        ngx_log_error(NGX_LOG_DEBUG, "read=============================$data");
+
         #$this->print_bin($data);
         if ($field_count !== 1) {
             $field_count = \ord(\substr($data, 0, 1));
@@ -182,7 +188,7 @@ class mysql
 
     private function handshake_packet()
     {
-        $data = (yield from $this->read_packet());
+        $data = (yield from $this->read_packet(1));
 
         #var_dump("packet length: ".$len);
 
