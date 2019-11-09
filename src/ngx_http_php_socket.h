@@ -89,6 +89,8 @@ ngx_int_t ngx_http_php_socket_recv(ngx_http_request_t *r);
 
 ngx_int_t ngx_http_php_socket_recv_wait(ngx_http_request_t *r);
 
+ngx_int_t ngx_http_php_socket_recv_sync(ngx_http_request_t *r);
+
 void ngx_http_php_socket_clear(ngx_http_request_t *r);
 
 #endif
