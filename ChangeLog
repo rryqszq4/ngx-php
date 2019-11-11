@@ -1,3 +1,8 @@
+ngx_php7 0.0.22 changes:                                                            11 Nov 2019
+    * Add impl ngx_socket_recvsync.
+
+    * Optimize the performance of mysql async driver.
+
 ngx_php7 0.0.21 changes:                                                            4 Nov 2019
     * Add directive init_worker_by_php_block.
     
