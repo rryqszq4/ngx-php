@@ -5,8 +5,6 @@ ngx_php7
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php7/blob/master/LICENSE)
 [![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx_php7)
 
-![](https://raw.githubusercontent.com/rryqszq4/ngx_php7/master/docs/hello_world_performance.png)
-
 ngx_php7 is an extension module of high-performance web server nginx, which implements embedded php7 script to process nginx location and variables.  
 
 ngx_php7 draws on the design of [ngx_lua](https://github.com/openresty/lua-nginx-module) and is committed to providing non-blocking web services with significant performance advantages over php-cgi, mod_php, php-fpm and hhvm.  
@@ -102,11 +100,10 @@ Synopsis
 --------
 
 ```nginx
-user www www;
-worker_processes  4;
+worker_processes  auto;
 
 events {
-    worker_connections  1024;
+    worker_connections  102400;
 }
 
 http {
@@ -126,44 +123,44 @@ http {
         default_type 'application/json; charset=UTF-8';
     
         location /php {
-            content_by_php '
+            content_by_php_block {
                 echo "hello ngx_php7";
-            ';
+            }
         }
 
         location = /ngx_request {
-            content_by_php '
+            content_by_php_block {
                 echo ngx_request_document_uri();
-            ';
+            }
         }
 
         # curl /ngx_get?a=1&b=2
         location = /ngx_get {
-            content_by_php '
+            content_by_php_block {
                 echo "ngx_query_args()\n";
                 var_dump(ngx_query_args());
-            ';
+            }
         }
 
         # curl -d 'a=1&b=2' /ngx_post
         location = /ngx_post {
-            content_by_php '
+            content_by_php_block {
                 echo "ngx_post_args()\n";
                 var_dump(ngx_post_args());
-            ';
+            }
         }
 
         location = /ngx_sleep {
-            content_by_php '
+            content_by_php_block {
                 echo "ngx_sleep start\n";
                 yield ngx_sleep(1);
                 echo "ngx_sleep end\n";
-            ';
+            }
         }
 
         location = /ngx_socket2 {
             default_type 'application/json;charset=UTF-8';
-            content_by_php '
+            content_by_php {
                 $fd = ngx_socket_create();
 
                 yield ngx_socket_connect($fd, "hq.sinajs.cn", 80);
@@ -177,36 +174,36 @@ http {
                 var_dump($recv_buf);
                 
                 yield ngx_socket_close($fd);
-            ';
+            }
         }
 
         location = /ngx_var {
             set $a 1234567890;
-            content_by_php '
+            content_by_php_block {
                 $a = ngx_var_get("a");
                 var_dump($a);
-            ';
+            }
         }
         
         # set content-type of response headers
         location = /ngx_header {
-            content_by_php '
+            content_by_php_block {
                 ngx_header_set("Content-Type", "text/html; charset=UTF-8");
-            ';
+            }
         }
 
         # run a php file
         location = /php {
-            content_by_php '
+            content_by_php_block {
                 include "name_of_php_file.php";
-            ';
+            }
         }
         
         # run any php file in root
         location = / {
-            content_by_php '
+            content_by_php_block {
                 include ngx_var_get("uri");
-            ';
+            }
         }
 
     }
@@ -218,24 +215,34 @@ Test
 Using the perl of [Test::Nginx](https://github.com/openresty/test-nginx) module to testing, searching and finding out problem in ngx_php7.
 ```sh
 ngx_php7 test ...
-nginx version: nginx/1.10.3
+nginx version: nginx/1.12.2
 built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
 configure arguments: --prefix=/home/travis/build/rryqszq4/ngx_php7/build/nginx --with-ld-opt=-Wl,-rpath,/home/travis/build/rryqszq4/ngx_php7/build/php/lib --add-module=../../../ngx_php7/third_party/ngx_devel_kit --add-module=../../../ngx_php7
-t/001-hello.t ........... ok
-t/002-ini.t ............. ok
-t/004-ngx_request.t ..... ok
-t/005-ngx_log.t ......... ok
-t/006-ngx_sleep.t ....... ok
-t/007-ngx_socket.t ...... ok
-t/008-ngx_exit.t ........ ok
-t/009-ngx_query_args.t .. ok
-t/010-ngx_post_args.t ... ok
-t/011-ngx_constants.t ... ok
-t/012-function.t ........ ok
-t/013-class.t ........... ok
-t/014-ngx_var.t ......... ok
+t/001-hello.t ..................... ok
+t/002-ini.t ....................... ok
+t/003-error.t ..................... ok
+t/004-ngx_request.t ............... ok
+t/005-ngx_log.t ................... ok
+t/006-ngx_sleep.t ................. ok
+t/007-ngx_socket.t ................ ok
+t/008-ngx_exit.t .................. ok
+t/009-ngx_query_args.t ............ ok
+t/010-ngx_post_args.t ............. ok
+t/011-ngx_constants.t ............. ok
+t/012-function.t .................. ok
+t/013-class.t ..................... ok
+t/014-ngx_var.t ................... ok
+t/015-ngx_header.t ................ 1/? WARNING: TEST 2: set content-length of response headers - unexpected extra bytes after last chunk in response: "Testing ngx_header!\x{0a}"
+t/015-ngx_header.t ................ ok
+t/016-rewrite_by_php.t ............ ok
+t/017-ngx_redirect.t .............. ok
+t/018-ngx_mysql.t ................. ok
+t/019-php_set.t ................... ok
+t/020-ngx_cookie.t ................ ok
+t/021-content_by_php_block.t ...... ok
+t/022-init_worker_by_php_block.t .. ok
 All tests successful.
-Files=13, Tests=28,  5 wallclock secs ( 0.05 usr  0.02 sys +  1.26 cusr  0.22 csys =  1.55 CPU)
+Files=22, Tests=84, 14 wallclock secs ( 0.09 usr  0.02 sys +  2.19 cusr  0.43 csys =  2.73 CPU)
 Result: PASS
 ```
 
@@ -751,6 +758,7 @@ Nginx non-blocking API for php
 * [yield ngx_socket_close](#ngx_socket_close)
 * [yield ngx_socket_send](#ngx_socket_send)
 * [yield ngx_socket_recv](#ngx_socket_recv)
+* [ngx_socket_recvsync](#ngx_socket_recvsync)
 * [ngx_socket_clear](#ngx_socket_clear)
 
 ngx_sleep
@@ -854,6 +862,17 @@ used to gather data from connected sockets.
 
 buf is passed by reference, so it must be specified as a variable in the argument list.  
 Data read from socket by ngx_socket_recv() will be returned in buf.
+
+ngx_socket_recvsync
+-------------------
+**syntax:** `ngx_socket_recvsync(resource $socket, string &$buf, int $len) : int`
+
+**parameters:**
+- `socket: resource`
+- `buf: string`
+- `len: int`
+
+**context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_socket_clear
 ----------------

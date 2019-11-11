@@ -82,6 +82,18 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recv, 0, 0, 2)
 	ZEND_ARG_INFO(0, len)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recvwait, 0, 0, 2)
+	ZEND_ARG_INFO(0, socket)
+	ZEND_ARG_INFO(1, buf)
+	ZEND_ARG_INFO(0, len)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_recvsync, 0, 0, 2)
+	ZEND_ARG_INFO(0, socket)
+	ZEND_ARG_INFO(1, buf)
+	ZEND_ARG_INFO(0, len)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngx_socket_settimeout, 0, 0, 1)
 	ZEND_ARG_INFO(0, time)
 ZEND_END_ARG_INFO()
@@ -99,6 +111,8 @@ PHP_FUNCTION(ngx_socket_iskeepalive);
 PHP_FUNCTION(ngx_socket_connect);
 PHP_FUNCTION(ngx_socket_send);
 PHP_FUNCTION(ngx_socket_recv);
+PHP_FUNCTION(ngx_socket_recvwait);
+PHP_FUNCTION(ngx_socket_recvsync);
 PHP_FUNCTION(ngx_socket_read);
 PHP_FUNCTION(ngx_socket_write);
 PHP_FUNCTION(ngx_socket_close);

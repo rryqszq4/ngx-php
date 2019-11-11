@@ -64,6 +64,7 @@ struct ngx_http_php_socket_upstream_s {
     size_t          buffer_size;
     off_t           length;
     unsigned        enabled_receive:1;
+    unsigned        wait_receive:1;
 
     ngx_chain_t     *bufs_in;
 
@@ -85,6 +86,10 @@ void ngx_http_php_socket_close(ngx_http_request_t *r);
 
 ngx_int_t ngx_http_php_socket_send(ngx_http_request_t *r);
 ngx_int_t ngx_http_php_socket_recv(ngx_http_request_t *r);
+
+ngx_int_t ngx_http_php_socket_recv_wait(ngx_http_request_t *r);
+
+ngx_int_t ngx_http_php_socket_recv_sync(ngx_http_request_t *r);
 
 void ngx_http_php_socket_clear(ngx_http_request_t *r);
 

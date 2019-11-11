@@ -566,6 +566,21 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
 
     ngx_php_set_request_status(NGX_DECLINED);
 
+#if 0 && (NGX_DEBUG)
+    if (plcf->content_inline_code->code_id.data != NULL) {
+        ngx_pfree(r->pool, plcf->content_inline_code->code_id.data);
+
+        plcf->content_inline_code->code_id.data = ngx_pnalloc(r->pool, 32);
+    if (plcf->content_inline_code->code_id.data == NULL) {
+        // todo error log
+        return ;
+    }
+    ngx_sprintf(plcf->content_inline_code->code_id.data, "%08xD%08xD%08xD%08xD",
+                (uint32_t) ngx_random(), (uint32_t) ngx_random(),
+                (uint32_t) ngx_random(), (uint32_t) ngx_random());
+    }
+#endif
+
     inline_code.data = ngx_pnalloc(r->pool, sizeof("function ngx_content_(){  }")-1 + ngx_strlen(plcf->content_inline_code->code.string) + 32);
 
     inline_code.len = ngx_sprintf(inline_code.data, "function ngx_content_%V(){ %*s }", 
@@ -577,7 +592,16 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
     ngx_php_debug("%*s, %d", (int)inline_code.len, inline_code.data, (int)inline_code.len);
 
     zend_first_try {
-
+#if 0 && (NGX_DEBUG)
+        ngx_http_php_zend_eval_stringl_ex(
+            (char *)inline_code.data, 
+            inline_code.len, 
+            NULL, 
+            "ngx_php eval code", 
+            1
+        );
+            plcf->enabled_content_inline_compile = 1;
+#else
         if (!plcf->enabled_content_inline_compile){
             //inline_code.data = (u_char *)str_replace((char *)inline_code.data, "ngx::sleep", "yield ngx::sleep");
             //inline_code.len = strlen((char *)inline_code.data);
@@ -590,7 +614,7 @@ ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r)
             );
             plcf->enabled_content_inline_compile = 1;
         }
-        
+#endif        
         ngx_http_php_zend_uthread_create(r, "ngx_content");
     
     }zend_end_try();
