@@ -17,7 +17,6 @@ addons:
       - librecode-dev
       - libsasl2-dev
       - libxpm-dev
-      - libt1-dev
       - cpanminus
       - openssl
       - libssl-dev
