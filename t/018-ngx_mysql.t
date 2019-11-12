@@ -116,3 +116,24 @@ location =/ngx_mysql_sleep {
 GET /ngx_mysql_sleep
 --- response_body
 0
+
+
+
+=== TEST 6: test unix sock
+mysql unix sock
+--- config
+localhost =/t6 {
+    content_by_php_block {
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+        $m = new php\ngx\mysql();
+        yield from $m->connect("unix:/var/run/mysql/mysql.sock", "0", "ngx_php", "ngx_php", "world");
+        $sql = "select * from world.city order by ID asc limit 1 ;";
+        $ret = yield from $m->query($sql);
+        echo implode(",",array_values($ret[0]))."\n";
+        unset($m);
+    }
+}
+--- request
+GET /t6
+--- response_body
+1,Kabul,AFG,Kabol,1780000
