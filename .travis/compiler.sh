@@ -1,5 +1,8 @@
 #!/bin/bash
 # Copyright (c) 2016-2017, rryqszq4 <rryqszq@gmail.com>
+
+netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }' 
+
 mkdir build
 cd build
 mkdir php

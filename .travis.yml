@@ -3,7 +3,6 @@ sudo: required
 dist: xenial
 addons:
   apt:
-    update: true
     packages:
       - locales
       - language-pack-de
@@ -26,9 +25,6 @@ addons:
       - systemtap-sdt-dev
       - libonig-dev
       - axel
-      - mysql-server-5.6
-      - mysql-client-core-5.6
-      - mysql-client-5.6
 compiler:
   - gcc
   - clang
@@ -60,6 +56,7 @@ env:
     NGINX_MODULE=DYNAMIC
 services:
   - memcache
+  - mysql
 install:
   - sudo cpanm -n Test::Nginx
 before_script:
