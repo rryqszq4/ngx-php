@@ -122,7 +122,7 @@ GET /ngx_mysql_sleep
 === TEST 6: test unix sock
 mysql unix sock
 --- config
-localhost =/t6 {
+location =/t6 {
     content_by_php_block {
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\ngx\mysql();
