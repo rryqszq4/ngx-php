@@ -3,6 +3,7 @@
 use Test::Nginx::Socket 'no_plan';
 
 $ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
+$ENV{'TEST_NGINX_MYSQL_PATH'} ||= '/var/run/mysqld/mysqld.sock';
 
 run_tests();
 
@@ -126,7 +127,7 @@ location =/t6 {
     content_by_php_block {
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\ngx\mysql();
-        yield from $m->connect("unix:/var/run/mysql/mysql.sock", "0", "ngx_php", "ngx_php", "world");
+        yield from $m->connect("$TEST_NGINX_MYSQL_PATH", "0", "ngx_php", "ngx_php", "world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",array_values($ret[0]))."\n";
