@@ -24,6 +24,10 @@ addons:
       - libzip-dev
       - systemtap-sdt-dev
       - libonig-dev
+      - axel
+      - mysql-server-5.7
+      - mysql-client-core-5.7
+      - mysql-client-5.7
 compiler:
   - gcc
   - clang
@@ -55,7 +59,6 @@ env:
     NGINX_MODULE=DYNAMIC
 services:
   - memcache
-  - mysql
 install:
   - sudo cpanm -n Test::Nginx
 before_script:
