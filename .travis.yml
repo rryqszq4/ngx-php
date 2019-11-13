@@ -1,6 +1,6 @@
 language: c
 sudo: required
-dist: trusty
+dist: xenial
 addons:
   apt:
     packages:
@@ -17,7 +17,6 @@ addons:
       - librecode-dev
       - libsasl2-dev
       - libxpm-dev
-      - libt1-dev
       - cpanminus
       - openssl
       - libssl-dev
@@ -25,6 +24,7 @@ addons:
       - libzip-dev
       - systemtap-sdt-dev
       - libonig-dev
+      - axel
 compiler:
   - gcc
   - clang

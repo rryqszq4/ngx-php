@@ -526,7 +526,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     ngx_event_t                         *rev;
     ngx_buf_t                           *b;
     size_t                              size;
-    ssize_t                             n;
+    ssize_t                             n = 0;
     unsigned                            read;
 
     ngx_http_php_ctx_t                  *ctx;
@@ -585,6 +585,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         read = 1;
 
         ngx_php_debug("recv: %s, %d, %d", b->pos, (int)n, (int) size);
+        //printf("*%d, recv: %s, %d, %d\n", (int)r->connection->log->connection, b->pos, (int)n, (int) size);
 
         if (n == NGX_ERROR) {
             ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
@@ -643,7 +644,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         ngx_del_timer(rev);
     }
 
-    return NGX_AGAIN;
+    return n;
 
 }
 
@@ -901,8 +902,8 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
     ngx_int_t                           rc;
     ngx_http_php_ctx_t                  *ctx;
     ngx_http_php_socket_upstream_t      *u;
-    ngx_connection_t                    *c;
-    ngx_event_t                         *rev;
+    //ngx_connection_t                    *c;
+    //ngx_event_t                         *rev;
 
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
                    "php tcp receive");
@@ -922,8 +923,8 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
         return NGX_ERROR;
     }
 
-    c = u->peer.connection;
-    rev = c->read;
+    //c = u->peer.connection;
+    //rev = c->read;
 
     rc = ngx_http_php_socket_upstream_recv(r, u);
 
@@ -944,9 +945,9 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
             c->write->active, c->write->ready, c->write->eof, c->write->write);
 
     
-        if ( ngx_add_event(rev, NGX_READ_EVENT, NGX_CLEAR_EVENT) == NGX_ERROR) {
+        /*if ( ngx_add_event(rev, NGX_READ_EVENT, NGX_CLEAR_EVENT) == NGX_ERROR) {
             return NGX_ERROR;
-        }
+        }*/
     }
 
     if (rc == NGX_AGAIN) {

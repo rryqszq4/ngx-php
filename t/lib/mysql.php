@@ -10,7 +10,7 @@ namespace php\ngx;
 class mysql
 {
 
-    const VERSION = '0.3.1';
+    const VERSION = '0.3.2';
 
     private $socket = null;
 
@@ -115,7 +115,9 @@ class mysql
     {
         $data = '';
         if ($sync == 0) {
-            yield \ngx_socket_recv($this->socket, $data, 4);
+            do {
+                yield \ngx_socket_recv($this->socket, $data, 4);
+            }while(empty($data));
         }else {
             \ngx_socket_recvsync($this->socket, $data, 4);
         }
