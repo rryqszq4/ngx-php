@@ -56,11 +56,12 @@ PHP_FUNCTION(ngx_query_args)
 
     r = ngx_php_request;
 
+    array_init(return_value);
+
     if (r->args.len == 0) {
-        RETURN_NULL();
+        RETURN_ARR(Z_ARRVAL_P(return_value));
     }
 
-    array_init(return_value);
     idx = 0;
 
     buf = ngx_palloc(r->pool, r->args.len);
@@ -120,9 +121,11 @@ PHP_FUNCTION(ngx_post_args)
 
     r = ngx_php_request;
 
+    array_init(return_value);
+
     if (r->discard_body || r->request_body == NULL || 
         r->request_body->temp_file || r->request_body->bufs == NULL) {
-        RETURN_NULL();
+        RETURN_ARR(Z_ARRVAL_P(return_value));
     }
 
     len = 0;
@@ -131,10 +134,9 @@ PHP_FUNCTION(ngx_post_args)
     }
 
     if (len == 0) {
-        RETURN_NULL();
+        RETURN_ARR(Z_ARRVAL_P(return_value));
     }
 
-    array_init(return_value);
     idx = 0;
 
     buf = ngx_palloc(r->pool, len);
@@ -317,11 +319,12 @@ PHP_METHOD(ngx, query_args)
 
     r = ngx_php_request;
 
+    array_init(return_value);
+
     if (r->args.len == 0) {
-        RETURN_NULL();
+        RETURN_ARR(Z_ARRVAL_P(return_value));
     }
 
-    array_init(return_value);
     idx = 0;
 
     buf = ngx_palloc(r->pool, r->args.len);
@@ -381,9 +384,11 @@ PHP_METHOD(ngx, post_args)
 
     r = ngx_php_request;
 
+    array_init(return_value);
+
     if (r->discard_body || r->request_body == NULL || 
         r->request_body->temp_file || r->request_body->bufs == NULL) {
-        RETURN_NULL();
+        RETURN_ARR(Z_ARRVAL_P(return_value));
     }
 
     len = 0;
@@ -392,10 +397,9 @@ PHP_METHOD(ngx, post_args)
     }
 
     if (len == 0) {
-        RETURN_NULL();
+        RETURN_ARR(Z_ARRVAL_P(return_value));
     }
 
-    array_init(return_value);
     idx = 0;
 
     buf = ngx_palloc(r->pool, len);
