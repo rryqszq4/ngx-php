@@ -92,5 +92,5 @@ Content-type: application/x-www-form-urlencoded
 POST /t4
 
 --- response_body
-array(0){
+array(0) {
 }

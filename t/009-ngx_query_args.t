@@ -58,7 +58,7 @@ location =/t3 {
     }
 }
 --- request
-GET /h3
+GET /t3
 --- response_body
-array(0){
+array(0) {
 }
