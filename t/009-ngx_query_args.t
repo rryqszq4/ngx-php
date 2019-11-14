@@ -46,3 +46,19 @@ array(2) {
   ["b"]=>
   string(1) "2"
 }
+
+
+
+=== TEST 3: ngx_query_args is null
+When ngx_query_args is null that return value is array()
+--- config
+location =/t3 {
+    content_by_php_block {
+        var_dump(ngx_query_args());
+    }
+}
+--- request
+GET /h3
+--- response_body
+array(0){
+}
