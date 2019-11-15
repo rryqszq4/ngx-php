@@ -75,3 +75,22 @@ array(2) {
   ["b"]=>
   string(1) "2"
 }
+
+
+
+=== TEST 4: ngx_post_args is null
+When ngx_post_args is null that return value is array()
+--- config
+location =/t4 {
+    content_by_php_block {
+        var_dump(ngx_post_args());
+    }
+}
+--- more_headers
+Content-type: application/x-www-form-urlencoded
+--- request
+POST /t4
+
+--- response_body
+array(0) {
+}
