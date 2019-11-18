@@ -20,6 +20,51 @@ class mysql
     private $resultFields = [];
     private $resultRows   = [];
 
+    public static $charsets = array(
+            '_default'  => 0,
+            'big5'      => 1,
+            'dec8'      => 3,
+            'cp850'     => 4,
+            'hp8'       => 6,
+            'koi8r'     => 7,
+            'latin1'    => 8,
+            'latin2'    => 9,
+            'swe7'      => 10,
+            'ascii'     => 11,
+            'ujis'      => 12,
+            'sjis'      => 13,
+            'hebrew'    => 16,
+            'tis620'    => 18,
+            'euckr'     => 19,
+            'koi8u'     => 22,
+            'gb2312'    => 24,
+            'greek'     => 25,
+            'cp1250'    => 26,
+            'gbk'       => 28,
+            'latin5'    => 30,
+            'armscii8'  => 32,
+            'utf8'      => 33,
+            'ucs2'      => 35,
+            'cp866'     => 36,
+            'keybcs2'   => 37,
+            'macce'     => 38,
+            'macroman'  => 39,
+            'cp852'     => 40,
+            'latin7'    => 41,
+            'utf8mb4'   => 45,
+            'cp1251'    => 51,
+            'utf16'     => 54,
+            'utf16le'   => 56,
+            'cp1256'    => 57,
+            'cp1257'    => 59,
+            'utf32'     => 60,
+            'binary'    => 63,
+            'geostd8'   => 92,
+            'cp932'     => 95,
+            'eucjpms'   => 97,
+            'gb18030'   => 248
+    );
+
     public function __construct()
     {
         $this->socket = \ngx_socket_create();
@@ -218,7 +263,7 @@ class mysql
         return $scramble.$scramble_2;
     }
 
-    private function auth_packet($scramble, $user, $password, $database)
+    private function auth_packet($scramble, $user, $password, $database, $charset)
     {
         // Client
         $client_flags = 0x3f7cf;
@@ -231,7 +276,7 @@ class mysql
         $token = $stage1 ^ $stage3;
 
         $req = \pack('VV', $client_flags, 1048576)
-            .\chr(0)
+            .\chr($charset)
             .\str_repeat("\0", 23)
             .$user."\0"
             .\chr(\strlen($token))
@@ -360,14 +405,14 @@ class mysql
         $this->resultRows[] = $row;
     }
 
-    public function connect($host = '', $port = '', $user = '', $password = '', $database = '')
+    public function connect($host = '', $port = '', $user = '', $password = '', $database = '', $charset=0)
     {
         yield \ngx_socket_connect($this->socket, $host, $port);
 
         if ( ! \ngx_socket_iskeepalive()) {
             $scramble = (yield from $this->handshake_packet());
 
-            yield from $this->auth_packet($scramble, $user, $password, $database);
+            yield from $this->auth_packet($scramble, $user, $password, $database, $charset);
         }
     }
 
