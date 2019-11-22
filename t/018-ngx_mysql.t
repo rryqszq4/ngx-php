@@ -18,7 +18,7 @@ location =/ngx_mysql {
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]))."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
         yield from $m->close();
     ';
 }
@@ -39,7 +39,7 @@ location =/ngx_mysql_clear {
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]))."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
         $m->clear();
     ';
 }
@@ -60,7 +60,7 @@ location =/ngx_mysql_destruct {
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]))."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
         unset($m);
     ';
 }
@@ -81,13 +81,13 @@ location =/ngx_mysql_destruct {
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]))."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
         
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]))."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
 
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]))."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
     ';
 }
 --- request
@@ -110,7 +110,7 @@ location =/ngx_mysql_sleep {
         yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
         $sql = "select sleep(5) as sleep;";
         $ret = yield from $m->query($sql);
-        echo $ret[0]["sleep"]."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
     ';
 }
 --- request
@@ -130,7 +130,7 @@ location =/t6 {
         yield from $m->connect("unix:$TEST_NGINX_MYSQL_PATH", "0", "ngx_php", "ngx_php", "world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
-        echo implode(",",array_values($ret[0]))."\n";
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
         unset($m);
     }
 }
