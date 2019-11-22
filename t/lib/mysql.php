@@ -67,7 +67,7 @@ class mysql
 
     public function __construct()
     {
-        $this->socket = \ngx_socket_create();
+        
     }
 
     public function __destruct()
@@ -407,6 +407,8 @@ class mysql
 
     public function connect($host = '', $port = '', $user = '', $password = '', $database = '', $charset=0)
     {
+        $this->socket = \ngx_socket_create();
+
         yield \ngx_socket_connect($this->socket, $host, $port);
 
         if ( ! \ngx_socket_iskeepalive()) {
@@ -435,13 +437,79 @@ class mysql
     {
         yield \ngx_socket_close($this->socket);
 
+        $this->reset();
+
         unset($this->socket);
     }
 
     public function clear()
     {
         \ngx_socket_clear($this->socket);
+        
+        $this->reset();
 
         unset($this->socket);
     }
 }
+
+class ConnectionObjectPool {
+
+    const NULL_POOL = 0;
+    const MYSQL_POOL = 1;
+
+    private $freeQueue;
+
+    private $maxQueue;
+
+    public static $instance = null;
+
+    public function __construct() 
+    {
+        $this->CreateQueue();
+        $this->maxQueue = 100;
+    }
+
+    public function CreateQueue() {
+        $this->freeQueue = new \SplQueue();
+    }
+
+    public static function factory($type=0) 
+    {
+        if ($type == self::MYSQL_POOL) {
+            var_dump(self::$instance);
+            if (!self::$instance) {
+                self::$instance = new self();
+            }
+            return self::$instance;
+        }else {
+            return null;
+        }
+    }
+
+    public function get() 
+    {
+        $connectionObject = null;
+
+        if ( $this->freeQueue->isEmpty() ) {
+            $connectionObject = new mysql();
+        }else {
+            $connectionObject = $this->freeQueue->dequeue();
+        }
+
+        return $connectionObject;
+    }
+
+    public function put($connectionObject) 
+    {
+        $count = $this->freeQueue->count();
+
+        if ( $count < $this->maxQueue ) {
+            $connectionObject->clear();
+            $this->freeQueue->enqueue($connectionObject);
+        }else {
+            ngx_log_error(NGX_LOG_ERR, "ConnectionObjectPool is full");
+        }
+    }
+}
+
+
