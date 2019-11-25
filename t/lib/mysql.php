@@ -67,13 +67,14 @@ class mysql
 
     public function __construct()
     {
-        
+        $this->socket = \ngx_socket_create();
     }
 
     public function __destruct()
     {
         if ($this->socket) {
             \ngx_socket_clear($this->socket);
+            \ngx_socket_destroy($this->socket);
         }
     }
 
@@ -407,7 +408,6 @@ class mysql
 
     public function connect($host = '', $port = '', $user = '', $password = '', $database = '', $charset=0)
     {
-        $this->socket = \ngx_socket_create();
 
         yield \ngx_socket_connect($this->socket, $host, $port);
 
@@ -438,8 +438,6 @@ class mysql
         yield \ngx_socket_close($this->socket);
 
         $this->reset();
-
-        unset($this->socket);
     }
 
     public function clear()
@@ -447,8 +445,6 @@ class mysql
         \ngx_socket_clear($this->socket);
         
         $this->reset();
-
-        unset($this->socket);
     }
 }
 
@@ -466,7 +462,7 @@ class ConnectionObjectPool {
     public function __construct() 
     {
         $this->CreateQueue();
-        $this->maxQueue = 100;
+        $this->maxQueue = 4096;
     }
 
     public function CreateQueue() {
@@ -476,7 +472,6 @@ class ConnectionObjectPool {
     public static function factory($type=0) 
     {
         if ($type == self::MYSQL_POOL) {
-            var_dump(self::$instance);
             if (!self::$instance) {
                 self::$instance = new self();
             }

@@ -57,11 +57,13 @@ static void php_ngx_socket_destroy(zend_resource *rsrc)
 {
     php_ngx_socket_t  *ngx_sock;
 
-    ngx_sock = rsrc->ptr;
+    if (rsrc != NULL) {
+        ngx_sock = rsrc->ptr;
 
-    efree(ngx_sock);
+        efree(ngx_sock);
 
-    zend_list_close(rsrc);
+        zend_list_close(rsrc);
+    }
 }
 
 PHP_FUNCTION(ngx_socket_create)
@@ -201,7 +203,7 @@ PHP_FUNCTION(ngx_socket_close)
 
     //efree(ctx->php_socket);
     //ctx->php_socket = NULL;
-    php_ngx_socket_destroy(Z_RES_P(arg1));
+    //php_ngx_socket_destroy(Z_RES_P(arg1));
 
     ngx_http_php_socket_close(r);
 
@@ -477,9 +479,22 @@ PHP_FUNCTION(ngx_socket_clear)
 
     //efree(ctx->php_socket);
     //ctx->php_socket = NULL;
-    php_ngx_socket_destroy(Z_RES_P(arg1));
+    //php_ngx_socket_destroy(Z_RES_P(arg1));
 
     ngx_http_php_socket_clear(r);
+
+    RETURN_TRUE;
+}
+
+PHP_FUNCTION(ngx_socket_destroy)
+{
+    zval            *arg1;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &arg1) == FAILURE) {
+        RETURN_FALSE;
+    }
+
+    php_ngx_socket_destroy(Z_RES_P(arg1));
 
     RETURN_TRUE;
 }
