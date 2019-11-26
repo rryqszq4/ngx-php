@@ -466,7 +466,7 @@ class ConnectionObjectPool {
     }
 
     public function CreateQueue() {
-        $this->freeQueue = new \SplQueue();
+        $this->freeQueue = new \SplDoublyLinkedList();
     }
 
     public static function factory($type=0) 
@@ -488,7 +488,7 @@ class ConnectionObjectPool {
         if ( $this->freeQueue->isEmpty() ) {
             $connectionObject = new mysql();
         }else {
-            $connectionObject = $this->freeQueue->dequeue();
+            $connectionObject = $this->freeQueue->pop();
         }
 
         return $connectionObject;
@@ -500,7 +500,7 @@ class ConnectionObjectPool {
 
         if ( $count < $this->maxQueue ) {
             $connectionObject->clear();
-            $this->freeQueue->enqueue($connectionObject);
+            $this->freeQueue->push($connectionObject);
         }else {
             ngx_log_error(NGX_LOG_ERR, "ConnectionObjectPool is full");
         }
