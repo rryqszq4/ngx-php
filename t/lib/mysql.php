@@ -225,6 +225,7 @@ class mysql
     {
         // Packet length
         $data = (yield from $this->read_packet());
+        if (empty($data)) {return null;}
 
         // Protocol version
         // Server version
@@ -413,6 +414,10 @@ class mysql
 
         if ( ! \ngx_socket_iskeepalive()) {
             $scramble = (yield from $this->handshake_packet());
+            if (empty($scramble)) {
+                ngx_log_error(NGX_LOG_ERR, "Connection handshake failed.");
+                return false;
+            }
 
             yield from $this->auth_packet($scramble, $user, $password, $database, $charset);
         }
