@@ -51,6 +51,7 @@ ngx_socket_recv
 ngx_socket_recvwait
 ngx_socket_recvsync
 ngx_socket_clear
+ngx_socket_destroy
 ngx_var_get
 ngx_var_set
 ngx_header_set

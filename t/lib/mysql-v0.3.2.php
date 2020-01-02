@@ -10,15 +10,15 @@ namespace php\ngx;
 class mysql
 {
 
-    const VERSION = '0.4.0';
+    const VERSION = '0.3.2';
 
     private $socket = null;
 
     private $headerNum    = 0;
     private $headerCurr   = 0;
     private $resultState  = 0;
-    private $resultFields = null;
-    private $resultRows   = null;
+    private $resultFields = [];
+    private $resultRows   = [];
 
     public static $charsets = array(
             '_default'  => 0,
@@ -74,7 +74,6 @@ class mysql
     {
         if ($this->socket) {
             \ngx_socket_clear($this->socket);
-            \ngx_socket_destroy($this->socket);
         }
     }
 
@@ -83,8 +82,8 @@ class mysql
         $this->headerNum    = 0;
         $this->headerCurr   = 0;
         $this->resultState  = 0;
-        $this->resultFields = new \ArrayObject();
-        $this->resultRows   = new \ArrayObject();
+        $this->resultFields = [];
+        $this->resultRows   = [];
     }
 
     private function print_bin($result)
@@ -225,7 +224,6 @@ class mysql
     {
         // Packet length
         $data = (yield from $this->read_packet());
-        if (empty($data)) {return null;}
 
         // Protocol version
         // Server version
@@ -335,49 +333,49 @@ class mysql
     private function field_data_packet($result)
     {
         $start            = 0;
-        $field            = new \ArrayObject();
+        $field            = [];
 
         // Catalog
-        $field['catalog'] = $this->parse_field_data($result, $start);
+        $field['catalog'] = $catalog = $this->parse_field_data($result, $start);
         
         // DB
-        $field['db'] = $this->parse_field_data($result, $start);
+        $field['db'] = $db = $this->parse_field_data($result, $start);
         
         // Table
-        $field['table'] = $this->parse_field_data($result, $start);
+        $field['table'] = $table = $this->parse_field_data($result, $start);
         
         // Original table
-        $field['ori_table'] = $this->parse_field_data($result, $start);
+        $field['ori_table'] = $ori_table = $this->parse_field_data($result, $start);
         
         // Column
-        $field['column'] = $this->parse_field_data($result, $start);
+        $field['column'] = $column = $this->parse_field_data($result, $start);
         
         // Original column
-        $field['ori_column'] = $this->parse_field_data($result, $start);
+        $field['ori_column'] = $ori_column = $this->parse_field_data($result, $start);
         
         // 0xC0
         $start += 1;
         
         // Charset
-        $field['charset'] = \unpack('v', \substr($result, $start, 2))[1];
+        $field['charset'] = $charset = \unpack('v', \substr($result, $start, 2))[1];
         $start += 2;
 
         // Length
-        $field['length'] = \unpack('V', \substr($result, $start, 4))[1];
+        $field['length'] = $length = \unpack('V', \substr($result, $start, 4))[1];
         $start += 4;
 
         // Type
-        $field['type'] = \ord(\substr($result, $start, 1));
+        $field['type'] = $type = \ord(\substr($result, $start, 1));
         $start += 1;
 
         // Flag
-        $field['flag'] = \unpack('v', \substr($result, $start, 2))[1];
+        $field['flag'] = $flag = \unpack('v', \substr($result, $start, 2))[1];
         $start += 2;
 
         // Decimals
-        $field['decimals'] = \unpack('v', \substr($result, $start, 2))[1];
+        $field['decimals'] = $decimals = \unpack('v', \substr($result, $start, 2))[1];
 
-        $this->resultFields->append($field);
+        $this->resultFields[] = $field;
     }
 
     private function parse_field_data($result, &$start)
@@ -393,7 +391,7 @@ class mysql
     private function row_data_packet($data)
     {
         $start = 0;
-        $row   = new \ArrayObject();
+        $row   = [];
         foreach ($this->resultFields as $field) {
             $len = $this->length_encoded_integer($data, $start);
 
@@ -404,20 +402,15 @@ class mysql
         }
         
         // Result rows
-        $this->resultRows->append($row);
+        $this->resultRows[] = $row;
     }
 
     public function connect($host = '', $port = '', $user = '', $password = '', $database = '', $charset=0)
     {
-
         yield \ngx_socket_connect($this->socket, $host, $port);
 
         if ( ! \ngx_socket_iskeepalive()) {
             $scramble = (yield from $this->handshake_packet());
-            if (empty($scramble)) {
-                ngx_log_error(NGX_LOG_ERR, "Connection handshake failed.");
-                return false;
-            }
 
             yield from $this->auth_packet($scramble, $user, $password, $database, $charset);
         }
@@ -442,74 +435,13 @@ class mysql
     {
         yield \ngx_socket_close($this->socket);
 
-        $this->reset();
+        unset($this->socket);
     }
 
     public function clear()
     {
         \ngx_socket_clear($this->socket);
-        
-        $this->reset();
+
+        unset($this->socket);
     }
 }
-
-class ConnectionObjectPool {
-
-    const NULL_POOL = 0;
-    const MYSQL_POOL = 1;
-
-    private $freeQueue;
-
-    private $maxQueue;
-
-    public static $instance = null;
-
-    public function __construct() 
-    {
-        $this->CreateQueue();
-        $this->maxQueue = 4096;
-    }
-
-    public function CreateQueue() {
-        $this->freeQueue = new \SplDoublyLinkedList();
-    }
-
-    public static function factory($type=0) 
-    {
-        if ($type == self::MYSQL_POOL) {
-            if (!self::$instance) {
-                self::$instance = new self();
-            }
-            return self::$instance;
-        }else {
-            return null;
-        }
-    }
-
-    public function get() 
-    {
-        $connectionObject = null;
-
-        if ( $this->freeQueue->isEmpty() ) {
-            $connectionObject = new mysql();
-        }else {
-            $connectionObject = $this->freeQueue->pop();
-        }
-
-        return $connectionObject;
-    }
-
-    public function put($connectionObject) 
-    {
-        $count = $this->freeQueue->count();
-
-        if ( $count < $this->maxQueue ) {
-            $connectionObject->clear();
-            $this->freeQueue->push($connectionObject);
-        }else {
-            ngx_log_error(NGX_LOG_ERR, "ConnectionObjectPool is full");
-        }
-    }
-}
-
-

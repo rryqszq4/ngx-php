@@ -10,11 +10,7 @@ mkdir php
 mkdir nginx
 
 echo "php download ..."
-if [ ${PHP_SRC_VERSION:0:3} = "7.4" ]; then
-  wget https://downloads.php.net/~derick/php-${PHP_SRC_VERSION}.tar.gz
-else
-  wget http://php.net/distributions/php-${PHP_SRC_VERSION}.tar.gz
-fi
+wget http://php.net/distributions/php-${PHP_SRC_VERSION}.tar.gz
 echo "php download ... done"
 
 tar xf php-${PHP_SRC_VERSION}.tar.gz
