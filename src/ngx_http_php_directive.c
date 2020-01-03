@@ -1228,3 +1228,24 @@ ngx_http_php_conf_keepalive(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     return NGX_CONF_OK;
 }
 
+char *
+ngx_http_php_conf_socket_keepalive(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+{
+    ngx_str_t *value = cf->args->elts;
+    ngx_http_php_srv_conf_t *pscf = conf;
+    ngx_int_t keepalive_size;
+
+    keepalive_size = ngx_atoi(value[1].data, value[1].len);
+    if (keepalive_size == NGX_ERROR) {
+        return "is duplicated";
+    }
+    
+    if (pscf->keepalive_conf) {
+        pscf->keepalive_conf->max_cached = (ngx_uint_t)keepalive_size;
+    }
+
+    ngx_http_php_keepalive_init(cf->pool, pscf->keepalive_conf);
+
+    return NGX_CONF_OK;
+}
+

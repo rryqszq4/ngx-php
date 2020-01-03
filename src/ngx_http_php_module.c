@@ -319,6 +319,23 @@ static ngx_command_t ngx_http_php_commands[] = {
      NULL
     },
 
+    {ngx_string("php_socket_keepalive"),
+     NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
+     ngx_http_php_conf_socket_keepalive,
+     NGX_HTTP_SRV_CONF_OFFSET,
+     0,
+     NULL
+    },
+
+    {ngx_string("php_socket_buffer_size"),
+     NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF
+          |NGX_HTTP_LIF_CONF|NGX_CONF_TAKE1,
+     ngx_conf_set_size_slot,
+     NGX_HTTP_LOC_CONF_OFFSET,
+     offsetof(ngx_http_php_loc_conf_t, buffer_size),
+     NULL
+    },
+
     {ngx_string("php_set"),
      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LIF_CONF
         |NGX_CONF_2MORE,
@@ -604,6 +621,9 @@ ngx_http_php_create_loc_conf(ngx_conf_t *cf)
     plcf->enabled_header_filter_inline_compile = 0;
     plcf->enabled_body_filter_inline_compile = 0;
 
+    plcf->send_lowat = NGX_CONF_UNSET_SIZE;
+    plcf->buffer_size = NGX_CONF_UNSET_SIZE;
+
     return plcf;
 }
 
@@ -683,6 +703,10 @@ ngx_http_php_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     prev->enabled_log_inline_compile = conf->enabled_log_inline_compile;
     prev->enabled_header_filter_inline_compile = conf->enabled_header_filter_inline_compile;
     prev->enabled_body_filter_inline_compile = conf->enabled_body_filter_inline_compile;
+
+    ngx_conf_merge_size_value(conf->buffer_size,
+                              prev->buffer_size,
+                              (size_t) ngx_pagesize);
 
     return NGX_CONF_OK;
 }

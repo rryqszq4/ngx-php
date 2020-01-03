@@ -78,5 +78,6 @@ char *ngx_http_php_body_filter_inline_phase(ngx_conf_t *cf, ngx_command_t *cmd, 
 char *ngx_http_php_body_filter_block_phase(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 char *ngx_http_php_conf_keepalive(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+char *ngx_http_php_conf_socket_keepalive(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 #endif
