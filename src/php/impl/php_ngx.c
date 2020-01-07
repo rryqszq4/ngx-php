@@ -330,6 +330,7 @@ static const zend_function_entry additional_functions[] = {
     ZEND_FE(dl,                             arginfo_dl)
 
     PHP_FE(ngx_exit,                        ngx_exit_arginfo)
+    PHP_FE(ngx_status,                      ngx_status_arginfo)
     PHP_FE(ngx_query_args,                  ngx_query_args_arginfo)
     PHP_FE(ngx_post_args,                   ngx_post_args_arginfo)
     PHP_FE(ngx_sleep,                       ngx_sleep_arginfo)

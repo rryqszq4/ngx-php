@@ -23,6 +23,7 @@ location = /internal-functions {
 GET /internal-functions
 --- response_body
 ngx_exit
+ngx_status
 ngx_query_args
 ngx_post_args
 ngx_sleep

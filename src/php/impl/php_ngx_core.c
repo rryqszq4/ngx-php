@@ -45,6 +45,22 @@ PHP_FUNCTION(ngx_exit)
     zend_bailout();
 }
 
+PHP_FUNCTION(ngx_status)
+{
+    ngx_http_request_t  *r;
+    long status = 0;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &status) == FAILURE){
+        RETURN_NULL();
+    }
+
+    r = ngx_php_request;
+
+    r->headers_out.status = status;
+
+    EG(exit_status) = status;
+}
+
 PHP_FUNCTION(ngx_query_args)
 {
     ngx_http_request_t  *r;

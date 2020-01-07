@@ -1063,7 +1063,7 @@ set_output:
 
     ctx->phase_status = NGX_DECLINED;
 
-    if (rc == NGX_OK || rc == NGX_DECLINED) {
+    if (rc >= NGX_OK || rc == NGX_DECLINED) {
 
         chain = ctx->rputs_chain;
 
