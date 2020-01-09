@@ -1062,6 +1062,16 @@ set_output:
     }
 
     ctx->phase_status = NGX_DECLINED;
+    
+    if (rc == NGX_ERROR 
+            || rc == NGX_HTTP_MOVED_TEMPORARILY 
+            || rc == NGX_HTTP_SEE_OTHER 
+            || rc == NGX_HTTP_TEMPORARY_REDIRECT 
+            || rc == NGX_HTTP_PERMANENT_REDIRECT) {
+
+        return rc;
+
+    }
 
     if (rc >= NGX_OK || rc == NGX_DECLINED) {
 
@@ -1123,12 +1133,6 @@ set_output:
         ngx_http_set_ctx(r, NULL, ngx_http_php_module);
 
         return NGX_OK;
-
-    }
-
-    if (rc == NGX_ERROR || rc > NGX_OK) {
-
-        return rc;
 
     }
 
