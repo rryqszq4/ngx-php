@@ -545,7 +545,6 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     read = 0;
 
     if (b->start == NULL) {
-        php_printf("buffer_size: %d\n", (int)u->buffer_size);
         b->start = ngx_palloc(r->pool, u->buffer_size);
 
         b->pos = b->start;
