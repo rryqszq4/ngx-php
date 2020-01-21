@@ -130,12 +130,13 @@ typedef struct ngx_http_php_ctx_s {
     ngx_int_t delay_time;
     ngx_event_t sleep;
 
+    // socket
     php_ngx_socket_t *php_socket;
     ngx_http_php_socket_upstream_t  *upstream;
     ngx_str_t   host;
     in_port_t   port;
-
     zval *recv_buf;
+    zval *recv_code;
 
     unsigned end_of_request : 1;
 

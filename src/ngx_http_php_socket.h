@@ -65,6 +65,7 @@ struct ngx_http_php_socket_upstream_s {
     off_t           length;
     unsigned        enabled_receive:1;
     unsigned        wait_receive:1;
+    unsigned        enabled_receive_all:1;
 
     ngx_chain_t     *bufs_in;
 

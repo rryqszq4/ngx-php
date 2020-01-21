@@ -10,7 +10,7 @@ namespace php\ngx;
 class mysql
 {
 
-    const VERSION = '0.4.0';
+    const VERSION = '0.4.1';
 
     private $socket = null;
 
@@ -215,6 +215,80 @@ class mysql
                 $this->resultState = 201;
                 $this->row_data_packet($data);
                 yield from $this->read_packet(1);
+            } else {
+                return $data;
+            }
+        }
+    }
+
+    private function read_packet2()
+    {
+        $data = ''; $ret = 0;
+
+        $i = 0;
+        do{
+
+            yield \ngx_socket_recvall($this->socket, $data, $ret);
+
+            var_dump($ret);
+            var_dump(\strlen($data));
+            $data .= $data;
+            $i++;
+        } while($ret < 0);
+
+    }
+
+    private function _parse_read_packet2($origin_data='', $offset=0)
+    {
+        $data = \substr($origin_data, 0, 4); $offset += 4;
+        var_dump(strlen($data));
+        $field_count = \unpack('v', \substr($data, 0, 3))[1];
+
+        $data = \substr($origin_data, $offset, $field_count); $offset += $field_count;
+
+        if ($field_count !== 1) {
+            $field_count = \ord(\substr($data, 0, 1)); $offset += 1;
+        }
+
+        if ($field_count === 0x00) {
+            // Ok packet
+            $this->ok_packet($data);
+        } else if ($field_count === 0xff) {
+            // Error packet
+            $this->error_packet($data);
+        } else if ($field_count === 0xfe) {
+            // EOF packet
+            if ($this->resultState === 2) {
+                $this->_parse_read_packet2($data, $offset);
+            }
+            if ($this->resultState === 201) {
+                $this->resultState = 0;
+            }
+        } else {
+            // Data packet
+            if ($field_count === 1 && $this->resultState === 0) {
+                // Header set
+                $this->headerNum = \ord($data);
+                // headerNum
+                $this->resultState = 1;
+                $this->_parse_read_packet2($data, $offset);
+            } else if ($this->resultState === 1) {
+                // Field data packet
+                if ($this->headerCurr < $this->headerNum - 1) {
+                    $this->field_data_packet($data);
+                    ++$this->headerCurr;
+                    yield from $this->read_packet(1);
+                } else {
+                    $this->field_data_packet($data);
+                    ++$this->headerCurr;
+                    $this->resultState = 2;
+                    $this->_parse_read_packet2($data, $offset);
+                }
+            } else if ($this->resultState === 2 || $this->resultState === 201) {
+                // Row data packet
+                $this->resultState = 201;
+                $this->row_data_packet($data);
+                $this->_parse_read_packet2($data, $offset);
             } else {
                 return $data;
             }
