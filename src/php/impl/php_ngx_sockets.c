@@ -319,7 +319,7 @@ PHP_FUNCTION(ngx_socket_recv)
     RETURN_LONG(retval);
 }
 
-PHP_FUNCTION(ngx_socket_recvall)
+PHP_FUNCTION(ngx_socket_recvpage)
 {
     zval                            *arg1, *buf;
     //zend_string                   *recv_buf;

@@ -228,7 +228,7 @@ class mysql
         $i = 0;
         do{
 
-            yield \ngx_socket_recvall($this->socket, $data, $rc);
+            yield \ngx_socket_recvpage($this->socket, $data, $rc);
             
             $ret .= $data;
             $i++;

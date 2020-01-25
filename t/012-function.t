@@ -49,6 +49,7 @@ ngx_socket_connect
 ngx_socket_close
 ngx_socket_send
 ngx_socket_recv
+ngx_socket_recvpage
 ngx_socket_recvwait
 ngx_socket_recvsync
 ngx_socket_clear
