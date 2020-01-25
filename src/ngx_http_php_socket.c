@@ -528,7 +528,6 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
     size_t                              size;
     ssize_t                             n = 0;
     unsigned                            read;
-    unsigned                            recv_count = 0;
 
     ngx_http_php_ctx_t                  *ctx;
 
@@ -583,7 +582,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                        "n = c->recv : %d, b->last : %s", n, b->last);
 
-        read = 1; recv_count++;
+        read = 1;
 
         ngx_php_debug("recv: %s, %d, %d", b->pos, (int)n, (int) size);
         //printf("*%d, recv: %s, %d, %d\n", (int)r->connection->log->connection, b->pos, (int)n, (int) size);
@@ -594,57 +593,18 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
             n = -1;
             return NGX_ERROR;
         }
-        
-        ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,"============================== n: %d, recv_count: %d", n, recv_count);
-        
+
         if (n > 0) {
             b->last += n;
             b->start = NULL;
 
             ngx_php_debug("buf write in php var.");
-
-            if (recv_count == 1) {
-                ZVAL_STRINGL(ctx->recv_buf, (char *)b->pos, b->last - b->pos);
-            
-                if (!u->enabled_receive_all) {
-                    return NGX_AGAIN;
-                }else {
-                    b->start = ngx_palloc(r->pool, u->buffer_size);
-                    b->pos = b->start;
-                    b->last = b->start;
-                    b->end = b->start + u->buffer_size;
-                    b->temporary = 1;
-                    continue;
-                }
-            }else {
-                u->enabled_receive_all = 1;
-                zval tmp_buf;
-                //ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,"123:%p", &tmp_buf);
-                ZVAL_STRINGL(&tmp_buf, (char *)b->pos, b->last - b->pos);
-                concat_function(ctx->recv_buf, ctx->recv_buf, &tmp_buf);
-                zval_ptr_dtor(&tmp_buf);
-
-                if (n < (int)u->buffer_size) {
-                    return n;
-                }else {
-                    b->start = ngx_palloc(r->pool, u->buffer_size);
-                    b->pos = b->start;
-                    b->last = b->start;
-                    b->end = b->start + u->buffer_size;
-                    b->temporary = 1;
-                    continue;
-                }
-            }
+            ZVAL_STRINGL(ctx->recv_buf, (char *)b->pos, b->last - b->pos);
+            return NGX_AGAIN;
         }
 
         if (n == NGX_AGAIN) {
             //rc = NGX_AGAIN;
-            Z_LVAL_P(ctx->recv_code) = (int)n;
-            if ( ngx_add_event(rev, NGX_READ_EVENT, NGX_CLEAR_EVENT) == NGX_ERROR) {
-                ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
-                          "ngx_add_event error");
-                return NGX_ERROR;
-            }
             break;
         }
 
@@ -659,7 +619,6 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
 
         /*if (n > 0) {
             b->last += n;
-
             continue;
         }*/
 
@@ -763,8 +722,6 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     }
 
     u->enabled_receive = 0;
-
-    u->enabled_receive_all = 0;
 
     u->request = r;
 
@@ -970,14 +927,13 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
 
     rc = ngx_http_php_socket_upstream_recv(r, u);
 
-    ngx_php_debug("u->enabled_receive: %d, rc: %d", u->enabled_receive, (int)rc);
+    ngx_php_debug("%d", u->enabled_receive);
 
     if (u->enabled_receive == 0) {
-        //u->enabled_receive = 1;
+        u->enabled_receive = 1;
     }else {
         //ctx->delay_time = 0;
         //ngx_http_php_sleep(r);
-#if 0
         ngx_php_debug("c->read->active: %d, c->read->ready: %d, c->read->eof: %d, c->read->write: %d", 
             c->read->active, c->read->ready, c->read->eof, c->read->write);
 
@@ -986,7 +942,7 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
 
         ngx_php_debug("c->write->active: %d, c->write->ready: %d, c->write->eof: %d, c->write->write: %d", 
             c->write->active, c->write->ready, c->write->eof, c->write->write);
-#endif
+
     
         /*if ( ngx_add_event(rev, NGX_READ_EVENT, NGX_CLEAR_EVENT) == NGX_ERROR) {
             return NGX_ERROR;
@@ -1166,7 +1122,6 @@ ngx_http_php_socket_clear(ngx_http_request_t *r)
 
     return ;
 }
-
 
 
 
