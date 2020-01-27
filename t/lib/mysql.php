@@ -223,23 +223,18 @@ class mysql
 
     private function read_packet2()
     {
-        $data = ''; $ret = ''; $rc = 0;
+        $data = ''; $rc = 0;
 
-        $i = 0;
         do{
+            $tmpData = '';
 
-            yield \ngx_socket_recvpage($this->socket, $data, $rc);
+            yield \ngx_socket_recvpage($this->socket, $tmpData, $rc);
             
-            $ret .= $data;
-            $i++;
+            $data .= $tmpData;
 
-            var_dump($rc);
         } while($rc < 0);
 
-        //var_dump($ret);
-        //$this->print_bin($ret);
-
-        $this->_parse_read_packet2($ret, 0);
+        $this->_parse_read_packet2($data, 0);
 
     }
 
@@ -516,6 +511,21 @@ class mysql
 
         // Result set packet
         yield from $this->read_packet();
+
+        return $this->resultRows;
+    }
+
+    public function query2($sql)
+    {
+        $this->reset();
+
+        $req      = \chr(0x03).$sql;
+        $pack_len = \strlen($sql) + 1;
+
+        yield from $this->write_packet($req, $pack_len, 0);
+
+        // Result set packet
+        yield from $this->read_packet2();
 
         return $this->resultRows;
     }

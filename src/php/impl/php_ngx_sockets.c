@@ -369,8 +369,6 @@ PHP_FUNCTION(ngx_socket_recvpage)
 
     Z_LVAL_P(ctx->recv_code) = retval = ngx_http_php_socket_recv(r);
 
-    ngx_php_debug("============retval: %d", (int)retval);
-
     //ZVAL_STRINGL(buf, (char *)b->pos, b->last - b->pos);
 
     /*if (retval != NGX_OK) {
