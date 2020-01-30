@@ -359,7 +359,7 @@ PHP_FUNCTION(ngx_socket_recvpage)
     u = ctx->upstream;
 
     u->buffer_size = plcf->buffer_size;
-    u->enabled_receive_all = 1;
+    u->enabled_receive_page = 1;
     
     //b = &u->buffer;
 
@@ -367,7 +367,7 @@ PHP_FUNCTION(ngx_socket_recvpage)
     ctx->recv_code = Z_REFVAL_P(rc);
     zval_ptr_dtor(ctx->recv_buf);
 
-    Z_LVAL_P(ctx->recv_code) = retval = ngx_http_php_socket_recv(r);
+    retval = ngx_http_php_socket_recv(r);
 
     //ZVAL_STRINGL(buf, (char *)b->pos, b->last - b->pos);
 

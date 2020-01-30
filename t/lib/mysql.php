@@ -10,7 +10,7 @@ namespace php\ngx;
 class mysql
 {
 
-    const VERSION = '0.4.2';
+    const VERSION = '0.4.3';
 
     private $socket = null;
 
@@ -224,15 +224,23 @@ class mysql
     private function read_packet2()
     {
         $data = ''; $rc = 0;
-
+        $i = 0;
         do{
             $tmpData = '';
+            $rc = -2;
 
             yield \ngx_socket_recvpage($this->socket, $tmpData, $rc);
-            
-            $data .= $tmpData;
 
-        } while($rc < 0);
+            var_dump($rc);
+            if (empty($tmpData)) {
+                var_dump(NULL);
+            }else {
+                $data .= $tmpData;
+            }
+
+            $i++;
+
+        } while($rc < -1);
 
         $this->_parse_read_packet2($data, 0);
 

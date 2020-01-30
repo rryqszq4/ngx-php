@@ -565,9 +565,43 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
             break;
         }
 
+        n = c->recv(c, b->last, size);
+        //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%d", n);
+        ngx_php_debug("n = c->recv: %d\n", (int)n);
+
+
         if (rev->active && !rev->ready) {
             ngx_php_debug("recv ready: %d", rev->ready);
             //rc = NGX_AGAIN;
+
+            if (u->enabled_receive_page) {
+                if (n >= 0 && n <= (int)u->buffer_size) { 
+                    b->last += n;
+                    b->start = NULL;
+
+                    ngx_php_debug("buf write in php var.");
+                    ZVAL_STRINGL(ctx->recv_buf, (char *)b->pos, b->last - b->pos);
+                    
+                    if (n == (int)u->buffer_size) {
+                        n = NGX_AGAIN;
+                    }else {
+                        n = NGX_OK;
+                    }
+                    Z_LVAL_P(ctx->recv_code) = n;
+                    return n;
+                }
+
+                if (u->receive_threshold < 1024) {
+                    //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "receive_threshold %d", u->receive_threshold);
+                    u->receive_threshold++;
+                    n = NGX_AGAIN;
+                }else {
+                    n = NGX_OK;
+                }
+                Z_LVAL_P(ctx->recv_code) = n;
+                return n;
+            }
+
             break;
             /*if (ngx_handle_read_event(rev, 0) != NGX_OK) {
                 n = -1;
@@ -576,8 +610,6 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
 
             //ngx_add_timer(rev, 1000);
         }
-
-        n = c->recv(c, b->last, size);
 
         ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                        "n = c->recv : %d, b->last : %s", n, b->last);
@@ -600,6 +632,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
 
             ngx_php_debug("buf write in php var.");
             ZVAL_STRINGL(ctx->recv_buf, (char *)b->pos, b->last - b->pos);
+            //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "===>%d", n);
             return NGX_AGAIN;
         }
 
@@ -623,7 +656,8 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         }*/
 
     }
-
+    
+    ngx_php_debug("%d\n", (int)n);
     //ngx_php_debug("recv: %*s, %p, %p, %p, %p",(int)(b->last - b->pos),b->pos, b->pos, b->end, b->start, b->last);
 
     ctx->phase_status = NGX_AGAIN;
@@ -722,6 +756,10 @@ ngx_http_php_socket_connect(ngx_http_request_t *r)
     }
 
     u->enabled_receive = 0;
+
+    u->receive_threshold = 0;
+
+    u->enabled_receive_page = 0;
 
     u->request = r;
 
@@ -935,8 +973,8 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
         //ctx->delay_time = 0;
         //ngx_http_php_sleep(r);
 #if 1
-        ngx_php_debug("c->read->active: %d, c->read->ready: %d, c->read->eof: %d, c->read->write: %d", 
-            c->read->active, c->read->ready, c->read->eof, c->read->write);
+        ngx_php_debug("c->read->active: %d, c->read->ready: %d, c->read->eof: %d, c->read->write: %d, %d\n", 
+            c->read->active, c->read->ready, c->read->eof, c->read->write, (int)rc);
 
         ngx_php_debug("r->connection->read->active: %d, r->connection->read->ready: %d, r->connection->read->eof: %d, r->connection->read->write: %d", 
             r->connection->read->active, r->connection->read->ready, r->connection->read->eof, r->connection->read->write);
@@ -944,7 +982,7 @@ ngx_http_php_socket_recv(ngx_http_request_t *r)
         ngx_php_debug("c->write->active: %d, c->write->ready: %d, c->write->eof: %d, c->write->write: %d", 
             c->write->active, c->write->ready, c->write->eof, c->write->write);
 #endif
-    
+
         if (rev->write == 0) {
             if ( ngx_add_event(rev, NGX_READ_EVENT, NGX_CLEAR_EVENT) == NGX_ERROR) {
                 return NGX_ERROR;
