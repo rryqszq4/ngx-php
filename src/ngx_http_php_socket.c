@@ -569,8 +569,8 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%d", n);
         ngx_php_debug("n = c->recv: %d\n", (int)n);
 
-
-        if (rev->active && !rev->ready) {
+#if 1
+        if (u->enabled_receive_page && rev->active && !rev->ready) {
             ngx_php_debug("recv ready: %d", rev->ready);
             //rc = NGX_AGAIN;
 
@@ -610,6 +610,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
 
             //ngx_add_timer(rev, 1000);
         }
+#endif
 
         ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                        "n = c->recv : %d, b->last : %s", n, b->last);
@@ -656,7 +657,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         }*/
 
     }
-    
+
     ngx_php_debug("%d\n", (int)n);
     //ngx_php_debug("recv: %*s, %p, %p, %p, %p",(int)(b->last - b->pos),b->pos, b->pos, b->end, b->start, b->last);
 

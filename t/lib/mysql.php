@@ -224,21 +224,15 @@ class mysql
     private function read_packet2()
     {
         $data = ''; $rc = 0;
-        $i = 0;
+
         do{
-            $tmpData = '';
-            $rc = -2;
+            $tmpData = ''; $rc = -2;
 
             yield \ngx_socket_recvpage($this->socket, $tmpData, $rc);
 
-            var_dump($rc);
-            if (empty($tmpData)) {
-                var_dump(NULL);
-            }else {
+            if (!empty($tmpData)) {
                 $data .= $tmpData;
             }
-
-            $i++;
 
         } while($rc < -1);
 
