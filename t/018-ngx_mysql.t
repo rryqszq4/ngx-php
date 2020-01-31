@@ -159,3 +159,24 @@ location =/ngx_mysql_query2 {
 GET /ngx_mysql_query2
 --- response_body
 1,Kabul,AFG,Kabol,1780000
+
+
+
+=== TEST 8: test unix sock query2
+mysql unix sock query2
+--- config
+location =/t8 {
+    content_by_php_block {
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+        $m = new php\ngx\mysql();
+        yield from $m->connect("unix:$TEST_NGINX_MYSQL_PATH", "0", "ngx_php", "ngx_php", "world");
+        $sql = "select * from world.city order by ID asc limit 1 ;";
+        $ret = yield from $m->query2($sql);
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
+        unset($m);
+    }
+}
+--- request
+GET /t8
+--- response_body
+1,Kabul,AFG,Kabol,1780000

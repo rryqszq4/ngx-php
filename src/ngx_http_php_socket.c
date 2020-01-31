@@ -585,6 +585,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
                     if (n == (int)u->buffer_size) {
                         n = NGX_AGAIN;
                     }else {
+                        u->enabled_receive_page = 0;
                         n = NGX_OK;
                     }
                     Z_LVAL_P(ctx->recv_code) = n;
@@ -596,6 +597,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
                     u->receive_threshold++;
                     n = NGX_AGAIN;
                 }else {
+                    u->enabled_receive_page = 0;
                     n = NGX_OK;
                 }
                 Z_LVAL_P(ctx->recv_code) = n;
