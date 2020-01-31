@@ -138,3 +138,24 @@ location =/t6 {
 GET /t6
 --- response_body
 1,Kabul,AFG,Kabol,1780000
+
+
+
+=== TEST 7: test query2
+test query2
+--- config
+location =/ngx_mysql_query2 {
+    content_by_php '
+        require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
+        $m = new php\\ngx\mysql();
+        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        $sql = "select * from world.city order by ID asc limit 1 ;";
+        $ret = yield from $m->query2($sql);
+        echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
+        unset($m);
+    ';
+}
+--- request
+GET /ngx_mysql_query2
+--- response_body
+1,Kabul,AFG,Kabol,1780000
