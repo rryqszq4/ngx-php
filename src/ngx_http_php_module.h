@@ -125,6 +125,9 @@ typedef struct ngx_http_php_loc_conf_s {
     
     ngx_flag_t log_socket_errors;
 
+    size_t send_lowat;
+    size_t buffer_size;
+
 } ngx_http_php_loc_conf_t;
 
 #endif

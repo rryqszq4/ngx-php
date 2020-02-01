@@ -319,6 +319,66 @@ PHP_FUNCTION(ngx_socket_recv)
     RETURN_LONG(retval);
 }
 
+PHP_FUNCTION(ngx_socket_recvpage)
+{
+    zval                            *arg1, *buf;
+    //zend_string                   *recv_buf;
+    //php_ngx_socket_t                *ngx_sock;
+    int                             retval;
+    zval                            *rc;
+
+    ngx_http_request_t              *r;
+    ngx_http_php_ctx_t              *ctx;
+    ngx_http_php_socket_upstream_t  *u;
+    ngx_http_php_loc_conf_t         *plcf;
+
+    //ngx_buf_t                       *b;
+    //long                            size = 1024;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "zz/z", &arg1, &buf, &rc) == FAILURE) {
+        RETURN_FALSE;
+    }
+
+    /*if ((ngx_sock = (php_ngx_socket *)zend_fetch_resource(Z_RES_P(arg1), le_socket_name, le_socket)) == NULL) {
+        RETURN_FALSE;
+    }*/
+    //ngx_sock = Z_RES_P(arg1)->ptr;
+
+    r = ngx_php_request;
+    plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ngx_php_debug("ctx: %p", ctx);
+    if ( !ctx ) {
+        // maybe memory leak.
+        //zval_ptr_dtor(buf);
+        //efree(buf);
+        RETURN_FALSE;
+    }
+
+    u = ctx->upstream;
+
+    u->buffer_size = plcf->buffer_size;
+    u->enabled_receive_page = 1;
+    
+    //b = &u->buffer;
+
+    ctx->recv_buf = buf;
+    ctx->recv_code = Z_REFVAL_P(rc);
+    zval_ptr_dtor(ctx->recv_buf);
+
+    retval = ngx_http_php_socket_recv(r);
+
+    //ZVAL_STRINGL(buf, (char *)b->pos, b->last - b->pos);
+
+    /*if (retval != NGX_OK) {
+        php_error_docref(NULL, E_WARNING, "unable to read from socket");
+        RETURN_FALSE;
+    }*/
+
+    RETURN_LONG(retval);
+}
+
 PHP_FUNCTION(ngx_socket_recvwait)
 {
     zval                            *arg1, *buf;

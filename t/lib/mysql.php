@@ -10,7 +10,7 @@ namespace php\ngx;
 class mysql
 {
 
-    const VERSION = '0.4.0';
+    const VERSION = '0.4.3';
 
     private $socket = null;
 
@@ -221,6 +221,84 @@ class mysql
         }
     }
 
+    private function read_packet2()
+    {
+        $data = ''; $rc = 0;
+
+        do{
+            $tmpData = ''; $rc = -2;
+
+            yield \ngx_socket_recvpage($this->socket, $tmpData, $rc);
+
+            if (!empty($tmpData)) {
+                $data .= $tmpData;
+            }
+
+        } while($rc < -1);
+
+        $this->_parse_read_packet2($data, 0);
+
+    }
+
+    private function _parse_read_packet2($origin_data='', $offset=0)
+    {
+        $data = \pack('a4',\substr($origin_data, $offset, 4)); 
+        $offset += 4;
+
+        $field_count = \unpack('v', \substr($data, 0, 3))[1];
+
+        $data = \substr($origin_data, $offset, $field_count); 
+        $offset += $field_count;
+
+        if ($field_count !== 1) {
+            $field_count = \ord(\substr($data, 0, 1));
+        }
+
+        if ($field_count === 0x00) {
+            // Ok packet
+            $this->ok_packet($data);
+        } else if ($field_count === 0xff) {
+            // Error packet
+            $this->error_packet($data);
+        } else if ($field_count === 0xfe) {
+            // EOF packet
+            if ($this->resultState === 2) {
+                $this->_parse_read_packet2($origin_data, $offset);
+            }
+            if ($this->resultState === 201) {
+                $this->resultState = 0;
+            }
+        } else {
+            // Data packet
+            if ($field_count === 1 && $this->resultState === 0) {
+                // Header set
+                $this->headerNum = \ord($data);
+                // headerNum
+                $this->resultState = 1;
+                $this->_parse_read_packet2($origin_data, $offset);
+            } else if ($this->resultState === 1) {
+                // Field data packet
+                if ($this->headerCurr < $this->headerNum - 1) {
+                    $this->field_data_packet($data);
+                    ++$this->headerCurr;
+                    $this->_parse_read_packet2($origin_data, $offset);
+                } else {
+                    $this->field_data_packet($data);
+                    ++$this->headerCurr;
+                    $this->resultState = 2;
+                    $this->_parse_read_packet2($origin_data, $offset);
+                }
+            } else if ($this->resultState === 2 || $this->resultState === 201) {
+                // Row data packet
+                $this->resultState = 201;
+                $this->row_data_packet($data);
+                $this->_parse_read_packet2($origin_data, $offset);
+            } else {
+                return $data;
+            }
+        }
+    }
+
     private function handshake_packet()
     {
         // Packet length
@@ -376,6 +454,7 @@ class mysql
 
         // Decimals
         $field['decimals'] = \unpack('v', \substr($result, $start, 2))[1];
+        $start += 2;
 
         $this->resultFields->append($field);
     }
@@ -434,6 +513,21 @@ class mysql
 
         // Result set packet
         yield from $this->read_packet();
+
+        return $this->resultRows;
+    }
+
+    public function query2($sql)
+    {
+        $this->reset();
+
+        $req      = \chr(0x03).$sql;
+        $pack_len = \strlen($sql) + 1;
+
+        yield from $this->write_packet($req, $pack_len, 0);
+
+        // Result set packet
+        yield from $this->read_packet2();
 
         return $this->resultRows;
     }
