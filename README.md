@@ -38,7 +38,7 @@ What's different with official php
 Requirement
 -----------
 - Linux only
-- PHP-7.0.* ~ PHP-7.3.*
+- PHP-7.0.* ~ PHP-7.4.*
 - nginx-1.4.7 ~ nginx-1.14.2 and mainline 1.15.7
 
 Installation
@@ -977,7 +977,7 @@ NGX_HTTP_INSUFFICIENT_STORAGE       | 507
 Copyright and License
 ---------------------
 ```
-Copyright (c) 2016-2019, rryqszq4 <rryqszq@gmail.com>
+Copyright (c) 2016-2020, rryqszq4 <rryqszq@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
