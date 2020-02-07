@@ -565,6 +565,13 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
             break;
         }
 
+        if (u->enabled_receive_page && rev->active && !rev->ready) {
+            ngx_php_debug("c->read->active: %d, c->read->ready: %d, c->read->eof: %d, c->read->write: %d, c->read->posted: %d\n", 
+                        c->read->active, c->read->ready, c->read->eof, c->read->write, c->read->posted);
+            Z_LVAL_P(ctx->recv_code) = NGX_AGAIN;
+            return NGX_AGAIN;
+        }
+
         n = c->recv(c, b->last, size);
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%d", n);
         ngx_php_debug("n = c->recv: %d\n", (int)n);
