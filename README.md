@@ -39,7 +39,7 @@ Requirement
 -----------
 - Linux only
 - PHP-7.0.* ~ PHP-7.4.*
-- nginx-1.4.7 ~ nginx-1.14.2 and mainline 1.15.7
+- nginx-1.4.7 ~ nginx-1.17.8
 
 Installation
 ------------
