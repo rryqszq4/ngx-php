@@ -47,9 +47,9 @@ Installation
 ### Compile install
 
 ```sh
-$ wget 'http://php.net/distributions/php-7.2.14.tar.gz'
-$ tar xf php-7.2.14.tar.gz
-$ cd php-7.2.14
+$ wget 'http://php.net/distributions/php-7.3.10.tar.gz'
+$ tar xf php-7.3.10.tar.gz
+$ cd php-7.3.10
 
 $ ./configure --prefix=/path/to/php --enable-embed
 $ make && make install
@@ -160,7 +160,7 @@ http {
 
         location = /ngx_socket2 {
             default_type 'application/json;charset=UTF-8';
-            content_by_php {
+            content_by_php_block {
                 $fd = ngx_socket_create();
 
                 yield ngx_socket_connect($fd, "hq.sinajs.cn", 80);
