@@ -372,6 +372,10 @@ class mysql
 
     private function ok_packet($data)
     {
+        if (empty($data)) {
+            return ;
+        }
+
         $start    = 1;
 
         // Rows length
@@ -395,6 +399,10 @@ class mysql
 
     private function error_packet($data)
     {
+        if (empty($data)) {
+            return ;
+        }
+        
         $start = 1;
         
         // Errno
