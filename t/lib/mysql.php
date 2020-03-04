@@ -303,7 +303,10 @@ class mysql
     {
         // Packet length
         $data = (yield from $this->read_packet());
-        if (empty($data)) {return null;}
+        if (empty($data)) {
+            ngx_log_error(NGX_LOG_ERR, "Handshake packet is null");
+            return null;
+        }
 
         // Protocol version
         // Server version
@@ -373,6 +376,7 @@ class mysql
     private function ok_packet($data)
     {
         if (empty($data)) {
+            ngx_log_error(NGX_LOG_ERR, "Ok packet is null");
             return ;
         }
 
@@ -400,6 +404,7 @@ class mysql
     private function error_packet($data)
     {
         if (empty($data)) {
+            ngx_log_error(NGX_LOG_ERR, "Error packet is null");
             return ;
         }
         
