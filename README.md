@@ -265,6 +265,8 @@ Directives
 * [body_filter_by_php_block](#body_filter_by_php_block)
 * [php_keepalive](#php_keepalive)
 * [php_set](#php_set)
+* [php_socket_keepalive](#php_socket_keepalive)
+* [php_socket_buffer_size](#php_socket_buffer_size)
 
 php_ini_path
 ------------
@@ -419,6 +421,22 @@ php_set
 **phase:** `loading-config`
 
 Installs a php handler for the specified variable.
+
+php_socket_keepalive
+--------------------
+**syntax:** `php_socket_keepalive`_`<size>`_
+
+**default:** `0`
+
+**context:** `http, server`
+
+php_socket_buffer_size
+----------------------
+**syntax:** `php_socket_buffer_size`_`<size>`_
+
+**default:** `4k`
+
+**context:** `http, server, location, location if`
 
 Nginx API for php
 -----------------
@@ -758,6 +776,7 @@ Nginx non-blocking API for php
 * [yield ngx_socket_close](#ngx_socket_close)
 * [yield ngx_socket_send](#ngx_socket_send)
 * [yield ngx_socket_recv](#ngx_socket_recv)
+* [yield ngx_socket_recvpage](#ngx_socket_recvpage)
 * [ngx_socket_recvsync](#ngx_socket_recvsync)
 * [ngx_socket_clear](#ngx_socket_clear)
 
@@ -862,6 +881,17 @@ used to gather data from connected sockets.
 
 buf is passed by reference, so it must be specified as a variable in the argument list.  
 Data read from socket by ngx_socket_recv() will be returned in buf.
+
+ngx_socket_recvpage
+-------------------
+**syntax:** `( yield ngx_socket_recvpage(resource $socket, string &$buf, int &$rc) ) : int`
+
+**parameters:**
+- `socket: resource`
+- `buf: string`
+- `rc: int`
+
+**context:** `rewrite_by_php*, access_by_php*, content_by_php*`
 
 ngx_socket_recvsync
 -------------------
