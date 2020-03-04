@@ -17,7 +17,7 @@ location =/t1 {
 		$r = new php\ngx\Redis();
         yield from $r->connect("127.0.0.1","6379");
         $ret = yield from $r->set("foo", "123456789");
-        $res = yield from $fd->get("foo");
+        $res = yield from $r->get("foo");
         echo $res."\n";
         unset($r);
 	}
