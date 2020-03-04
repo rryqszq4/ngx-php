@@ -48,6 +48,7 @@ env:
     NGINX_MODULE=DYNAMIC
 services:
   - memcache
+  - redis-server
   - mysql
 install:
   - sudo cpanm -n Test::Nginx
