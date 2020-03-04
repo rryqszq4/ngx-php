@@ -1,6 +1,6 @@
 <?php
 /**
- *  Copyright(c) 2017-2018 rryqszq4 rryqszq@gmail.com
+ *  Copyright(c) 2017-2020 rryqszq4 rryqszq@gmail.com
  */
 
 namespace php\ngx;

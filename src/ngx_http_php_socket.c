@@ -1,6 +1,6 @@
 /*
 ==============================================================================
-Copyright (c) 2016-2019, rryqszq4 <rryqszq@gmail.com>
+Copyright (c) 2016-2020, rryqszq4 <rryqszq@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -564,6 +564,15 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
             b->start = NULL;
             break;
         }
+
+#if 0
+        if (u->enabled_receive_page && rev->active && !rev->ready) {
+            ngx_php_debug("c->read->active: %d, c->read->ready: %d, c->read->eof: %d, c->read->write: %d, c->read->posted: %d\n", 
+                        c->read->active, c->read->ready, c->read->eof, c->read->write, c->read->posted);
+            Z_LVAL_P(ctx->recv_code) = NGX_AGAIN;
+            return NGX_AGAIN;
+        }
+#endif
 
         n = c->recv(c, b->last, size);
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%d", n);
