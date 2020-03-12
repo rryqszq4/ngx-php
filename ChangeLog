@@ -1,3 +1,24 @@
+ngx_php7 0.0.23 changes:                                                            13 Mar 2020
+    * Fixed support unix sock and test mysql unix sock.
+
+    * Fixed default return value of ngx_query_args and ngx_post_args.
+
+    * Fixed php socket change to be type of resource.
+
+    * Fixed mysql connection handsharke failed and log record.
+
+    * Fixed ngx_redirect error.
+
+    * Add directive php_socket_keepalive.
+
+    * Add directive php_socket_buffer_size.
+
+    * Add impl ngx_status.
+
+    * Add impl yield ngx_socket_recvpage.
+
+    * Add method mysql::query2.
+
 ngx_php7 0.0.22 changes:                                                            11 Nov 2019
     * Add impl ngx_socket_recvsync.
 
