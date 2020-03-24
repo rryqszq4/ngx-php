@@ -781,6 +781,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     if (ctx == NULL) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at zend_uthread_create");
         return ;
     }
     
@@ -958,6 +959,11 @@ ngx_http_php_zend_uthread_exit(ngx_http_request_t *r)
     ngx_php_request = r;
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    if (ctx == NULL) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_php ctx is nil at zend_uthread_exit");
+        return ;
+    }
 
     if ( ctx && ctx->generator_closure ) {
         //ngx_http_php_zend_uthread_resume(r);
