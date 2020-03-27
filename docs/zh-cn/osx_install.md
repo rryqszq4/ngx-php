@@ -2,7 +2,7 @@
 
 ## 编译安装php
 
-1. 下载编译，make的时候会报错
+### 1. 下载编译php，make的时候会报错
 ```sh
 $ wget 'http://php.net/distributions/php-7.4.4.tar.gz'
 $ tar xf php-7.4.4.tar.gz
@@ -12,7 +12,7 @@ $ ./configure --prefix=/path/to/php --enable-embed
 $ make
 ```
 
-2. 下载ngx_php，执行修复脚本, 如果报错再执行一次修复脚本
+### 2. 下载ngx_php，执行修复脚本, 如果报错再执行一次修复脚本
 ```sh
 $ git clone https://github.com/rryqszq4/ngx_php7.git
 
@@ -27,7 +27,7 @@ $ cd php-7.4.4
 $ make
 ```
 
-3. 修改Makefile文件
+### 3. 修改Makefile文件
 	注释掉libs/libphp$(PHP_MAJOR_VERSION).bundle...行
 	添加libphp7.dylib行
 ```makefile
@@ -54,7 +54,7 @@ $ make libphp7.dylib
 $ cp libphp7.dylib /path/to/php/lib
 ```
 
-4. 编译nginx
+### 4. 编译nginx
 
 ```sh
 $ wget 'http://nginx.org/download/nginx-1.12.2.tar.gz'
@@ -73,3 +73,6 @@ $             --add-module=/path/to/ngx_php7/third_party/ngx_devel_kit \
 $             --add-module=/path/to/ngx_php7
 $ make && make install
 ```
+
+### ps:
+https://bugs.php.net/bug.php?id=66673
