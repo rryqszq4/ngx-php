@@ -10,7 +10,7 @@ $ ./configure --prefix=/path/to/php --enable-embed
 $ make
 ```
 
-	如果遇到bug-78773, fatal error: 'libxml/parser.h' file not found
+如果遇到bug-78773, fatal error: 'libxml/parser.h' file not found
 ```sh
 $ brew install libxml2
 
@@ -33,8 +33,8 @@ $ make
 ```
 
 ### 3. 修改Makefile文件
-	注释掉libs/libphp$(PHP_MAJOR_VERSION).bundle...行
-	添加libphp7.dylib行
+注释掉libs/libphp$(PHP_MAJOR_VERSION).bundle...行
+添加libphp7.dylib行
 ```makefile
 #libs/libphp$(PHP_MAJOR_VERSION).bundle: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
 #	$(CC) $(MH_BUNDLE_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(PHP_GLOBAL_OBJS:.lo=.o) $(PHP_SAPI_OBJS:.lo=.o) $(PHP_FRAMEWORKS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@ && cp $@ libs/libphp$(PHP_MAJOR_VERSION).so
@@ -44,7 +44,7 @@ libphp7.dylib: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
 
 ```
 
-	如果报错clang: error: unknown argument: '-module', 修改EXTRA_LDFLAGS...行如下：
+如果报错clang: error: unknown argument: '-module', 修改EXTRA_LDFLAGS...行如下：
 ```makefile
 #EXTRA_LDFLAGS = -avoid-version -module -L/usr/local/opt/libiconv/lib
 
@@ -79,5 +79,5 @@ $ make && make install
 ```
 
 ### ps:
-关于php bug-66673: https://bugs.php.net/bug.php?id=66673
+关于php bug-66673: https://bugs.php.net/bug.php?id=66673  
 关于php bug-78773: https://bugs.php.net/bug.php?id=78773
