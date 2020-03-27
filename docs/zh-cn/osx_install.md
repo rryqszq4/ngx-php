@@ -1,7 +1,5 @@
 # mac osx 系统安装指南
 
-## 编译安装php
-
 ### 1. 下载编译php，make的时候会报错
 ```sh
 $ wget 'http://php.net/distributions/php-7.4.4.tar.gz'
@@ -10,6 +8,13 @@ $ cd php-7.4.4
 
 $ ./configure --prefix=/path/to/php --enable-embed
 $ make
+```
+
+	如果遇到bug-78773, fatal error: 'libxml/parser.h' file not found
+```sh
+$ brew install libxml2
+
+$ ln -s /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libxml2/libxml /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libxml
 ```
 
 ### 2. 下载ngx_php，执行修复脚本, 如果报错再执行一次修复脚本
@@ -40,7 +45,6 @@ libphp7.dylib: $(PHP_GLOBAL_OBJS) $(PHP_SAPI_OBJS)
 ```
 
 	如果报错clang: error: unknown argument: '-module', 修改EXTRA_LDFLAGS...行如下：
-```
 ```makefile
 #EXTRA_LDFLAGS = -avoid-version -module -L/usr/local/opt/libiconv/lib
 
@@ -75,4 +79,5 @@ $ make && make install
 ```
 
 ### ps:
-https://bugs.php.net/bug.php?id=66673
+关于php bug-66673: https://bugs.php.net/bug.php?id=66673
+关于php bug-78773: https://bugs.php.net/bug.php?id=78773
