@@ -306,6 +306,14 @@ PHP_FUNCTION(ngx_request_headers)
             add_assoc_stringl(return_value, "authorization", (char *)header[i].value.data, header[i].value.len);
         }
 
+        if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"x-csrf-token", header[i].key.len) == 0){
+            add_assoc_stringl(return_value, "x_csrf_token", (char *)header[i].value.data, header[i].value.len);
+        }
+
+        if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"x-xsrf-token", header[i].key.len) == 0){
+            add_assoc_stringl(return_value, "x_xsrf_token", (char *)header[i].value.data, header[i].value.len);
+        }
+
     }
 }
 
