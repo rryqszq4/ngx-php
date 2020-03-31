@@ -764,11 +764,63 @@ ngx_http_php_content_inline_uthread_routine(void *data)
 static void 
 ngx_http_php_read_request_body_callback(ngx_http_request_t *r)
 {
-    ngx_http_php_ctx_t *ctx;
+    ngx_chain_t         *cl;
+    size_t              len;
+    u_char              *p;
+    u_char              *buf;
+    ngx_http_php_ctx_t  *ctx;
+
 
     ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
 
     ctx->read_request_body_done = 1;
+
+    if (r->request_body == NULL || r->request_body->bufs == NULL){
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "This pahse don't have request_body");
+        ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
+        return ;
+    }
+
+    if (r->request_body->temp_file){
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "temp_file: %s", r->request_body->temp_file->file.name.data);
+        ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    cl = r->request_body->bufs;
+
+    if (cl->next == NULL){
+        len = cl->buf->last - cl->buf->pos;
+        if (len == 0){
+            return ;
+        }
+
+        ctx->request_body_ctx.data = cl->buf->pos;
+        ctx->request_body_ctx.len = len;
+        //ngx_log_error(NGX_LOG_INFO, r->connection->log, 0, "request_body(%d|%d): %V", len, strlen((char *)ctx->request_body_ctx.data), &ctx->request_body_ctx);
+        if (ctx->request_body_more){
+            ctx->request_body_more = 0;
+            ngx_http_core_run_phases(r);
+        }
+        return ;
+    }
+
+    len = 0;
+    for (; cl; cl = cl->next){
+        len += cl->buf->last - cl->buf->pos;
+    }
+
+    if (len == 0){
+        return ;
+    }
+
+    buf = ngx_palloc(r->pool, len);
+    p = buf;
+    for (cl = r->request_body->bufs; cl; cl = cl->next){
+        p = ngx_copy(p, cl->buf->pos, cl->buf->last - cl->buf->pos);
+    }
+
+    ctx->request_body_ctx.data = buf;
+    ctx->request_body_ctx.len = len;
 
     ngx_php_debug("%d, %d", (int)ctx->request_body_more, (int)ctx->read_request_body_done);
 
@@ -776,6 +828,8 @@ ngx_http_php_read_request_body_callback(ngx_http_request_t *r)
         ctx->request_body_more = 0;
         ngx_http_core_run_phases(r);
     }
+
+    return ;
 }
 
 ngx_int_t

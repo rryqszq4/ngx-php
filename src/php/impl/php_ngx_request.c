@@ -317,6 +317,19 @@ PHP_FUNCTION(ngx_request_headers)
     }
 }
 
+PHP_FUNCTION(ngx_request_body)
+{
+    ngx_http_request_t  *r;
+    ngx_http_php_ctx_t  *ctx;
+
+    r = ngx_php_request;
+
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ZVAL_STRINGL(return_value, (char *)ctx->request_body_ctx.data, ctx->request_body_ctx.len);
+    
+}
+
 PHP_METHOD(ngx_request, method)
 {
     ngx_http_request_t *r;
