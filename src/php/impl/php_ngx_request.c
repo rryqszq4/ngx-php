@@ -248,14 +248,10 @@ PHP_FUNCTION(ngx_request_headers)
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-type", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_type", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_type", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-length", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_length", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_length", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept", header[i].key.len) == 0){
@@ -548,14 +544,10 @@ PHP_METHOD(ngx_request, headers)
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-type", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_type", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_type", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-length", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_length", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_length", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept", header[i].key.len) == 0){
