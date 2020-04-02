@@ -777,13 +777,16 @@ ngx_http_php_read_request_body_callback(ngx_http_request_t *r)
 
     if (r->request_body == NULL || r->request_body->bufs == NULL){
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "This pahse don't have request_body");
-        ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
+        //ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
+        ngx_http_core_run_phases(r);
         return ;
     }
 
     if (r->request_body->temp_file){
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "temp_file: %s", r->request_body->temp_file->file.name.data);
-        ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
+        //ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
+        ngx_http_core_run_phases(r);
+        return ;
     }
 
     cl = r->request_body->bufs;
@@ -791,6 +794,7 @@ ngx_http_php_read_request_body_callback(ngx_http_request_t *r)
     if (cl->next == NULL){
         len = cl->buf->last - cl->buf->pos;
         if (len == 0){
+            ngx_http_core_run_phases(r);
             return ;
         }
 
@@ -810,6 +814,7 @@ ngx_http_php_read_request_body_callback(ngx_http_request_t *r)
     }
 
     if (len == 0){
+        ngx_http_core_run_phases(r);
         return ;
     }
 
