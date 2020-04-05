@@ -275,7 +275,7 @@ ngx_http_php_rewrite_inline_handler(ngx_http_request_t *r)
 
     ngx_php_request = r;
 
-    if ((r->method == NGX_HTTP_POST || r->method == NGX_HTTP_PUT || r->method == NGX_HTTP_DELETE) 
+    if ((r->method == NGX_HTTP_POST || r->method == NGX_HTTP_PUT || r->method == NGX_HTTP_DELETE || r->method == NGX_HTTP_PATCH) 
             && !ctx->read_request_body_done) {
         r->request_body_in_single_buf = 1;
         r->request_body_in_persistent_file = 1;
@@ -587,7 +587,8 @@ ngx_http_php_access_inline_handler(ngx_http_request_t *r)
 
     ngx_php_request = r;
 
-    if (r->method == NGX_HTTP_POST && !ctx->read_request_body_done) {
+    if ((r->method == NGX_HTTP_POST || r->method == NGX_HTTP_PUT || r->method == NGX_HTTP_DELETE || r->method == NGX_HTTP_PATCH) 
+            && !ctx->read_request_body_done) {
         r->request_body_in_single_buf = 1;
         r->request_body_in_persistent_file = 1;
         r->request_body_in_clean_file = 1;
@@ -1041,7 +1042,8 @@ ngx_http_php_content_inline_handler(ngx_http_request_t *r)
         return ngx_http_php_content_post_handler(r);
     }*/
 
-    if (r->method == NGX_HTTP_POST && !ctx->read_request_body_done) {
+    if ((r->method == NGX_HTTP_POST || r->method == NGX_HTTP_PUT || r->method == NGX_HTTP_DELETE || r->method == NGX_HTTP_PATCH) 
+            && !ctx->read_request_body_done) {
         r->request_body_in_single_buf = 1;
         r->request_body_in_persistent_file = 1;
         r->request_body_in_clean_file = 1;
