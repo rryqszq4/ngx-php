@@ -43,6 +43,7 @@ ngx_request_remote_port
 ngx_request_server_port
 ngx_request_server_name
 ngx_request_headers
+ngx_request_body
 ngx_socket_create
 ngx_socket_iskeepalive
 ngx_socket_connect

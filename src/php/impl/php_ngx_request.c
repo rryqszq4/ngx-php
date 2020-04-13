@@ -248,14 +248,10 @@ PHP_FUNCTION(ngx_request_headers)
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-type", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_type", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_type", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-length", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_length", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_length", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept", header[i].key.len) == 0){
@@ -306,7 +302,32 @@ PHP_FUNCTION(ngx_request_headers)
             add_assoc_stringl(return_value, "authorization", (char *)header[i].value.data, header[i].value.len);
         }
 
+        if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"x-csrf-token", header[i].key.len) == 0){
+            add_assoc_stringl(return_value, "x_csrf_token", (char *)header[i].value.data, header[i].value.len);
+        }
+
+        if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"x-xsrf-token", header[i].key.len) == 0){
+            add_assoc_stringl(return_value, "x_xsrf_token", (char *)header[i].value.data, header[i].value.len);
+        }
+
+        if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"x-http-method-override", header[i].key.len) == 0){
+            add_assoc_stringl(return_value, "x_http_method_override", (char *)header[i].value.data, header[i].value.len);
+        }
+
     }
+}
+
+PHP_FUNCTION(ngx_request_body)
+{
+    ngx_http_request_t  *r;
+    ngx_http_php_ctx_t  *ctx;
+
+    r = ngx_php_request;
+
+    ctx = ngx_http_get_module_ctx(r, ngx_http_php_module);
+
+    ZVAL_STRINGL(return_value, (char *)ctx->request_body_ctx.data, ctx->request_body_ctx.len);
+    
 }
 
 PHP_METHOD(ngx_request, method)
@@ -527,14 +548,10 @@ PHP_METHOD(ngx_request, headers)
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-type", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_type", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_type", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-length", header[i].key.len) == 0){
             add_assoc_stringl(return_value, "content_length", (char *)header[i].value.data, header[i].value.len);
-        }else {
-            add_assoc_stringl(return_value, "content_length", (char *)"", 0);
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept", header[i].key.len) == 0){

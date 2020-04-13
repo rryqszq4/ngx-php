@@ -76,6 +76,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(ngx_request_headers_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(ngx_request_body_arginfo, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
 PHP_FUNCTION(ngx_request_method);
 PHP_FUNCTION(ngx_request_document_root);
 PHP_FUNCTION(ngx_request_document_uri);
@@ -90,6 +93,7 @@ PHP_FUNCTION(ngx_request_remote_port);
 PHP_FUNCTION(ngx_request_server_port);
 PHP_FUNCTION(ngx_request_server_name);
 PHP_FUNCTION(ngx_request_headers);
+PHP_FUNCTION(ngx_request_body);
 
 PHP_METHOD(ngx_request, method);
 PHP_METHOD(ngx_request, document_root);
