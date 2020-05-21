@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 extern ngx_module_t ngx_http_php_module;
-ngx_http_request_t *ngx_php_request;
+extern ngx_http_request_t *ngx_php_request;
 
 typedef struct ngx_http_php_main_conf_s {
 

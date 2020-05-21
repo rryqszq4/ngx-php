@@ -419,6 +419,10 @@ ngx_module_t ngx_http_php_module = {
     NGX_MODULE_V1_PADDING
 };
 
+ngx_http_request_t *ngx_php_request;
+
+void (*old_zend_error_cb)(int, const char *, const uint, const char *, va_list);
+
 static ngx_int_t 
 ngx_http_php_init(ngx_conf_t *cf)
 {
