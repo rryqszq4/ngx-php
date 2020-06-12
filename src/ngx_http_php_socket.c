@@ -41,6 +41,8 @@ static void ngx_http_php_socket_resolve_handler(ngx_resolver_ctx_t *ctx);
 static int ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u);
 
+static ngx_int_t ngx_php_http_socket_test_connect(ngx_connection_t *c);
+
 static void ngx_http_php_socket_connected_handler(ngx_http_request_t *r, 
     ngx_http_php_socket_upstream_t *u);
 
@@ -262,15 +264,17 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     ngx_php_debug("rc: %d %p, peer->cached:%d", (int)rc, ctx->generator_closure, peer->cached);
 
     if (rc == NGX_ERROR) {
-
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "connect peer error.");
         return NGX_ERROR;
     }
 
     if (rc == NGX_BUSY) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "no live upstreams");
         return NGX_ERROR;
     }
 
     if (rc == NGX_DECLINED) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "connect peer declined.");
         return NGX_ERROR;
     }
 
@@ -337,9 +341,61 @@ ngx_http_php_socket_resolve_retval_handler(ngx_http_request_t *r,
     ngx_php_debug("c->read->active:%d,c->read->timer_set:%d,c->read->ready:%d", c->read->active, c->read->timer_set, c->read->ready);
     ngx_php_debug("c->write->active:%d,c->write->timer_set:%d,c->write->ready:%d", c->write->active, c->write->timer_set, c->write->ready);
 
-    ngx_add_timer(c->write, u->connect_timeout);
+    if (rc == NGX_AGAIN){
+        ngx_add_timer(c->write, u->connect_timeout);
+    }
 
     return NGX_AGAIN;
+}
+
+static ngx_int_t
+ngx_php_http_socket_test_connect(ngx_connection_t *c)
+{
+    int        err;
+    socklen_t  len;
+
+#if (NGX_HAVE_KQUEUE)
+
+    if (ngx_event_flags & NGX_USE_KQUEUE_EVENT)  {
+        if (c->write->pending_eof || c->read->pending_eof) {
+            if (c->write->pending_eof) {
+                err = c->write->kq_errno;
+
+            } else {
+                err = c->read->kq_errno;
+            }
+
+            c->log->action = "connecting to upstream";
+            (void) ngx_connection_error(c, err,
+                                    "kevent() reported that connect() failed");
+            return NGX_ERROR;
+        }
+
+    } else
+#endif
+    {
+        err = 0;
+        len = sizeof(int);
+
+        /*
+         * BSDs and Linux return 0 and set a pending error in err
+         * Solaris returns -1 and sets errno
+         */
+
+        if (getsockopt(c->fd, SOL_SOCKET, SO_ERROR, (void *) &err, &len)
+            == -1)
+        {
+            err = ngx_socket_errno;
+        }
+
+        if (err) {
+            c->log->action = "connecting to upstream";
+            (void) ngx_connection_error(c, err, "connect() failed");
+            return NGX_ERROR;
+        }
+    }
+
+    return NGX_OK;
 }
 
 static void 
@@ -393,9 +449,17 @@ ngx_http_php_socket_connected_handler(ngx_http_request_t *r,
 {
     ngx_connection_t            *c;
 
-    ngx_php_debug("php socket connected handler");
-    
     c = u->peer.connection;
+
+    ngx_php_debug("php socket connected handler");
+
+    if (ngx_php_http_socket_test_connect(c) != NGX_OK) {
+        // TODO connect faild handler
+    }
+
+    if (c->write->timedout) {
+        ngx_php_debug("php socket connecte timedout");
+    }
 
     if (c->write->timer_set) {
         ngx_del_timer(c->write);
@@ -705,6 +769,12 @@ ngx_http_php_socket_upstream_recv_handler(ngx_http_request_t *r,
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
                    "php socket receive handler.");
     ngx_php_debug("php socket receive handler.");
+
+    if (c->read->timedout) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
+                          "php socket read timed out.");
+        return ;
+    }
 
     u->enabled_receive = 1;
 
