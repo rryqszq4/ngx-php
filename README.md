@@ -13,7 +13,7 @@ ngx_php7 doesn't want to replace anything, just want to provide a solution.
 
 There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree/ngx_php5), which records some of my past code practices and is also valuable.   
 
-[Benchmarks about ngx_php7 and php](https://www.techempower.com/benchmarks/#section=test&runid=76a34044-54d6-4349-adfe-863c2d5ae756&hw=ph&test=plaintext&l=zik073-7)  
+[Benchmarks about ngx_php7 and php](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=fortune)  
 
 Table of contents
 -----------------
