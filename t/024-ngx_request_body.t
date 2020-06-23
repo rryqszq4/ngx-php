@@ -11,7 +11,7 @@ Test func ngx_request_body
 location = /t1 {
     content_by_php_block {
         $body = ngx_request_body();
-        echo $body;
+        echo $body."\n";
     }
 }
 --- request
