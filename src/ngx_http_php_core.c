@@ -168,7 +168,11 @@ ngx_php_error_cb(int type,
             error_filename = "Unknown";
         }
         PG(last_error_type) = type;
+#if PHP_MAJOR_VERSION >= 8
+        PG(last_error_message) = zend_string_copy(message);
+#else
         PG(last_error_message) = strdup(buffer);
+#endif
         PG(last_error_file) = strdup(error_filename);
         PG(last_error_lineno) = error_lineno;
     }
