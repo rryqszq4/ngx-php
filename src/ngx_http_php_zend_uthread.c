@@ -124,7 +124,7 @@ static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *re
 }
 /* }}} */
 
-#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0) ||  || PHP_MAJOR_VERSION == 8
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0) || PHP_MAJOR_VERSION == 8
 static int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation) /* {{{ */
 {
     zend_fcall_info fci;
