@@ -133,12 +133,16 @@ ngx_php_error_cb(int type,
 #else
     buffer_len = vspprintf(&buffer, PG(log_errors_max_len), format, args);
 #endif
-    
+
     /* check for repeated errors to be ignored */
     if (PG(ignore_repeated_errors) && PG(last_error_message)) {
         /* no check for PG(last_error_file) is needed since it cannot
          * be NULL if PG(last_error_message) is not NULL */
+#if PHP_MAJOR_VERSION >= 8
+        if (zend_string_equals(PG(last_error_message), message)
+#else
         if (strcmp(PG(last_error_message), buffer)
+#endif
             || (!PG(ignore_repeated_source)
                 && ((PG(last_error_lineno) != (int)error_lineno)
                     || strcmp(PG(last_error_file), error_filename)))) {
@@ -193,7 +197,11 @@ ngx_php_error_cb(int type,
                  * but DO NOT overwrite a pending exception
                  */
                 if (EG(error_handling) == EH_THROW && !EG(exception)) {
+#if PHP_MAJOR_VERSION >= 8
+                    zend_throw_error_exception(EG(exception_class), message, 0, type);
+#else
                     zend_throw_error_exception(EG(exception_class), buffer, 0, type);
+#endif
                 }
                 efree(buffer);
                 return;
