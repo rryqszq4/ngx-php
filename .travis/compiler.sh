@@ -17,6 +17,8 @@ else
 fi
 echo "php download ... done"
 
+PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
+
 tar xf php-${PHP_SRC_VERSION}.tar.gz
 
 PHP_SRC=`pwd`'/php-'${PHP_SRC_VERSION}
