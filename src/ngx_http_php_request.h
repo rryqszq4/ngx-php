@@ -44,8 +44,8 @@ typedef struct _ngx_http_php_request_context_t {
     
 } ngx_http_php_request_context_t;
 
-void ngx_http_php_request_init(ngx_http_request_t *r TSRMLS_DC);
-void ngx_http_php_request_clean(TSRMLS_D);
+void ngx_http_php_request_init(ngx_http_request_t *r );
+void ngx_http_php_request_clean();
 
 int ngx_http_php_request_read_body(ngx_http_request_t *r);
 void ngx_http_php_request_read_body_cb(ngx_http_request_t *r);

@@ -69,7 +69,7 @@ PHP_METHOD(ngx_socket, connect)
     zend_string *host_str;
     long port;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Sl", &host_str, &port) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "Sl", &host_str, &port) == FAILURE){
         RETURN_NULL();
     }
 
@@ -99,7 +99,7 @@ PHP_METHOD(ngx_socket, send)
 
     zend_string *buf_str;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &buf_str) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "S", &buf_str) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -134,7 +134,7 @@ PHP_METHOD(ngx_socket, recv)
 
     long size = 1024;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &size) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "|l", &size) == FAILURE){
         RETURN_NULL();
     }
 
@@ -173,9 +173,9 @@ static const zend_function_entry php_ngx_socket_class_functions[] = {
 };
 
 void
-php_impl_ngx_socket_init(int module_number TSRMLS_DC)
+php_impl_ngx_socket_init(int module_number )
 {
     zend_class_entry ngx_socket_class_entry;
     INIT_CLASS_ENTRY(ngx_socket_class_entry, "ngx_socket", php_ngx_socket_class_functions);
-    php_ngx_socket_class_entry = zend_register_internal_class(&ngx_socket_class_entry TSRMLS_CC);
+    php_ngx_socket_class_entry = zend_register_internal_class(&ngx_socket_class_entry );
 }

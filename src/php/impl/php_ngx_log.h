@@ -43,6 +43,6 @@ PHP_FUNCTION(ngx_log_error);
 
 PHP_METHOD(ngx_log, error);
 
-void php_impl_ngx_log_init(int module_number TSRMLS_DC);
+void php_impl_ngx_log_init(int module_number );
 
 #endif

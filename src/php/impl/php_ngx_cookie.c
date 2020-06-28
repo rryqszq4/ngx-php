@@ -68,7 +68,7 @@ PHP_FUNCTION(ngx_cookie_get)
     u_char              *start, *p, *last;
     char                *query_key=NULL;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &key_str) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "S", &key_str) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -138,7 +138,7 @@ PHP_FUNCTION(ngx_cookie_set)
     ngx_table_elt_t     *h;
     zend_string         *value_str;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &value_str) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "S", &value_str) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -160,7 +160,7 @@ PHP_FUNCTION(ngx_cookie_set)
 }
 
 void 
-ngx_impl_ngx_cookie_init(int module_number TSRMLS_DC)
+ngx_impl_ngx_cookie_init(int module_number )
 {
 
 }

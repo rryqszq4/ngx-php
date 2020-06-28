@@ -179,7 +179,7 @@ ngx_php_error_cb(int type,
                  * but DO NOT overwrite a pending exception
                  */
                 if (EG(error_handling) == EH_THROW && !EG(exception)) {
-                    zend_throw_error_exception(EG(exception_class), buffer, 0, type TSRMLS_CC);
+                    zend_throw_error_exception(EG(exception_class), buffer, 0, type);
                 }
                 efree(buffer);
                 return;
@@ -308,7 +308,7 @@ ngx_php_error_cb(int type,
     efree(buffer);
 }
 
-size_t ngx_http_php_code_ub_write(const char *str, size_t str_length TSRMLS_DC)
+size_t ngx_http_php_code_ub_write(const char *str, size_t str_length)
 {
     ngx_buf_t *b;
     ngx_http_php_rputs_chain_list_t *chain;
@@ -374,9 +374,9 @@ void ngx_http_php_code_log_message(char *message)
 
 }
 
-void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_DC)
+void ngx_http_php_code_register_server_variables(zval *track_vars_array)
 {
-    /*php_import_environment_variables(track_vars_array TSRMLS_CC);
+    /*php_import_environment_variables(track_vars_array);
 
     ngx_http_request_t *r;
     r = ngx_php_request;
@@ -392,21 +392,21 @@ void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_D
     ngx_http_php_loc_conf_t *plcf = ngx_http_get_module_loc_conf(r, ngx_http_php_module);
 
     if (r->method == NGX_HTTP_GET){
-        php_register_variable("REQUEST_METHOD", (char *)"GET", track_vars_array TSRMLS_CC);
+        php_register_variable("REQUEST_METHOD", (char *)"GET", track_vars_array);
     } else if (r->method == NGX_HTTP_POST){
-        php_register_variable("REQUEST_METHOD", (char *)"POST", track_vars_array TSRMLS_CC);
+        php_register_variable("REQUEST_METHOD", (char *)"POST", track_vars_array);
     }
 
-    //php_register_variable_safe("REQUEST_LINE", (char *)r->request_line.data, r->request_line.len, track_vars_array TSRMLS_CC);
+    //php_register_variable_safe("REQUEST_LINE", (char *)r->request_line.data, r->request_line.len, track_vars_array);
 
-    php_register_variable_safe("DOCUMENT_ROOT", (char *)plcf->document_root.data, plcf->document_root.len, track_vars_array TSRMLS_CC);
+    php_register_variable_safe("DOCUMENT_ROOT", (char *)plcf->document_root.data, plcf->document_root.len, track_vars_array);
 
     if ((r->uri.data)[r->uri.len-1] == '/'){
         char *tmp_uri;
         tmp_uri = emalloc(r->uri.len + 9 + 1);
         ngx_cpystrn((u_char *)tmp_uri, (u_char *)r->uri.data, r->uri.len + 1);
         strncat(tmp_uri, "index.php", 9);
-        php_register_variable_safe("DOCUMENT_URI", (char *)tmp_uri, r->uri.len + 9, track_vars_array TSRMLS_CC);
+        php_register_variable_safe("DOCUMENT_URI", (char *)tmp_uri, r->uri.len + 9, track_vars_array);
         efree(tmp_uri);
 
         char *tmp_script;
@@ -414,31 +414,31 @@ void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_D
         ngx_cpystrn((u_char *)tmp_script, (u_char *)plcf->document_root.data, plcf->document_root.len+1);
         strncat(tmp_script, (char *)r->uri.data, r->uri.len);
         strncat(tmp_script, "index.php", 9);
-        php_register_variable_safe("SCRIPT_FILENAME", (char *)tmp_script, plcf->document_root.len + r->uri.len + 9, track_vars_array TSRMLS_CC);
+        php_register_variable_safe("SCRIPT_FILENAME", (char *)tmp_script, plcf->document_root.len + r->uri.len + 9, track_vars_array);
         efree(tmp_script);
     } else {
-        php_register_variable_safe("DOCUMENT_URI", (char *)r->uri.data, r->uri.len, track_vars_array TSRMLS_CC);
-        php_register_variable_safe("SCRIPT_NAME", (char *)r->uri.data, r->uri.len, track_vars_array TSRMLS_CC);
+        php_register_variable_safe("DOCUMENT_URI", (char *)r->uri.data, r->uri.len, track_vars_array);
+        php_register_variable_safe("SCRIPT_NAME", (char *)r->uri.data, r->uri.len, track_vars_array);
 
         char *tmp_script;
         tmp_script = emalloc(plcf->document_root.len + r->uri.len + 1);
         ngx_cpystrn((u_char *)tmp_script, (u_char *)plcf->document_root.data, plcf->document_root.len+1);
         strncat(tmp_script, (char *)r->uri.data, r->uri.len);
-        php_register_variable_safe("SCRIPT_FILENAME", (char *)tmp_script, plcf->document_root.len + r->uri.len, track_vars_array TSRMLS_CC);
+        php_register_variable_safe("SCRIPT_FILENAME", (char *)tmp_script, plcf->document_root.len + r->uri.len, track_vars_array);
         efree(tmp_script);
     }
 
     if (r->args.len > 0){
-        php_register_variable_safe("QUERY_STRING", (char *)r->args.data, r->args.len, track_vars_array TSRMLS_CC);
+        php_register_variable_safe("QUERY_STRING", (char *)r->args.data, r->args.len, track_vars_array);
     }else {
-        php_register_variable_safe("QUERY_STRING", (char *)"", 0, track_vars_array TSRMLS_CC);
+        php_register_variable_safe("QUERY_STRING", (char *)"", 0, track_vars_array);
     }
 
-    php_register_variable_safe("REQUEST_URI", (char *)r->uri_start, strlen((char *)r->uri_start)-strlen((char *)r->uri_end),track_vars_array TSRMLS_CC);
+    php_register_variable_safe("REQUEST_URI", (char *)r->uri_start, strlen((char *)r->uri_start)-strlen((char *)r->uri_end),track_vars_array);
     
-    php_register_variable_safe("SERVER_PROTOCOL", (char *)r->http_protocol.data, r->http_protocol.len, track_vars_array TSRMLS_CC);
+    php_register_variable_safe("SERVER_PROTOCOL", (char *)r->http_protocol.data, r->http_protocol.len, track_vars_array);
 
-    php_register_variable_safe("REMOTE_ADDR", (char *)r->connection->addr_text.data, r->connection->addr_text.len, track_vars_array TSRMLS_CC);
+    php_register_variable_safe("REMOTE_ADDR", (char *)r->connection->addr_text.data, r->connection->addr_text.len, track_vars_array);
 
     ngx_str_t  server_address;
     u_char     server_addr[NGX_SOCKADDR_STRLEN];
@@ -446,7 +446,7 @@ void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_D
     server_address.data = server_addr;
     if (ngx_connection_local_sockaddr(r->connection, &server_address, 0) != NGX_OK) {
     }
-    php_register_variable_safe("SERVER_ADDR", (char *)server_address.data, server_address.len, track_vars_array TSRMLS_CC);
+    php_register_variable_safe("SERVER_ADDR", (char *)server_address.data, server_address.len, track_vars_array);
 
     ngx_uint_t port;
     struct sockaddr_in  *sin;
@@ -455,19 +455,19 @@ void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_D
     sin = (struct sockaddr_in *) r->connection->local_sockaddr;
     port = ntohs(sin->sin_port);
     ngx_sprintf((u_char *)tmp_port, "%ui", port);
-    php_register_variable("SERVER_PORT", (char *)tmp_port, track_vars_array TSRMLS_CC);
+    php_register_variable("SERVER_PORT", (char *)tmp_port, track_vars_array);
     efree(tmp_port);
 
     tmp_port = emalloc(sizeof("65535") - 1);
     sin = (struct sockaddr_in *) r->connection->sockaddr;
     port = ntohs(sin->sin_port);
     ngx_sprintf((u_char *)tmp_port, "%ui", port);
-    php_register_variable("REMOTE_PORT", (char *)tmp_port, track_vars_array TSRMLS_CC);
+    php_register_variable("REMOTE_PORT", (char *)tmp_port, track_vars_array);
     efree(tmp_port);
 
     ngx_http_core_srv_conf_t  *cscf;
     cscf = ngx_http_get_module_srv_conf(r, ngx_http_core_module);
-    php_register_variable_safe("SERVER_NAME", (char *)cscf->server_name.data, cscf->server_name.len, track_vars_array TSRMLS_CC);
+    php_register_variable_safe("SERVER_NAME", (char *)cscf->server_name.data, cscf->server_name.len, track_vars_array);
 */
     //for (i = 0; /* void */; i++){
     /*    if (i >= part->nelts){
@@ -480,59 +480,59 @@ void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_D
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-type", header[i].key.len) == 0){
-            php_register_variable_safe("CONTENT_TYPE", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("CONTENT_TYPE", (char *)header[i].value.data, header[i].value.len, track_vars_array);
         }else {
-            php_register_variable_safe("CONTENT_TYPE", (char *)"", 0, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("CONTENT_TYPE", (char *)"", 0, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"content-length", header[i].key.len) == 0){
-            php_register_variable_safe("CONTENT_LENGTH", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("CONTENT_LENGTH", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }else {
-            php_register_variable_safe("CONTENT_LENGTH", (char *)"", 0, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("CONTENT_LENGTH", (char *)"", 0, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_ACCEPT", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_ACCEPT", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"host", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_HOST", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_HOST", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"connection", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_CONNECTION", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_CONNECTION", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"user-agent", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_USER_AGENT", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_USER_AGENT", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept-encoding", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_ACCEPT_ENCODING", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_ACCEPT_ENCODING", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"accept-language", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_ACCEPT_LANGUAGE", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_ACCEPT_LANGUAGE", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
         
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"referer", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_REFERER", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_REFERER", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"pragma", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_PRAGMA", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_PRAGMA", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"cache-control", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_CACHE_CONTROL", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_CACHE_CONTROL", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"upgrade-insecure-requests", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_UPGRADE_INSECURE_REQUESTS", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_UPGRADE_INSECURE_REQUESTS", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
         if (ngx_strncasecmp(header[i].lowcase_key, (u_char *)"cookie", header[i].key.len) == 0){
-            php_register_variable_safe("HTTP_COOKIE", (char *)header[i].value.data, header[i].value.len, track_vars_array TSRMLS_CC);
+            php_register_variable_safe("HTTP_COOKIE", (char *)header[i].value.data, header[i].value.len, track_vars_array );
         }
 
     }*/
@@ -540,7 +540,7 @@ void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_D
 }
 
 int 
-ngx_http_php_code_read_post(char *buffer, uint count_bytes TSRMLS_DC)
+ngx_http_php_code_read_post(char *buffer, uint count_bytes)
 {
     uint read_bytes = 0;
     int tmp_read_bytes;
@@ -577,7 +577,7 @@ ngx_http_php_code_read_post(char *buffer, uint count_bytes TSRMLS_DC)
 }
 
 char *
-ngx_http_php_code_read_cookies(TSRMLS_D)
+ngx_http_php_code_read_cookies()
 {
     ngx_http_php_request_context_t *context;
     context = SG(server_context);
@@ -586,7 +586,7 @@ ngx_http_php_code_read_cookies(TSRMLS_D)
 
 int 
 ngx_http_php_code_header_handler(sapi_header_struct *sapi_header, 
-    sapi_header_op_enum op, sapi_headers_struct *sapi_headers TSRMLS_DC)
+    sapi_header_op_enum op, sapi_headers_struct *sapi_headers)
 {
     ngx_http_request_t *r;
     ngx_table_elt_t *h;
@@ -627,7 +627,7 @@ ngx_php_embed_run(ngx_http_request_t *r, ngx_http_php_code_t *code)
     php_embed_module.flush = ngx_http_php_code_flush;
     php_embed_module.php_ini_path_override = "/usr/local/php/etc/php.ini";
     PHP_EMBED_START_BLOCK(0, NULL);
-        zend_eval_string_ex(code->code.string, NULL, "ngx_php run code", 1 TSRMLS_CC);
+        zend_eval_string_ex(code->code.string, NULL, "ngx_php run code", 1 );
     PHP_EMBED_END_BLOCK();
 
     return 0;
@@ -636,11 +636,10 @@ ngx_php_embed_run(ngx_http_request_t *r, ngx_http_php_code_t *code)
 ngx_int_t
 ngx_php_ngx_run(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php_code_t *code)
 {
-    TSRMLS_FETCH();
 
     if (code->code_type == NGX_HTTP_PHP_CODE_TYPE_STRING){
 
-        zend_eval_string_ex(code->code.string, NULL, "ngx_php run code", 1 TSRMLS_CC);
+        zend_eval_string_ex(code->code.string, NULL, "ngx_php run code", 1 );
 
     }else if (code->code_type == NGX_HTTP_PHP_CODE_TYPE_FILE){
 
@@ -654,7 +653,7 @@ ngx_php_ngx_run(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php
             php_printf("Could not open input file: %s\n", file_handle.filename);
             return FAILURE;
         }
-        php_execute_script(&file_handle TSRMLS_CC);
+        php_execute_script(&file_handle );
 
     }else {
     }

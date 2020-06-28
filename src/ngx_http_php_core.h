@@ -146,14 +146,14 @@ typedef struct ngx_http_php_ctx_s {
 ngx_http_php_code_t *ngx_http_php_code_from_file(ngx_pool_t *pool, ngx_str_t *code_file_path);
 ngx_http_php_code_t *ngx_http_php_code_from_string(ngx_pool_t *pool, ngx_str_t *code_str);
 
-#define NGX_HTTP_PHP_NGX_INIT ngx_http_php_request_init(r TSRMLS_CC);   \
-        php_ngx_request_init(TSRMLS_C);                                 \
+#define NGX_HTTP_PHP_NGX_INIT ngx_http_php_request_init(r);   \
+        php_ngx_request_init();                                 \
         zend_first_try {
 
 #define NGX_HTTP_PHP_NGX_SHUTDOWN } zend_catch {        \
         } zend_end_try();                               \
-        ngx_http_php_request_clean(TSRMLS_C);           \
-        php_ngx_request_shutdown(TSRMLS_C);
+        ngx_http_php_request_clean();           \
+        php_ngx_request_shutdown();
 
 // php_ngx run
 //ngx_int_t ngx_php_embed_run(ngx_http_request_t *r, ngx_http_php_code_t *code);
@@ -166,13 +166,13 @@ ngx_int_t ngx_php_get_request_status();
 ngx_int_t ngx_php_set_request_status(ngx_int_t rc);
 
 // php_ngx sapi call_back
-size_t ngx_http_php_code_ub_write(const char *str, size_t str_length TSRMLS_DC);
+size_t ngx_http_php_code_ub_write(const char *str, size_t str_length );
 void ngx_http_php_code_flush(void *server_context);
 void ngx_http_php_code_log_message(char *message);
-void ngx_http_php_code_register_server_variables(zval *track_vars_array TSRMLS_DC);
-int ngx_http_php_code_read_post(char *buffer, uint count_bytes TSRMLS_DC);
-char *ngx_http_php_code_read_cookies(TSRMLS_D);
-int ngx_http_php_code_header_handler(sapi_header_struct *sapi_header, sapi_header_op_enum op, sapi_headers_struct *sapi_headers TSRMLS_DC);
+void ngx_http_php_code_register_server_variables(zval *track_vars_array );
+int ngx_http_php_code_read_post(char *buffer, uint count_bytes );
+char *ngx_http_php_code_read_cookies();
+int ngx_http_php_code_header_handler(sapi_header_struct *sapi_header, sapi_header_op_enum op, sapi_headers_struct *sapi_headers );
 
 extern void (*old_zend_error_cb)(int, const char *, const uint, const char *, va_list);
 void ngx_php_error_cb(int type, const char *error_filename, const uint error_lineno, const char *format, va_list args);

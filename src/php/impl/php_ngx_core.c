@@ -36,7 +36,7 @@ PHP_FUNCTION(ngx_exit)
 {
     long status = 0;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &status) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &status) == FAILURE){
         RETURN_NULL();
     }
 
@@ -50,7 +50,7 @@ PHP_FUNCTION(ngx_status)
     ngx_http_request_t  *r;
     long status = 0;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &status) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &status) == FAILURE){
         RETURN_NULL();
     }
 
@@ -212,7 +212,7 @@ PHP_FUNCTION(ngx_sleep)
     ngx_http_php_ctx_t  *ctx;
     long                time;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &time) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &time) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -235,7 +235,7 @@ PHP_FUNCTION(ngx_msleep)
     ngx_http_php_ctx_t  *ctx;
     long                time;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &time) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &time) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -261,7 +261,7 @@ PHP_FUNCTION(ngx_redirect)
     ngx_table_elt_t     *h;
     u_char              *ngx_uri;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S|l", &uri, &status) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "S|l", &uri, &status) == FAILURE) {
         RETURN_FALSE;
     }
 
@@ -315,7 +315,7 @@ PHP_METHOD(ngx, _exit)
 {
     long status = 0;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &status) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &status) == FAILURE){
         RETURN_NULL();
     }
 
@@ -475,7 +475,7 @@ PHP_METHOD(ngx, sleep)
     ngx_http_php_ctx_t  *ctx;
     long                time;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &time) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &time) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -500,11 +500,11 @@ static const zend_function_entry php_ngx_class_functions[] = {
     {NULL, NULL, NULL, 0, 0}
 };
 
-void php_impl_ngx_core_init(int module_number TSRMLS_DC)
+void php_impl_ngx_core_init(int module_number )
 {
     zend_class_entry ngx_class_entry;
     INIT_CLASS_ENTRY(ngx_class_entry, "ngx", php_ngx_class_functions);
-    php_ngx_class_entry = zend_register_internal_class(&ngx_class_entry TSRMLS_CC);
+    php_ngx_class_entry = zend_register_internal_class(&ngx_class_entry );
 
     REGISTER_STRINGL_CONSTANT("NGINX_VAR", NGINX_VAR, sizeof(NGINX_VAR)-1, CONST_CS);
     REGISTER_STRINGL_CONSTANT("NGINX_VERSION", NGINX_VERSION, sizeof(NGINX_VERSION)-1, CONST_CS);

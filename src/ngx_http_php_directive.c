@@ -864,10 +864,10 @@ ngx_http_php_set_inline2(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     EG(current_module)->type = MODULE_PERSISTENT;
 #endif
 
-    php_ngx_request_init(TSRMLS_C);
+    php_ngx_request_init();
 
         zval retval;
-        zend_eval_string_ex(pv->code->code.string, &retval, "ngx_php run code return", 1 TSRMLS_CC);
+        zend_eval_string_ex(pv->code->code.string, &retval, "ngx_php run code return", 1 );
 
         if (Z_TYPE(retval) == IS_TRUE || 
             Z_TYPE(retval) == IS_FALSE ||  
@@ -887,8 +887,8 @@ ngx_http_php_set_inline2(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
         zval_dtor(&retval);
 
-    php_ngx_request_shutdown(TSRMLS_C);
-    php_ngx_module_shutdown(TSRMLS_C);
+    php_ngx_request_shutdown();
+    php_ngx_module_shutdown();
 
     pv->key = value[1];
     pv->handler = handler;
@@ -982,7 +982,7 @@ ngx_http_php_set_run_inline(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
     PHP_EMBED_START_BLOCK(0, NULL);
         zval retval;
-        zend_eval_string_ex(filter_data->code->code.string, &retval, "ngx_php run code return", 1 TSRMLS_CC);
+        zend_eval_string_ex(filter_data->code->code.string, &retval, "ngx_php run code return", 1 );
 
         if (Z_TYPE(retval) == IS_TRUE || 
             Z_TYPE(retval) == IS_FALSE ||  
@@ -1106,7 +1106,7 @@ ngx_http_php_set_run_file(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
             //return FAILURE;
             return NGX_CONF_ERROR;
         }
-        php_execute_simple_script(&file_handle, retval TSRMLS_CC);
+        php_execute_simple_script(&file_handle, retval );
 
         if (Z_TYPE_P(retval) == IS_TRUE || 
             Z_TYPE_P(retval) == IS_FALSE || 

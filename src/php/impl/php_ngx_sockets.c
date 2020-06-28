@@ -492,7 +492,7 @@ PHP_FUNCTION(ngx_socket_settimeout)
     ngx_http_php_socket_upstream_t  *u;
     long                            timeout = 60000;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &timeout) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "l", &timeout) == FAILURE) {
         RETURN_FALSE;
     }
 
@@ -559,7 +559,7 @@ PHP_FUNCTION(ngx_socket_destroy)
     RETURN_TRUE;
 }
 
-void php_impl_ngx_sockets_init(int module_number TSRMLS_DC)
+void php_impl_ngx_sockets_init(int module_number )
 {
     le_socket = zend_register_list_destructors_ex(NULL, NULL, le_socket_name, module_number);
 }

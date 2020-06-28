@@ -36,7 +36,7 @@ PHP_FUNCTION(ngx_header_set)
     zend_string         *key_str;
     zval                *value;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Sz", &key_str, &value) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "Sz", &key_str, &value) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -74,7 +74,7 @@ PHP_FUNCTION(ngx_header_get)
     ngx_uint_t          i;
     unsigned            found;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &key_str) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "S", &key_str) == FAILURE){
         RETURN_NULL();
     }
 
@@ -143,7 +143,7 @@ PHP_FUNCTION(ngx_header_get_all)
 }
 
 void 
-php_impl_ngx_header_init(int module_number TSRMLS_DC)
+php_impl_ngx_header_init(int module_number )
 {
 
 }

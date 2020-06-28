@@ -231,7 +231,7 @@ ngx_http_php_request_get_request_body(ngx_http_request_t *r)
 }
 
 void 
-ngx_http_php_request_init(ngx_http_request_t *r TSRMLS_DC)
+ngx_http_php_request_init(ngx_http_request_t *r )
 {
     ngx_http_headers_in_t *headers_in;
     headers_in = &r->headers_in;
@@ -285,7 +285,7 @@ ngx_http_php_request_init(ngx_http_request_t *r TSRMLS_DC)
 }
 
 void 
-ngx_http_php_request_clean(TSRMLS_D)
+ngx_http_php_request_clean()
 {
     if (SG(request_info).query_string){
         efree(SG(request_info).query_string);
