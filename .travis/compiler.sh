@@ -78,7 +78,7 @@ cd ${NGINX_SRC}
 
 export PHP_CONFIG=${PHP_SRC_ROOT}'/bin/php-config'
 export PHP_LIB=${PHP_SRC_ROOT}'/lib'
-export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp7 "
+export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
 
 ls ${PHP_SRC_ROOT}
 
@@ -98,9 +98,9 @@ make
 make install
 if [ $? -eq 0 ];then
     echo "nginx install ... done"
-    echo "ngx_php7 compile success."
+    echo "ngx_php$PHP_MAJOR_VERSION compile success."
 else 
-    echo "ngx_php7 compile failed."
+    echo "ngx_php$PHP_MAJOR_VERSION compile failed."
     exit 1
 fi
 
