@@ -148,8 +148,6 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
     zend_function *func;
 
 #if PHP_MAJOR_VERSION == 8
-    uint32_t call_info;
-    void *object_or_called_scope;
     zend_class_entry *orig_fake_scope;
 #endif
 
