@@ -147,6 +147,12 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
     zend_fcall_info_cache fci_cache_local;
     zend_function *func;
 
+#if PHP_MAJOR_VERSION == 8
+    uint32_t call_info;
+    void *object_or_called_scope;
+    zend_class_entry *orig_fake_scope;
+#endif
+
     ZVAL_UNDEF(fci->retval);
 
     if (!EG(active)) {
@@ -325,12 +331,23 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         ZEND_ADD_CALL_FLAG(call, call_info);
     }
 
+#if PHP_MAJOR_VERSION == 8
+    orig_fake_scope = EG(fake_scope);
+    EG(fake_scope) = NULL;
+#endif
+
     if (func->type == ZEND_USER_FUNCTION) {
         int call_via_handler = (func->common.fn_flags & ZEND_ACC_CALL_VIA_TRAMPOLINE) != 0;
         const zend_op *current_opline_before_exception = EG(opline_before_exception);
+#if PHP_MAJOR_VERSION == 8
+        uint32_t orig_jit_trace_num = EG(jit_trace_num);
+#endif
 
         zend_init_func_execute_data(call, &func->op_array, fci->retval);
         zend_execute_ex(call);
+#if PHP_MAJOR_VERSION == 8
+        EG(jit_trace_num) = orig_jit_trace_num;
+#endif
         EG(opline_before_exception) = current_opline_before_exception;
         if (call_via_handler) {
             /* We must re-initialize function again */
@@ -360,7 +377,24 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
             /* We must re-initialize function again */
             fci_cache->function_handler = NULL;
         }
-    } else { /* ZEND_OVERLOADED_FUNCTION */
+
+#if PHP_MAJOR_VERSION == 8
+        /* This flag is regularly checked while running user functions, but not internal
+         * So see whether interrupt flag was set while the function was running... */
+        if (EG(vm_interrupt)) {
+            EG(vm_interrupt) = 0;
+            if (EG(timed_out)) {
+                zend_timeout();
+            } else if (zend_interrupt_function) {
+                zend_interrupt_function(EG(current_execute_data));
+            }
+        }
+#endif
+
+    }
+
+#if PHP_MAJOR_VERSION == 7     
+    else { /* ZEND_OVERLOADED_FUNCTION */
         ZVAL_NULL(fci->retval);
 
         /* Not sure what should be done here if it's a static method */
@@ -385,6 +419,11 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
             ZVAL_UNDEF(fci->retval);
         }
     }
+#endif
+
+#if PHP_MAJOR_VERSION == 8
+    EG(fake_scope) = orig_fake_scope;
+#endif
 
     zend_vm_stack_free_call_frame(call);
 
