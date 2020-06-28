@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name);
 static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *retval_ptr, char *string_name, int handle_exceptions);
 
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0) || PHP_MAJOR_VERSION == 8
 static int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation);
 static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache);
 static void ngx_http_php_zend_throw_exception_internal(zval *exception);
@@ -74,7 +74,7 @@ static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retva
         zval local_retval;
 
         EG(no_extensions)=1;
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1) || PHP_MAJOR_VERSION == 8
     new_op_array->scope = zend_get_executed_scope();
 #endif
 
@@ -124,7 +124,7 @@ static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *re
 }
 /* }}} */
 
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0) ||  || PHP_MAJOR_VERSION == 8
 static int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation) /* {{{ */
 {
     zend_fcall_info fci;
@@ -317,7 +317,7 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         GC_ADDREF(ZEND_CLOSURE_OBJECT(func));
 #endif
         call_info = ZEND_CALL_CLOSURE;
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1        
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1) || PHP_MAJOR_VERSION == 8       
         if (func->common.fn_flags & ZEND_ACC_FAKE_CLOSURE) {
             call_info |= ZEND_CALL_FAKE_CLOSURE;
         }
@@ -398,7 +398,7 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         }
 // hack way !!!
 #if 1
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1) || PHP_MAJOR_VERSION == 8
         else if (EG(current_execute_data)->func &&
                    ZEND_USER_CODE(EG(current_execute_data)->func->common.type)) {
             zend_rethrow_exception(EG(current_execute_data));
