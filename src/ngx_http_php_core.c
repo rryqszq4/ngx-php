@@ -111,14 +111,28 @@ ngx_http_php_code_from_string(ngx_pool_t *pool, ngx_str_t *code_str)
     return code;
 }
 
+
+#if PHP_MAJOR_VERSION >= 8
+void 
+ngx_php_error_cb(int type, 
+    const char *error_filename, const uint32_t error_lineno, zend_string *message)
+#else
 void 
 ngx_php_error_cb(int type, 
     const char *error_filename, const uint error_lineno, const char *format, va_list args)
+#endif
 {
-    char *buffer;
-    int buffer_len, display;
+    int display;
 
+    char *buffer;
+    int buffer_len;
+
+#if PHP_MAJOR_VERSION >= 8
+    buffer = ZSTR_VAL(message);
+    buffer_len = ZSTR_LEN(message);
+#else
     buffer_len = vspprintf(&buffer, PG(log_errors_max_len), format, args);
+#endif
     
     /* check for repeated errors to be ignored */
     if (PG(ignore_repeated_errors) && PG(last_error_message)) {

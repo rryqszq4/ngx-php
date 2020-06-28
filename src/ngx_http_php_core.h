@@ -175,6 +175,11 @@ char *ngx_http_php_code_read_cookies();
 int ngx_http_php_code_header_handler(sapi_header_struct *sapi_header, sapi_header_op_enum op, sapi_headers_struct *sapi_headers );
 
 extern void (*old_zend_error_cb)(int, const char *, const uint, const char *, va_list);
+
+#if PHP_MAJOR_VERSION >= 8
+void ngx_php_error_cb(int type, const char *error_filename, const uint32_t error_lineno, zend_string *message);
+#else
 void ngx_php_error_cb(int type, const char *error_filename, const uint error_lineno, const char *format, va_list args);
+#endif
 
 #endif
