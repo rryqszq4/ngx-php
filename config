@@ -58,7 +58,7 @@ if [ -z "$NGX_PHP_INCS" ]; then
   NGX_PHP_INCS="`$PHP_CONFIG --includes | sed 's/-I//g'` `$PHP_CONFIG --include-dir`/sapi/embed "
 fi
 
-if [ -z "$PHP_MAJOR_VERSION" ]; then
+if [ ! -z "$PHP_MAJOR_VERSION" ]; then
 PHP_MAJOR_VERSION=7
 fi
 
