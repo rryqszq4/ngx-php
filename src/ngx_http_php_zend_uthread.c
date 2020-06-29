@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name);
 static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *retval_ptr, char *string_name, int handle_exceptions);
 
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0) || PHP_MAJOR_VERSION == 8
 static int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation);
 static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache);
 static void ngx_http_php_zend_throw_exception_internal(zval *exception);
@@ -74,7 +74,7 @@ static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retva
         zval local_retval;
 
         EG(no_extensions)=1;
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1) || PHP_MAJOR_VERSION == 8
     new_op_array->scope = zend_get_executed_scope();
 #endif
 
@@ -124,7 +124,7 @@ static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *re
 }
 /* }}} */
 
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0) || PHP_MAJOR_VERSION == 8
 static int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation) /* {{{ */
 {
     zend_fcall_info fci;
@@ -146,6 +146,10 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
     zend_execute_data *call, dummy_execute_data;
     zend_fcall_info_cache fci_cache_local;
     zend_function *func;
+
+#if PHP_MAJOR_VERSION == 8
+    zend_class_entry *orig_fake_scope;
+#endif
 
     ZVAL_UNDEF(fci->retval);
 
@@ -317,7 +321,7 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         GC_ADDREF(ZEND_CLOSURE_OBJECT(func));
 #endif
         call_info = ZEND_CALL_CLOSURE;
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1        
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1) || PHP_MAJOR_VERSION == 8       
         if (func->common.fn_flags & ZEND_ACC_FAKE_CLOSURE) {
             call_info |= ZEND_CALL_FAKE_CLOSURE;
         }
@@ -325,12 +329,23 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         ZEND_ADD_CALL_FLAG(call, call_info);
     }
 
+#if PHP_MAJOR_VERSION == 8
+    orig_fake_scope = EG(fake_scope);
+    EG(fake_scope) = NULL;
+#endif
+
     if (func->type == ZEND_USER_FUNCTION) {
         int call_via_handler = (func->common.fn_flags & ZEND_ACC_CALL_VIA_TRAMPOLINE) != 0;
         const zend_op *current_opline_before_exception = EG(opline_before_exception);
+#if PHP_MAJOR_VERSION == 8
+        uint32_t orig_jit_trace_num = EG(jit_trace_num);
+#endif
 
         zend_init_func_execute_data(call, &func->op_array, fci->retval);
         zend_execute_ex(call);
+#if PHP_MAJOR_VERSION == 8
+        EG(jit_trace_num) = orig_jit_trace_num;
+#endif
         EG(opline_before_exception) = current_opline_before_exception;
         if (call_via_handler) {
             /* We must re-initialize function again */
@@ -360,7 +375,24 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
             /* We must re-initialize function again */
             fci_cache->function_handler = NULL;
         }
-    } else { /* ZEND_OVERLOADED_FUNCTION */
+
+#if PHP_MAJOR_VERSION == 8
+        /* This flag is regularly checked while running user functions, but not internal
+         * So see whether interrupt flag was set while the function was running... */
+        if (EG(vm_interrupt)) {
+            EG(vm_interrupt) = 0;
+            if (EG(timed_out)) {
+                zend_timeout();
+            } else if (zend_interrupt_function) {
+                zend_interrupt_function(EG(current_execute_data));
+            }
+        }
+#endif
+
+    }
+
+#if PHP_MAJOR_VERSION == 7     
+    else { /* ZEND_OVERLOADED_FUNCTION */
         ZVAL_NULL(fci->retval);
 
         /* Not sure what should be done here if it's a static method */
@@ -385,6 +417,11 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
             ZVAL_UNDEF(fci->retval);
         }
     }
+#endif
+
+#if PHP_MAJOR_VERSION == 8
+    EG(fake_scope) = orig_fake_scope;
+#endif
 
     zend_vm_stack_free_call_frame(call);
 
@@ -398,7 +435,7 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
         }
 // hack way !!!
 #if 1
-#if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 1) || PHP_MAJOR_VERSION == 8
         else if (EG(current_execute_data)->func &&
                    ZEND_USER_CODE(EG(current_execute_data)->func->common.type)) {
             zend_rethrow_exception(EG(current_execute_data));
@@ -826,7 +863,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
             ZVAL_STRING(&func_valid, "valid");
             if (ngx_http_php_call_user_function(NULL, ctx->generator_closure, &func_valid, &retval, 0, NULL) == FAILURE)
             {
-                php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling valid");
+                php_error_docref(NULL , E_WARNING, "Failed calling valid");
                 return ;
             }
             zval_ptr_dtor(&func_valid);
@@ -837,7 +874,7 @@ ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix)
                 /*
                 ZVAL_STRING(&func_next, "next");
 
-                ngx_http_php_call_user_function(NULL, ctx->generator_closure, &func_next, &retval, 0, NULL TSRMLS_CC);
+                ngx_http_php_call_user_function(NULL, ctx->generator_closure, &func_next, &retval, 0, NULL );
 
                 zval_ptr_dtor(&func_next);
                 */
@@ -894,9 +931,9 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         // ngx_php_debug("uthread resume before.");
 
         ZVAL_STRING(&func_next, "next");
-        if ( ngx_http_php_call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC) == FAILURE )
+        if ( ngx_http_php_call_user_function(NULL, closure, &func_next, &retval, 0, NULL ) == FAILURE )
         {
-            php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling next");
+            php_error_docref(NULL , E_WARNING, "Failed calling next");
             return ;
         }
         zval_ptr_dtor(&func_next);
@@ -917,9 +954,9 @@ ngx_http_php_zend_uthread_resume(ngx_http_request_t *r)
         }
 
         ZVAL_STRING(&func_valid, "valid");
-        if ( ngx_http_php_call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC) == FAILURE )
+        if ( ngx_http_php_call_user_function(NULL, closure, &func_valid, &retval, 0, NULL ) == FAILURE )
         {
-            php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling valid");
+            php_error_docref(NULL , E_WARNING, "Failed calling valid");
             return ;
         }
         zval_ptr_dtor(&func_valid);

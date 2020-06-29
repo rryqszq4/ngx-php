@@ -46,10 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern ngx_http_request_t * ngx_php_request;
 
 int php_ngx_module_init();
-void php_ngx_module_shutdown(TSRMLS_D);
+void php_ngx_module_shutdown();
 
-int php_ngx_request_init(TSRMLS_D);
-void php_ngx_request_shutdown(TSRMLS_D);
+int php_ngx_request_init();
+void php_ngx_request_shutdown();
 
 extern sapi_module_struct php_ngx_module;
 

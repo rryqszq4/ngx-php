@@ -37,7 +37,7 @@ PHP_FUNCTION(ngx_var_get)
     zend_string                 *key_str;
     ngx_http_variable_value_t   *var;
     
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &key_str) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "S", &key_str) == FAILURE){
         RETURN_NULL();
     }
 
@@ -51,7 +51,7 @@ PHP_FUNCTION(ngx_var_set)
     zend_string *key_str;
     zend_string *value_str;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "SS", &key_str, &value_str) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "SS", &key_str, &value_str) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -63,7 +63,7 @@ PHP_METHOD(ngx_var, get)
     zend_string                 *key_str;
     ngx_http_variable_value_t   *var;
   	
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &key_str) == FAILURE){
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "S", &key_str) == FAILURE){
         RETURN_NULL();
     }
 
@@ -78,7 +78,7 @@ PHP_METHOD(ngx_var, set)
     zend_string *key_str;
     zend_string *value_str;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "SS", &key_str, &value_str) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() , "SS", &key_str, &value_str) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -92,10 +92,10 @@ static const zend_function_entry php_ngx_var_class_functions[] = {
 };
 
 void 
-php_impl_ngx_var_init(int module_number TSRMLS_DC)
+php_impl_ngx_var_init(int module_number )
 {
     zend_class_entry ngx_var_class_entry;
     INIT_CLASS_ENTRY(ngx_var_class_entry, "ngx_var", php_ngx_var_class_functions);
-    php_ngx_var_class_entry = zend_register_internal_class(&ngx_var_class_entry TSRMLS_CC);
+    php_ngx_var_class_entry = zend_register_internal_class(&ngx_var_class_entry );
 
 }

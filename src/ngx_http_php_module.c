@@ -421,7 +421,11 @@ ngx_module_t ngx_http_php_module = {
 
 ngx_http_request_t *ngx_php_request;
 
+#if PHP_MAJOR_VERSION >= 8 
+void (*old_zend_error_cb)(int, const char *, const uint32_t, zend_string *);
+#else
 void (*old_zend_error_cb)(int, const char *, const uint, const char *, va_list);
+#endif
 
 static ngx_int_t 
 ngx_http_php_init(ngx_conf_t *cf)
@@ -743,7 +747,7 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
     EG(current_module)->type = MODULE_PERSISTENT;
 #endif
 
-    php_ngx_request_init(TSRMLS_C);
+    php_ngx_request_init();
 
     if (pmcf->enabled_init_worker_handler) {
         zend_first_try {
@@ -772,13 +776,13 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 
     //zend_execute_internal = ngx_execute_internal;
     
-    php_impl_ngx_core_init(0 TSRMLS_CC);
-    php_impl_ngx_log_init(0 TSRMLS_CC);
-    php_impl_ngx_request_init(0 TSRMLS_CC);
-    php_impl_ngx_socket_init(0 TSRMLS_CC);
-    php_impl_ngx_var_init(0 TSRMLS_CC);
-    php_impl_ngx_sockets_init(0 TSRMLS_CC);
-    php_impl_ngx_header_init(0 TSRMLS_CC);
+    php_impl_ngx_core_init(0 );
+    php_impl_ngx_log_init(0 );
+    php_impl_ngx_request_init(0 );
+    php_impl_ngx_socket_init(0 );
+    php_impl_ngx_var_init(0 );
+    php_impl_ngx_sockets_init(0 );
+    php_impl_ngx_header_init(0 );
 
     return NGX_OK;
 }
@@ -786,7 +790,7 @@ ngx_http_php_init_worker(ngx_cycle_t *cycle)
 static void 
 ngx_http_php_exit_worker(ngx_cycle_t *cycle)
 {
-    php_ngx_request_shutdown(TSRMLS_C);
-    php_ngx_module_shutdown(TSRMLS_C);
+    php_ngx_request_shutdown();
+    php_ngx_module_shutdown();
 }
 

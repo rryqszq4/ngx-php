@@ -49,6 +49,6 @@ PHP_FUNCTION(ngx_var_set);
 PHP_METHOD(ngx_var, get);
 PHP_METHOD(ngx_var, set);
 
-void php_impl_ngx_var_init(int module_number TSRMLS_DC);
+void php_impl_ngx_var_init(int module_number );
 
 #endif

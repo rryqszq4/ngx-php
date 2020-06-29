@@ -805,7 +805,7 @@ ngx_http_php_fnthread_create(ngx_http_request_t *r, char *func_prefix)
             ZVAL_STRING(&func_valid, "valid");
             if (ngx_http_php_call_user_function(NULL, ctx->generator_closure, &func_valid, &retval, 0, NULL) == FAILURE)
             {
-                php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling valid");
+                php_error_docref(NULL , E_WARNING, "Failed calling valid");
                 return ;
             }
             zval_ptr_dtor(&func_valid);
@@ -868,9 +868,9 @@ ngx_http_php_fnthread_resume(ngx_http_request_t *r)
         // ngx_php_debug("uthread resume before.");
 
         ZVAL_STRING(&func_next, "next");
-        if ( ngx_http_php_call_user_function(NULL, closure, &func_next, &retval, 0, NULL TSRMLS_CC) == FAILURE )
+        if ( ngx_http_php_call_user_function(NULL, closure, &func_next, &retval, 0, NULL ) == FAILURE )
         {
-            php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling next");
+            php_error_docref(NULL , E_WARNING, "Failed calling next");
             return ;
         }
         zval_ptr_dtor(&func_next);
@@ -891,9 +891,9 @@ ngx_http_php_fnthread_resume(ngx_http_request_t *r)
         }
 
         ZVAL_STRING(&func_valid, "valid");
-        if ( ngx_http_php_call_user_function(NULL, closure, &func_valid, &retval, 0, NULL TSRMLS_CC) == FAILURE )
+        if ( ngx_http_php_call_user_function(NULL, closure, &func_valid, &retval, 0, NULL ) == FAILURE )
         {
-            php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed calling valid");
+            php_error_docref(NULL , E_WARNING, "Failed calling valid");
             return ;
         }
         zval_ptr_dtor(&func_valid);

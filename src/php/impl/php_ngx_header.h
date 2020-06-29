@@ -50,6 +50,6 @@ PHP_FUNCTION(ngx_header_set);
 PHP_FUNCTION(ngx_header_get);
 PHP_FUNCTION(ngx_header_get_all);
 
-void php_impl_ngx_header_init(int module_number TSRMLS_DC);
+void php_impl_ngx_header_init(int module_number );
 
 #endif

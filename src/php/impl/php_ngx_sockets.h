@@ -132,6 +132,6 @@ PHP_FUNCTION(ngx_socket_setkeepalive);
 PHP_FUNCTION(ngx_socket_clear);
 PHP_FUNCTION(ngx_socket_destroy);
 
-void php_impl_ngx_sockets_init(int module_number TSRMLS_DC);
+void php_impl_ngx_sockets_init(int module_number );
 
 #endif

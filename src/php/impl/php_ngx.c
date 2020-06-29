@@ -211,12 +211,12 @@ static int php_ngx_startup(sapi_module_struct *sapi_module)
     return SUCCESS;
 }
 
-static int php_ngx_deactivate(TSRMLS_D)
+static int php_ngx_deactivate()
 {
     return SUCCESS;
 }
 
-static size_t php_ngx_ub_write(const char *str, size_t str_length TSRMLS_DC)
+static size_t php_ngx_ub_write(const char *str, size_t str_length )
 {
     return str_length;
 }
@@ -225,33 +225,33 @@ static void php_ngx_flush(void *server_context)
 {
 }
 
-static int php_ngx_header_handler(sapi_header_struct *sapi_header, sapi_header_op_enum op, sapi_headers_struct *sapi_headers TSRMLS_DC)
+static int php_ngx_header_handler(sapi_header_struct *sapi_header, sapi_header_op_enum op, sapi_headers_struct *sapi_headers )
 {
     return 0;
 }
 
-static size_t php_ngx_read_post(char *buffer, size_t count_bytes TSRMLS_DC)
+static size_t php_ngx_read_post(char *buffer, size_t count_bytes )
 {
     return 0;
 }
 
-static char* php_ngx_read_cookies(TSRMLS_D)
+static char* php_ngx_read_cookies()
 {
     return NULL;
 }
 
-static void php_ngx_register_variables(zval *track_vars_array TSRMLS_DC)
+static void php_ngx_register_variables(zval *track_vars_array )
 {
-    php_import_environment_variables(track_vars_array TSRMLS_CC);
+    php_import_environment_variables(track_vars_array );
 
     /*if (SG(request_info).request_method) {
-        php_register_variable("REQUEST_METHOD", (char *)SG(request_info).request_method, track_vars_array TSRMLS_CC);
+        php_register_variable("REQUEST_METHOD", (char *)SG(request_info).request_method, track_vars_array );
     }
     if (SG(request_info).request_uri){
-        php_register_variable("DOCUMENT_URI", (char *)SG(request_info).request_uri, track_vars_array TSRMLS_CC);
+        php_register_variable("DOCUMENT_URI", (char *)SG(request_info).request_uri, track_vars_array );
     }
     if (SG(request_info).query_string){
-        php_register_variable("QUERY_STRING", (char *)SG(request_info).query_string, track_vars_array TSRMLS_CC);
+        php_register_variable("QUERY_STRING", (char *)SG(request_info).query_string, track_vars_array );
     }*/
 }
 
@@ -439,28 +439,28 @@ int php_ngx_module_init()
   return SUCCESS;
 }
 
-int php_ngx_request_init(TSRMLS_D)
+int php_ngx_request_init()
 {
-    if (php_request_startup(TSRMLS_C)==FAILURE) {
+    if (php_request_startup()==FAILURE) {
         return FAILURE;
     }
 
     SG(headers_sent) = 0;
     SG(request_info).no_headers = 1;
-    php_register_variable("PHP_SELF", "-", NULL TSRMLS_CC);
+    php_register_variable("PHP_SELF", "-", NULL );
 
     return SUCCESS;
 }
 
-void php_ngx_request_shutdown(TSRMLS_D)
+void php_ngx_request_shutdown()
 {
     SG(headers_sent) = 1;
     php_request_shutdown((void *)0);
 }
 
-void php_ngx_module_shutdown(TSRMLS_D)
+void php_ngx_module_shutdown()
 {
-    php_module_shutdown(TSRMLS_C);
+    php_module_shutdown();
     sapi_shutdown();
 #ifdef ZTS
     tsrm_shutdown();
