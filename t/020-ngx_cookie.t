@@ -54,3 +54,26 @@ GET /ngx_cookie_set
 Set-Cookie: foo=ngx_php; bar=ngx_cookie
 --- response_body
 ok
+
+
+
+=== TEST 4: test ngx_cookie_get bug
+Value of cookie is null, and pass value get null.
+--- config
+	location = /ngx_cookie_get {
+		php_content '
+			echo "(".ngx_cookie_get("abc").")\n";
+			echo "(".ngx_cookie_get("def").")\n";
+			echo "(".ngx_cookie_get("foo").")\n";
+			echo "(".ngx_cookie_get("bar").")\n";
+		';
+	}
+--- request
+GET /ngx_cookie_get
+--- more_headers
+Cookie: foo=ngx_php; abc=; def=; bar=ngx_cookie
+--- response_body
+()
+()
+(ngx_php)
+(ngx_cookie)
