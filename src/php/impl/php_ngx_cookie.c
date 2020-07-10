@@ -98,12 +98,18 @@ PHP_FUNCTION(ngx_cookie_get)
                     query_key = ngx_pnalloc(r->pool, start - p + 1);
                     ngx_memzero(query_key, start - p + 1);
                     ngx_memcpy(query_key, p, start - p);
-                    start++;
-                    p = start;
-
+                    
                     if (ngx_strncasecmp((u_char *)ZSTR_VAL(key_str), (u_char *)query_key, ZSTR_LEN(key_str)) == 0) {
                         found = 1;
                     }
+
+                    start++;        
+                    p = start;
+
+                    if ( *(start) == ';' ) {
+                        continue;
+                    }
+
                 }else if ( *start == ';') {
                     if (found == 1) {
                         ZVAL_STRINGL(return_value, (char *)p, start - p);
