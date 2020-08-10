@@ -29,7 +29,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_sleep.h"
 #include "ngx_http_php_socket.h"
-#include "ngx_http_php_zend_uthread.h"
+#if PHP_MAJOR_VERSION >=8
+#include "ngx_http_php8_zend_uthread.h"
+#else
+#include "ngx_http_php7_zend_uthread.h"
+#endif
 
 static void ngx_http_php_socket_handler(ngx_event_t *event);
 
