@@ -5,7 +5,8 @@ NGX_PHP_SRCS="$ngx_addon_dir/src/ngx_http_php_module.c \
               $ngx_addon_dir/src/ngx_http_php_directive.c \
               $ngx_addon_dir/src/ngx_http_php_handler.c \
               $ngx_addon_dir/src/ngx_http_php_request.c \
-              $ngx_addon_dir/src/ngx_http_php_zend_uthread.c \
+              $ngx_addon_dir/src/ngx_http_php7_zend_uthread.c \
+              $ngx_addon_dir/src/ngx_http_php8_zend_uthread.c \
               $ngx_addon_dir/src/ngx_http_php_sleep.c \
               $ngx_addon_dir/src/ngx_http_php_socket.c \
               $ngx_addon_dir/src/ngx_http_php_util.c \
@@ -30,6 +31,8 @@ NGX_PHP_DEPS="$ngx_addon_dir/src/ngx_http_php_version.h \
               $ngx_addon_dir/src/ngx_http_php_directive.h \
               $ngx_addon_dir/src/ngx_http_php_handler.h \
               $ngx_addon_dir/src/ngx_http_php_request.h \
+              $ngx_addon_dir/src/ngx_http_php7_zend_uthread.h \
+              $ngx_addon_dir/src/ngx_http_php8_zend_uthread.h \
               $ngx_addon_dir/src/ngx_http_php_zend_uthread.h \
               $ngx_addon_dir/src/ngx_http_php_sleep.h \
               $ngx_addon_dir/src/ngx_http_php_socket.h \
