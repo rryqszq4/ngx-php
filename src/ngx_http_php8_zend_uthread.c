@@ -26,8 +26,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-extern ngx_http_request_t *ngx_php_request;
-
 #if PHP_MAJOR_VERSION >= 8
 
 #include "ngx_http_php_module.h"
@@ -475,7 +473,6 @@ static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ *
     EG(opline_before_exception) = EG(current_execute_data)->opline;
     EG(current_execute_data)->opline = EG(exception_op);
 }
-#endif
 
 void 
 ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)

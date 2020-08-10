@@ -26,8 +26,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-extern ngx_http_request_t *ngx_php_request;
-
 #if PHP_MAJOR_VERSION == 7
 
 #include "ngx_http_php_module.h"
