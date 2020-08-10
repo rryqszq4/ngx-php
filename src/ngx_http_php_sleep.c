@@ -27,11 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ngx_http_php_sleep.h"
-#if PHP_MAJOR_VERSION >=8
-#include "ngx_http_php8_zend_uthread.h"
-#else
-#include "ngx_http_php7_zend_uthread.h"
-#endif
+#include "ngx_http_php_zend_uthread.h"
 
 static void ngx_http_php_sleep_cleanup(void *data);
 

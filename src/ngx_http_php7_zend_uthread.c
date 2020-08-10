@@ -26,11 +26,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-#if PHP_MAJOR_VERSION == 7
+
 
 #include "ngx_http_php_module.h"
 #include "ngx_http_php7_zend_uthread.h"
 #include "ngx_http_php_util.h"
+
+#if PHP_MAJOR_VERSION == 7
 
 #include <zend_closures.h>
 #include <zend_dtrace.h>

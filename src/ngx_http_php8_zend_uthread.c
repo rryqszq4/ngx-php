@@ -26,11 +26,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-#if PHP_MAJOR_VERSION >= 8
-
 #include "ngx_http_php_module.h"
 #include "ngx_http_php8_zend_uthread.h"
 #include "ngx_http_php_util.h"
+
+#if PHP_MAJOR_VERSION >= 8
 
 #include <zend_closures.h>
 #include <zend_dtrace.h>

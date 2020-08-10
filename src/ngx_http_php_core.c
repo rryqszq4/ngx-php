@@ -29,11 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_module.h"
 #include "ngx_http_php_request.h"
 #include "ngx_http_php_core.h"
-#if PHP_MAJOR_VERSION >=8
-#include "ngx_http_php8_zend_uthread.h"
-#else
-#include "ngx_http_php7_zend_uthread.h"
-#endif
+#include "ngx_http_php_zend_uthread.h"
 
 ngx_http_php_code_t *
 ngx_http_php_code_from_file(ngx_pool_t *pool, ngx_str_t *code_file_path)

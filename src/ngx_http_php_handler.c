@@ -31,11 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ngx_http_php_core.h"
 #include "ngx_http_php_handler.h"
 #include "ngx_http_php_request.h"
-#if PHP_MAJOR_VERSION >=8
-#include "ngx_http_php8_zend_uthread.h"
-#else
-#include "ngx_http_php7_zend_uthread.h"
-#endif
+#include "ngx_http_php_zend_uthread.h"
 //#include "ngx_http_php_subrequest.h"
 
 //#include "php/php_ngx_location.h"
