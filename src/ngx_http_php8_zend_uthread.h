@@ -26,8 +26,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 */
 
-#ifndef __NGX_HTTP_PHP_ZEND_UTHREAD_H__
-#define __NGX_HTTP_PHP_ZEND_UTHREAD_H__
+#ifndef __NGX_HTTP_PHP8_ZEND_UTHREAD_H__
+#define __NGX_HTTP_PHP8_ZEND_UTHREAD_H__
+
+#if PHP_MAJOR_VERSION >= 8
 
 #include <ngx_core.h>
 #include <ngx_http.h>
@@ -37,10 +39,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
-#if PHP_MAJOR_VERSION >=8
-#include "ngx_http_php8_zend_uthread.h"
-#else
-#include "ngx_http_php7_zend_uthread.h"
+#define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
+	ngx_http_php__call_user_function_impl(object, function_name, retval_ptr, param_count, params, NULL)
+
+#define ngx_http_php_call_user_function_named(function_table, object, function_name, retval_ptr, param_count, params, named_params) \
+	ngx_http_php__call_user_function_impl(object, function_name, retval_ptr, param_count, params, named_params)
+
+zend_execute_data *zend_vm_stack_copy_call_frame(zend_execute_data *call, uint32_t passed_args, uint32_t additional_args);
+
+void ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_log_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_header_filter_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_body_filter_inline_routine(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix);
+
+void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_exit(ngx_http_request_t *r);
+
 #endif
 
 #endif
