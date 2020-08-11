@@ -50,6 +50,9 @@ static void ngx_http_php_zend_throw_exception_internal(zval *exception);
 
 static void ZEND_FASTCALL ngx_http_php_zend_param_must_be_ref(const zend_function *func, uint32_t arg_num);
 
+static zval * ZEND_FASTCALL ngx_http_php_zend_handle_named_arg(
+        zend_execute_data **call_ptr, zend_string *arg_name,
+        uint32_t *arg_num_ptr, void **cache_slot);
 
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name) /* {{{ */
 {
@@ -289,7 +292,7 @@ cleanup_args:
             if (name) {
                 void *cache_slot[2] = {NULL, NULL};
                 have_named_params = 1;
-                target = zend_handle_named_arg(&call, name, &arg_num, cache_slot);
+                target = ngx_http_php_zend_handle_named_arg(&call, name, &arg_num, cache_slot);
                 if (!target) {
                     goto cleanup_args;
                 }
@@ -490,6 +493,68 @@ static void ZEND_FASTCALL ngx_http_php_zend_param_must_be_ref(const zend_functio
         arg_name ? arg_name : "",
         arg_name ? ")" : ""
     );
+}
+
+static zval * ZEND_FASTCALL ngx_http_php_zend_handle_named_arg(
+        zend_execute_data **call_ptr, zend_string *arg_name,
+        uint32_t *arg_num_ptr, void **cache_slot) {
+    zend_execute_data *call = *call_ptr;
+    zend_function *fbc = call->func;
+    uint32_t arg_offset = zend_get_arg_offset_by_name(fbc, arg_name, cache_slot);
+    if (UNEXPECTED(arg_offset == (uint32_t) -1)) {
+        zend_throw_error(NULL, "Unknown named parameter $%s", ZSTR_VAL(arg_name));
+        return NULL;
+    }
+
+    zval *arg;
+    if (UNEXPECTED(arg_offset == fbc->common.num_args)) {
+        /* Unknown named parameter that will be collected into a variadic. */
+        if (!(ZEND_CALL_INFO(call) & ZEND_CALL_HAS_EXTRA_NAMED_PARAMS)) {
+            ZEND_ADD_CALL_FLAG(call, ZEND_CALL_HAS_EXTRA_NAMED_PARAMS);
+            call->extra_named_params = zend_new_array(0);
+        }
+
+        arg = zend_hash_add_empty_element(call->extra_named_params, arg_name);
+        if (!arg) {
+            zend_throw_error(NULL, "Named parameter $%s overwrites previous argument",
+                ZSTR_VAL(arg_name));
+            return NULL;
+        }
+        *arg_num_ptr = arg_offset + 1;
+        return arg;
+    }
+
+    uint32_t current_num_args = ZEND_CALL_NUM_ARGS(call);
+    // TODO: We may wish to optimize the arg_offset == current_num_args case,
+    // which is probably common (if the named parameters are in order of declaration).
+    if (arg_offset >= current_num_args) {
+        uint32_t new_num_args = arg_offset + 1;
+        ZEND_CALL_NUM_ARGS(call) = new_num_args;
+
+        uint32_t num_extra_args = new_num_args - current_num_args;
+        zend_vm_stack_extend_call_frame(call_ptr, current_num_args, num_extra_args);
+        call = *call_ptr;
+
+        arg = ZEND_CALL_VAR_NUM(call, arg_offset);
+        if (num_extra_args > 1) {
+            zval *zv = ZEND_CALL_VAR_NUM(call, current_num_args);
+            do {
+                ZVAL_UNDEF(zv);
+                zv++;
+            } while (zv != arg);
+            ZEND_ADD_CALL_FLAG(call, ZEND_CALL_MAY_HAVE_UNDEF);
+        }
+    } else {
+        arg = ZEND_CALL_VAR_NUM(call, arg_offset);
+        if (UNEXPECTED(!Z_ISUNDEF_P(arg))) {
+            zend_throw_error(NULL, "Named parameter $%s overwrites previous argument",
+                ZSTR_VAL(arg_name));
+            return NULL;
+        }
+    }
+
+    *arg_num_ptr = arg_offset + 1;
+    return arg;
 }
 
 void 
