@@ -599,6 +599,42 @@ static zval * ZEND_FASTCALL ngx_http_php_zend_handle_named_arg(
     return arg;
 }
 
+zend_execute_data *zend_vm_stack_copy_call_frame(zend_execute_data *call, uint32_t passed_args, uint32_t additional_args) /* {{{ */
+{
+    zend_execute_data *new_call;
+    int used_stack = (EG(vm_stack_top) - (zval*)call) + additional_args;
+
+    /* copy call frame into new stack segment */
+    new_call = zend_vm_stack_extend(used_stack * sizeof(zval));
+    *new_call = *call;
+    ZEND_ADD_CALL_FLAG(new_call, ZEND_CALL_ALLOCATED);
+
+    if (passed_args) {
+        zval *src = ZEND_CALL_ARG(call, 1);
+        zval *dst = ZEND_CALL_ARG(new_call, 1);
+        do {
+            ZVAL_COPY_VALUE(dst, src);
+            passed_args--;
+            src++;
+            dst++;
+        } while (passed_args);
+    }
+
+    /* delete old call_frame from previous stack segment */
+    EG(vm_stack)->prev->top = (zval*)call;
+
+    /* delete previous stack segment if it became empty */
+    if (UNEXPECTED(EG(vm_stack)->prev->top == ZEND_VM_STACK_ELEMENTS(EG(vm_stack)->prev))) {
+        zend_vm_stack r = EG(vm_stack)->prev;
+
+        EG(vm_stack)->prev = r->prev;
+        efree(r);
+    }
+
+    return new_call;
+}
+/* }}} */
+
 void 
 ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r)
 {
