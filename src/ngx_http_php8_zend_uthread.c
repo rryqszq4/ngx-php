@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <zend_closures.h>
 #include <zend_dtrace.h>
+#include <zend_execute.h>
 
 #ifdef HAVE_DTRACE
 #define php_exception__thrown_semaphore 0
@@ -46,6 +47,8 @@ static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *re
 static int ngx_http_php__call_user_function_impl(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], HashTable *named_params);
 static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache);
 static void ngx_http_php_zend_throw_exception_internal(zval *exception);
+
+static void ZEND_FASTCALL ngx_http_php_zend_param_must_be_ref(const zend_function *func, uint32_t arg_num);
 
 
 static int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name) /* {{{ */
@@ -252,7 +255,7 @@ int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache 
                 if (!ARG_MAY_BE_SENT_BY_REF(func, i + 1)) {
                     /* By-value send is not allowed -- emit a warning,
                      * but still perform the call with a by-value send. */
-                    zend_param_must_be_ref(func, i + 1);
+                    ngx_http_php_zend_param_must_be_ref(func, i + 1);
                     if (UNEXPECTED(EG(exception))) {
                         ZEND_CALL_NUM_ARGS(call) = i;
 cleanup_args:
@@ -306,7 +309,7 @@ cleanup_args:
                     if (!ARG_MAY_BE_SENT_BY_REF(func, arg_num)) {
                         /* By-value send is not allowed -- emit a warning,
                          * but still perform the call with a by-value send. */
-                        zend_param_must_be_ref(func, arg_num);
+                        ngx_http_php_zend_param_must_be_ref(func, arg_num);
                         if (UNEXPECTED(EG(exception))) {
                             goto cleanup_args;
                         }
@@ -472,6 +475,21 @@ static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ *
     }
     EG(opline_before_exception) = EG(current_execute_data)->opline;
     EG(current_execute_data)->opline = EG(exception_op);
+}
+
+static void ZEND_FASTCALL ngx_http_php_zend_param_must_be_ref(const zend_function *func, uint32_t arg_num)
+{
+    const char *arg_name = get_function_arg_name(func, arg_num);
+
+    zend_error(E_WARNING, "%s%s%s(): Argument #%d%s%s%s must be passed by reference, value given",
+        func->common.scope ? ZSTR_VAL(func->common.scope->name) : "",
+        func->common.scope ? "::" : "",
+        ZSTR_VAL(func->common.function_name),
+        arg_num,
+        arg_name ? " ($" : "",
+        arg_name ? arg_name : "",
+        arg_name ? ")" : ""
+    );
 }
 
 void 
