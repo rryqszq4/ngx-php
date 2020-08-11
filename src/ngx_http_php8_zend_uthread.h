@@ -45,6 +45,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ngx_http_php_call_user_function_named(function_table, object, function_name, retval_ptr, param_count, params, named_params) \
 	ngx_http_php__call_user_function_impl(object, function_name, retval_ptr, param_count, params, named_params)
 
+zend_execute_data *zend_vm_stack_copy_call_frame(zend_execute_data *call, uint32_t passed_args, uint32_t additional_args);
+
 void ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r);
 void ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r);
 void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);
