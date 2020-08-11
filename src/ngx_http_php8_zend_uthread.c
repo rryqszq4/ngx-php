@@ -48,6 +48,9 @@ static int ngx_http_php__call_user_function_impl(zval *object, zval *function_na
 static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache);
 static void ngx_http_php_zend_throw_exception_internal(zval *exception);
 
+static zend_always_inline uint32_t ngx_http_php_zend_get_arg_offset_by_name(
+        zend_function *fbc, zend_string *arg_name, void **cache_slot);
+
 static void ZEND_FASTCALL ngx_http_php_zend_param_must_be_ref(const zend_function *func, uint32_t arg_num);
 
 static zval * ZEND_FASTCALL ngx_http_php_zend_handle_named_arg(
@@ -480,6 +483,45 @@ static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ *
     EG(current_execute_data)->opline = EG(exception_op);
 }
 
+static zend_always_inline uint32_t ngx_http_php_zend_get_arg_offset_by_name(
+        zend_function *fbc, zend_string *arg_name, void **cache_slot) {
+    if (EXPECTED(*cache_slot == fbc)) {
+        return *(uintptr_t *)(cache_slot + 1);
+    }
+
+    // TODO: Use a hash table?
+    uint32_t num_args = fbc->common.num_args;
+    if (EXPECTED(fbc->type == ZEND_USER_FUNCTION)
+            || EXPECTED(fbc->common.fn_flags & ZEND_ACC_USER_ARG_INFO)) {
+        for (uint32_t i = 0; i < num_args; i++) {
+            zend_arg_info *arg_info = &fbc->op_array.arg_info[i];
+            if (zend_string_equals(arg_name, arg_info->name)) {
+                *cache_slot = fbc;
+                *(uintptr_t *)(cache_slot + 1) = i;
+                return i;
+            }
+        }
+    } else {
+        for (uint32_t i = 0; i < num_args; i++) {
+            zend_internal_arg_info *arg_info = &fbc->internal_function.arg_info[i];
+            size_t len = strlen(arg_info->name);
+            if (len == ZSTR_LEN(arg_name) && !memcmp(arg_info->name, ZSTR_VAL(arg_name), len)) {
+                *cache_slot = fbc;
+                *(uintptr_t *)(cache_slot + 1) = i;
+                return i;
+            }
+        }
+    }
+
+    if (fbc->common.fn_flags & ZEND_ACC_VARIADIC) {
+        *cache_slot = fbc;
+        *(uintptr_t *)(cache_slot + 1) = fbc->common.num_args;
+        return fbc->common.num_args;
+    }
+
+    return (uint32_t) -1;
+}
+
 static void ZEND_FASTCALL ngx_http_php_zend_param_must_be_ref(const zend_function *func, uint32_t arg_num)
 {
     const char *arg_name = get_function_arg_name(func, arg_num);
@@ -500,7 +542,7 @@ static zval * ZEND_FASTCALL ngx_http_php_zend_handle_named_arg(
         uint32_t *arg_num_ptr, void **cache_slot) {
     zend_execute_data *call = *call_ptr;
     zend_function *fbc = call->func;
-    uint32_t arg_offset = zend_get_arg_offset_by_name(fbc, arg_name, cache_slot);
+    uint32_t arg_offset = ngx_http_php_zend_get_arg_offset_by_name(fbc, arg_name, cache_slot);
     if (UNEXPECTED(arg_offset == (uint32_t) -1)) {
         zend_throw_error(NULL, "Unknown named parameter $%s", ZSTR_VAL(arg_name));
         return NULL;
