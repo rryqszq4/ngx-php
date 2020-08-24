@@ -46,7 +46,7 @@ static int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *re
 
 static int ngx_http_php__call_user_function_impl(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], HashTable *named_params);
 static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache);
-static void ngx_http_php_zend_throw_exception_internal(zval *exception);
+static void ngx_http_php_zend_throw_exception_internal(zend_object *exception);
 
 static zend_always_inline uint32_t ngx_http_php_zend_get_arg_offset_by_name(
         zend_function *fbc, zend_string *arg_name, void **cache_slot);
@@ -436,12 +436,12 @@ cleanup_args:
 /* }}} */
 
 
-static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ */
+static void ngx_http_php_zend_throw_exception_internal(zend_object *exception) /* {{{ */
 {
 #ifdef HAVE_DTRACE
     if (DTRACE_EXCEPTION_THROWN_ENABLED()) {
         if (exception != NULL) {
-            DTRACE_EXCEPTION_THROWN(ZSTR_VAL(Z_OBJ_P(exception)->ce->name));
+            DTRACE_EXCEPTION_THROWN(ZSTR_VAL(exception->ce->name));
         } else {
             DTRACE_EXCEPTION_THROWN(NULL);
         }
@@ -450,14 +450,14 @@ static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ *
 
     if (exception != NULL) {
         zend_object *previous = EG(exception);
-        zend_exception_set_previous(Z_OBJ_P(exception), EG(exception));
-        EG(exception) = Z_OBJ_P(exception);
+        zend_exception_set_previous(exception, EG(exception));
+        EG(exception) = exception;
         if (previous) {
             return;
         }
     }
     if (!EG(current_execute_data)) {
-        if (exception && (Z_OBJCE_P(exception) == zend_ce_parse_error || Z_OBJCE_P(exception) == zend_ce_compile_error)) {
+        if (exception && (exception->ce == zend_ce_parse_error || exception->ce == zend_ce_compile_error)) {
             return;
         }
         if (EG(exception)) {
