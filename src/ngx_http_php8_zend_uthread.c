@@ -450,14 +450,14 @@ static void ngx_http_php_zend_throw_exception_internal(zend_object *exception) /
 
     if (exception != NULL) {
         zend_object *previous = EG(exception);
-        zend_exception_set_previous(Z_OBJ_P(exception), EG(exception));
-        EG(exception) = Z_OBJ_P(exception);
+        zend_exception_set_previous(exception, EG(exception));
+        EG(exception) = exception;
         if (previous) {
             return;
         }
     }
     if (!EG(current_execute_data)) {
-        if (exception && (Z_OBJCE_P(exception) == zend_ce_parse_error || Z_OBJCE_P(exception) == zend_ce_compile_error)) {
+        if (exception && (exception->ce == zend_ce_parse_error || exception->ce == zend_ce_compile_error)) {
             return;
         }
         if (EG(exception)) {
