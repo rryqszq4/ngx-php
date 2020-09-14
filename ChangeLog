@@ -1,3 +1,18 @@
+ngx_php7 0.0.24 changes:                                                            11 Sep 2020
+    * Fixed php bug 66673.
+
+    * Fixed post args is null and response is 500.
+
+    * Fixed bug when the value of cookie is null.
+
+    * Add mac oxs install detail.
+
+    * Add function ngx_request_body.
+
+    * Support PATCH in http method.
+
+    * Support compiled pass of php8.
+    
 ngx_php7 0.0.23 changes:                                                            13 Mar 2020
     * Fixed support unix sock and test mysql unix sock.
 
