@@ -638,6 +638,13 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         }
 #endif
 
+#if 1
+        if ( rev->active && !rev->ready ) {
+            n = NGX_AGAIN;
+            break;
+        }
+#endif
+
         n = c->recv(c, b->last, size);
         //ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "%d", n);
         ngx_php_debug("n = c->recv: %d\n", (int)n);
@@ -647,7 +654,39 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
             ngx_php_debug("recv ready: %d", rev->ready);
             //rc = NGX_AGAIN;
 
-            if (u->enabled_receive_page) {
+            Z_LVAL_P(ctx->recv_code) = n;
+
+            if (n == NGX_ERROR) {
+                ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, 
+                              "php socket recv error");
+                n = -1;
+                return NGX_ERROR;
+            }
+
+            if ( n > 0 ) {
+                b->last += n;
+                b->start = NULL;
+
+                ngx_php_debug("buf write in php var.");
+                ZVAL_STRINGL(ctx->recv_buf, (char *)b->pos, b->last - b->pos);
+                break;
+            }
+
+            if (n == NGX_AGAIN) {
+                //rc = NGX_AGAIN;
+                break;
+            }
+
+            if (n == NGX_OK) {
+                b->start = NULL;
+                break;
+            }
+
+            b->last += n;
+            b->start = NULL;
+            break;
+
+            /*if (u->enabled_receive_page) {
                 if (n >= 0 && n <= (int)u->buffer_size) { 
                     b->last += n;
                     b->start = NULL;
@@ -677,7 +716,7 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
                 return n;
             }
 
-            break;
+            break;*/
             /*if (ngx_handle_read_event(rev, 0) != NGX_OK) {
                 n = -1;
                 break;
@@ -687,8 +726,8 @@ ngx_http_php_socket_upstream_recv(ngx_http_request_t *r,
         }
 #endif
 
-        ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
-                       "n = c->recv : %d, b->last : %s", n, b->last);
+        ngx_log_debug4(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
+                       "rev->active : %d, rev->ready : %d, n = c->recv : %d, b->last : %s", rev->active, rev->ready, n, b->last);
 
         read = 1;
 
