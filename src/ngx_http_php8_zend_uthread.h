@@ -47,20 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 zend_execute_data *zend_vm_stack_copy_call_frame(zend_execute_data *call, uint32_t passed_args, uint32_t additional_args);
 
-void ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_log_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_header_filter_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_body_filter_inline_routine(ngx_http_request_t *r);
-
-void ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r);
-
-void ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix);
-
-void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
-
-void ngx_http_php_zend_uthread_exit(ngx_http_request_t *r);
+int ngx_http_php__call_user_function_impl(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], HashTable *named_params);
 
 #endif
 

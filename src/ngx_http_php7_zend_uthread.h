@@ -41,39 +41,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 3
 #define zend_string_release_ex(s, persistent) \
-	zend_string_release(s)
+    zend_string_release(s)
 #endif
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 2
 #define zend_init_func_execute_data(ex, op_array, return_value) \
-	zend_init_execute_data(ex, op_array, return_value)
+    zend_init_execute_data(ex, op_array, return_value)
 #endif
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
 #define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
-	call_user_function(function_table, object, function_name, retval_ptr, param_count, params)
+    call_user_function(function_table, object, function_name, retval_ptr, param_count, params)
 #else
 #define ngx_http_php_call_user_function(function_table, object, function_name, retval_ptr, param_count, params) \
-	ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, 1)
+    ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, 1)
 #define ngx_http_php_call_user_function_ex(function_table, object, function_name, retval_ptr, param_count, params, no_separation, symbol_table) \
-	ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, no_separation)
+    ngx_http_php__call_user_function_ex(object, function_name, retval_ptr, param_count, params, no_separation)
+#endif
 #endif
 
-void ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_log_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_header_filter_inline_routine(ngx_http_request_t *r);
-void ngx_http_php_zend_uthread_body_filter_inline_routine(ngx_http_request_t *r);
-
-void ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r);
-
-void ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix);
-
-void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
-
-void ngx_http_php_zend_uthread_exit(ngx_http_request_t *r);
-
+#if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION > 0)
+int ngx_http_php__call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval params[], int no_separation);
 #endif
 
 #endif

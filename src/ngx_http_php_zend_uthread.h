@@ -37,10 +37,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <php_ini.h>
 #include <ext/standard/info.h>
 
+extern int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, char *string_name);
+extern int ngx_http_php_zend_eval_stringl_ex(char *str, size_t str_len, zval *retval_ptr, char *string_name, int handle_exceptions);
+
 #if PHP_MAJOR_VERSION >=8
 #include "ngx_http_php8_zend_uthread.h"
 #else
 #include "ngx_http_php7_zend_uthread.h"
 #endif
+
+void ngx_http_php_zend_uthread_rewrite_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_access_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_content_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_log_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_header_filter_inline_routine(ngx_http_request_t *r);
+void ngx_http_php_zend_uthread_body_filter_inline_routine(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_file_routine(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_create(ngx_http_request_t *r, char *func_prefix);
+
+void ngx_http_php_zend_uthread_resume(ngx_http_request_t *r);
+
+void ngx_http_php_zend_uthread_exit(ngx_http_request_t *r);
 
 #endif
