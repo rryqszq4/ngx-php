@@ -63,7 +63,13 @@ if [ -z "$NGX_PHP_INCS" ]; then
 fi
 
 if [ -z "$NGX_PHP_LIBS" ]; then
-  NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp7 "
+  PHP_VERSION="`$PHP_CONFIG` --version"
+  if [ ${PHP_VERSION:0:1} -ge "8" ]; then
+    PHP_MAJOR_VERSION=""
+  else
+    PHP_MAJOR_VERSION=${PHP_VERSION:0:1}
+  fi
+  NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
 fi
 
 if [ $ngx_module_link = DYNAMIC ] ; then
