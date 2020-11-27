@@ -11,7 +11,11 @@ mkdir nginx
 
 echo "php download ..."
 wget http://php.net/distributions/php-${PHP_SRC_VERSION}.tar.gz
-PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
+if [ ${PHP_SRC_VERSION:0:1} -ge "8" ]; then
+  PHP_MAJOR_VERSION=""
+else
+  PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
+fi
 echo "php download ... done"
 
 tar xf php-${PHP_SRC_VERSION}.tar.gz
