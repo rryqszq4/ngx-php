@@ -63,7 +63,7 @@ if [ -z "$NGX_PHP_INCS" ]; then
 fi
 
 if [ -z "$NGX_PHP_LIBS" ]; then
-  PHP_VERSION="`$PHP_CONFIG` --version"
+  PHP_VERSION="`$PHP_CONFIG --version`"
   if [ ${PHP_VERSION:0:1} -ge "8" ]; then
     PHP_MAJOR_VERSION=""
   else
