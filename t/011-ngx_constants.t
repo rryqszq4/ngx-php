@@ -21,7 +21,7 @@ location = /ngx_constants {
 --- request
 GET /ngx_constants
 --- response_body
-NGX_HTTP_PHP_MODULE_VERSION = 0.0.24
+NGX_HTTP_PHP_MODULE_VERSION = 0.0.25
 NGX_HTTP_PHP_MODULE_NAME = ngx_php
 NGX_OK = 0
 NGX_ERROR = -1
