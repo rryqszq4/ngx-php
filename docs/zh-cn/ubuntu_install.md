@@ -9,8 +9,8 @@ $ LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 $ apt-get update -yqq
 
 $ apt-get install -yqq wget git unzip libxml2-dev cmake make systemtap-sdt-dev \
-$                    zlibc zlib1g zlib1g-dev libpcre3 libpcre3-dev libargon2-0-dev libsodium-dev \
-$                    php7.4 php7.4-common php7.4-dev libphp7.4-embed php7.4-mysql
+$                    zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev \
+$                    php7.4-cli php7.4-dev libphp7.4-embed php7.4-mysql
 ```
 
 ### 2. 编译安装
