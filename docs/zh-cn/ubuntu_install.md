@@ -17,9 +17,9 @@ $                    php7.4 php7.4-common php7.4-dev libphp7.4-embed php7.4-mysq
 ```sh
 $ git clone https://github.com/rryqszq4/ngx_php7.git
 
-$ wget 'http://nginx.org/download/nginx-1.12.2.tar.gz'
-$ tar -zxvf nginx-1.12.2.tar.gz
-$ cd nginx-1.12.2
+$ wget 'http://nginx.org/download/nginx-1.18.0.tar.gz'
+$ tar -zxvf nginx-1.18.0.tar.gz
+$ cd nginx-1.18.0
 
 $ export PHP_LIB=/usr/lib
 
