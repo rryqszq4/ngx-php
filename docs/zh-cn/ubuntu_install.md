@@ -9,17 +9,17 @@ $ LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 $ apt-get update -yqq
 
 $ apt-get install -yqq wget git unzip libxml2-dev cmake make systemtap-sdt-dev \
-$                    zlibc zlib1g zlib1g-dev libpcre3 libpcre3-dev libargon2-0-dev libsodium-dev \
-$                    php7.4 php7.4-common php7.4-dev libphp7.4-embed php7.4-mysql
+$                    zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev \
+$                    php7.4-cli php7.4-dev libphp7.4-embed php7.4-mysql
 ```
 
 ### 2. 编译安装
 ```sh
 $ git clone https://github.com/rryqszq4/ngx_php7.git
 
-$ wget 'http://nginx.org/download/nginx-1.12.2.tar.gz'
-$ tar -zxvf nginx-1.12.2.tar.gz
-$ cd nginx-1.12.2
+$ wget 'http://nginx.org/download/nginx-1.18.0.tar.gz'
+$ tar -zxvf nginx-1.18.0.tar.gz
+$ cd nginx-1.18.0
 
 $ export PHP_LIB=/usr/lib
 
