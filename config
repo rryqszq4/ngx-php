@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ngx_addon_name=ngx_http_php7_module
 
 NGX_PHP_SRCS="$ngx_addon_dir/src/ngx_http_php_module.c \
