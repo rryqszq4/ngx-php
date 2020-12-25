@@ -41,11 +41,11 @@ jobs:
           PHP_SRC_VERSION: '8.0.0'
           NGINX_SRC_VERSION: '1.12.2'
       run: |
-        mysql -h mysql -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'create database ngx_php; grant all on ngx_php.* to "ngx_php"@"%" identified by "ngx_php"; flush privileges;'
+        mysql -h mysql-service -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'create database ngx_php; grant all on ngx_php.* to "ngx_php"@"%" identified by "ngx_php"; flush privileges;'
         if [ ! -d data-cache ]; then mkdir data-cache; fi
         if [ ! -f data-cache/world.sql.gz ]; then wget -O data-cache/world.sql.gz http://downloads.mysql.com/docs/world.sql.gz; fi
-        zcat data-cache/world.sql.gz | mysql -h mysql -P 33306 -uroot -p${{ secrets.DB_PASSWORD }}
-        mysql -h mysql -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'grant all on world.* to "ngx_php"@"%"; flush privileges;'
+        zcat data-cache/world.sql.gz | mysql -h mysql-service -P 33306 -uroot -p${{ secrets.DB_PASSWORD }}
+        mysql -h mysql-service -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'grant all on world.* to "ngx_php"@"%"; flush privileges;'
         ./.travis/compiler.sh
     - name: test
       run: ./.travis/test.sh
