@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: prepare basic packages
-      run: sudo apt-get install -yqq locales language-pack-de re2c libgmp-dev libicu-dev libmcrypt-dev libtidy-dev libenchant-dev libaspell-dev libpspell-dev librecode-dev libsasl2-dev libxpm-dev cpanminus openssl libssl-dev libbz2-dev libzip-dev systemtap-sdt-dev libonig-dev axel
+      run: sudo apt-get install -yqq locales language-pack-de re2c libgmp-dev libicu-dev libmcrypt-dev libtidy-dev libenchant-dev libaspell-dev libpspell-dev librecode-dev libsasl2-dev libxpm-dev cpanminus openssl libssl-dev libbz2-dev libzip-dev systemtap-sdt-dev libonig-dev axel libcurl3-dev 
     - name: perl packages 
       run: sudo cpanm -n Test::Nginx
     - name: compiler
