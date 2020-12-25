@@ -1,3 +1,4 @@
+name: actions-build
 on:
   push:
     branches: [ master ]
