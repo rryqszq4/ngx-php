@@ -16,6 +16,7 @@ jobs:
     - name: perl packages 
       run: sudo cpanm -n Test::Nginx
     - name: set env
+      uses: actions/setup-node@v1
       env:
           PHP_SRC_VERSION: '8.0.0'
           NGINX_SRC_VERSION: '1.12.2'
