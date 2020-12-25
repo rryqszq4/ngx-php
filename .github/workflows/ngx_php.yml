@@ -13,13 +13,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: prepare basic packages
-      run: sudo apt-get install -yqq locales language-pack-de re2c libgmp-dev libicu-dev libmcrypt-dev libtidy-dev libenchant-dev libaspell-dev libpspell-dev librecode-dev libsasl2-dev libxpm-dev cpanminus openssl libssl-dev libbz2-dev libzip-dev systemtap-sdt-dev libonig-dev axel libcurl3-dev 
+      run: | 
+        sudo apt-get install -yqq locales language-pack-de re2c libgmp-dev libicu-dev libmcrypt-dev libtidy-dev libenchant-dev libaspell-dev libpspell-dev librecode-dev libsasl2-dev libxpm-dev cpanminus openssl libssl-dev libbz2-dev libzip-dev systemtap-sdt-dev libonig-dev axel libcurl3-dev 
+        sudo apt-get install -y mysql-server mysql-client redis-server redis-tools memcached
     - name: perl packages 
       run: sudo cpanm -n Test::Nginx
     - name: compiler
       env:
           PHP_SRC_VERSION: '8.0.0'
           NGINX_SRC_VERSION: '1.12.2'
-      run: ./.travis/compiler.sh
+      run: |
+        mysql -uroot -e 'create database ngx_php; grant all on ngx_php.* to "ngx_php"@"%" identified by "ngx_php"; flush privileges;'
+        if [ ! -d data-cache ]; then mkdir data-cache; fi
+        if [ ! -f data-cache/world.sql.gz ]; then wget -O data-cache/world.sql.gz http://downloads.mysql.com/docs/world.sql.gz; fi
+        zcat data-cache/world.sql.gz | mysql -uroot
+        mysql -uroot -e 'grant all on world.* to "ngx_php"@"%"; flush privileges;'
+        ./.travis/compiler.sh
     - name: test
       run: ./.travis/test.sh
