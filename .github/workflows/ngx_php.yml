@@ -16,6 +16,8 @@ jobs:
       run: | 
         sudo apt-get install -yqq locales language-pack-de re2c libgmp-dev libicu-dev libmcrypt-dev libtidy-dev libenchant-dev libaspell-dev libpspell-dev librecode-dev libsasl2-dev libxpm-dev cpanminus openssl libssl-dev libbz2-dev libzip-dev systemtap-sdt-dev libonig-dev axel libcurl3-dev 
         sudo apt-get install -y mysql-server mysql-client redis-server redis-tools memcached
+        sudo service mysql start
+        sudo redis-server /etc/redis/redis.conf
     - name: perl packages 
       run: sudo cpanm -n Test::Nginx
     - name: compiler
