@@ -110,7 +110,7 @@ export PHP_LIB=/usr/lib
             --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
             --add-module=/path/to/ngx_php7/third_party/ngx_devel_kit \
             --add-module=/path/to/ngx_php7
-$ make && make install
+make && make install
 ```
 
 ### Mac osx
