@@ -4,6 +4,8 @@ use Test::Nginx::Socket 'no_plan';
 
 $ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
 $ENV{'TEST_NGINX_MYSQL_PATH'} ||= '/var/run/mysqld/mysqld.sock';
+$ENV{'TEST_MYSQL_HOST'} = '0.0.0.0';
+$ENV{'TEST_MYSQL_PORT'} = '33306';
 
 run_tests();
 
@@ -15,7 +17,7 @@ location =/ngx_mysql {
     content_by_php '
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
-        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
@@ -36,7 +38,7 @@ location =/ngx_mysql_clear {
     content_by_php '
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
-        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
@@ -57,7 +59,7 @@ location =/ngx_mysql_destruct {
     content_by_php '
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
-        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
@@ -78,7 +80,7 @@ location =/ngx_mysql_destruct {
     content_by_php '
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
-        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
@@ -107,7 +109,7 @@ location =/ngx_mysql_sleep {
     content_by_php '
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
-        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select sleep(5) as sleep;";
         $ret = yield from $m->query($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
@@ -127,7 +129,8 @@ location =/t6 {
     content_by_php_block {
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\ngx\mysql();
-        yield from $m->connect("unix:$TEST_NGINX_MYSQL_PATH", "0", "ngx_php", "ngx_php", "world");
+        //yield from $m->connect("unix:$TEST_NGINX_MYSQL_PATH", "0", "ngx_php", "ngx_php", "world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
@@ -148,7 +151,7 @@ location =/ngx_mysql_query2 {
     content_by_php '
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\\ngx\mysql();
-        yield from $m->connect("127.0.0.1","3306","ngx_php","ngx_php","world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query2($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
@@ -169,7 +172,8 @@ location =/t8 {
     content_by_php_block {
         require_once("$TEST_NGINX_BUILD_DIR/t/lib/mysql.php");
         $m = new php\ngx\mysql();
-        yield from $m->connect("unix:$TEST_NGINX_MYSQL_PATH", "0", "ngx_php", "ngx_php", "world");
+        //yield from $m->connect("unix:$TEST_NGINX_MYSQL_PATH", "0", "ngx_php", "ngx_php", "world");
+        yield from $m->connect("$TEST_MYSQL_HOST","$TEST_MYSQL_PORT","ngx_php","ngx_php","world");
         $sql = "select * from world.city order by ID asc limit 1 ;";
         $ret = yield from $m->query2($sql);
         echo implode(",",$ret->offsetGet(0)->getArrayCopy())."\n";
