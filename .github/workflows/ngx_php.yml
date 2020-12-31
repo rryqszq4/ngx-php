@@ -27,6 +27,10 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+    strategy:
+      matrix:
+        php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.25, 7.4.13, 8.0.0]
+        ngxinx_version: [1.12.2]
     steps:
     - uses: actions/checkout@v2
     - name: prepare basic packages
@@ -38,8 +42,8 @@ jobs:
       run: sudo cpanm -n Test::Nginx
     - name: compiler
       env:
-          PHP_SRC_VERSION: '8.0.0'
-          NGINX_SRC_VERSION: '1.12.2'
+          PHP_SRC_VERSION: ${{ matrix.php_version }}
+          NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
       run: |
         mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'create database ngx_php; grant all on ngx_php.* to "ngx_php"@"%" identified by "ngx_php"; flush privileges;'
         if [ ! -d data-cache ]; then mkdir data-cache; fi
