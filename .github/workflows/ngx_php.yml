@@ -1,7 +1,7 @@
 name: actions-build
 on:
   push:
-    branches: [ master ]
+    branches: [ master,development ]
   pull_request:
     branches: [ master ]
 
@@ -29,7 +29,7 @@ jobs:
           --health-retries=3
     strategy:
       matrix:
-        php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.25, 7.4.13, 8.0.0]
+        php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.26, 7.4.14, 8.0.0]
         ngxinx_version: [1.12.2]
     steps:
     - uses: actions/checkout@v2
