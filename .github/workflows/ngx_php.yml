@@ -29,8 +29,8 @@ jobs:
           --health-retries=3
     strategy:
       matrix:
-        php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.26, 7.4.14, 8.0.1]
-        ngxinx_version: [1.12.2]
+        php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.28, 7.4.19, 8.0.6]
+        ngxinx_version: [1.12.2, 1.16.1]
     steps:
     - uses: actions/checkout@v2
     - name: prepare basic packages
