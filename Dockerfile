@@ -8,7 +8,7 @@ ENV PHP_LIB=/usr/lib
 
 WORKDIR /build
 
-RUN apk --no-cache add curl gcc g++ make musl-dev linux-headers gd-dev geoip-dev libxml2-dev libxslt-dev openssl-dev paxmark pcre-dev perl-dev pkgconf zlib-dev libedit-dev ncurses-dev php7-dev php7-embed \
+RUN apk --no-cache add curl gcc g++ make musl-dev linux-headers gd-dev geoip-dev libxml2-dev libxslt-dev openssl-dev paxmark pcre-dev perl-dev pkgconf zlib-dev libedit-dev ncurses-dev php7-dev php7-embed argon2-dev \
  && NGINX_VERSION=$(nginx -v 2>&1 | sed 's/^[^0-9]*//') \
  && curl -sL -o nginx-${NGINX_VERSION}.tar.gz http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
  && tar -xf nginx-${NGINX_VERSION}.tar.gz \
