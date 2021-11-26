@@ -422,6 +422,9 @@ ngx_module_t ngx_http_php_module = {
 ngx_http_request_t *ngx_php_request;
 
 #if PHP_MAJOR_VERSION >= 8 
+#if PHP_MINOR_VERSION > 0
+void (*old_zend_error_cb)(int, zend_string *, const uint32_t, zend_string *);
+#else
 void (*old_zend_error_cb)(int, const char *, const uint32_t, zend_string *);
 #else
 void (*old_zend_error_cb)(int, const char *, const uint, const char *, va_list);

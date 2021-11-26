@@ -113,6 +113,11 @@ ngx_http_php_code_from_string(ngx_pool_t *pool, ngx_str_t *code_str)
 
 
 #if PHP_MAJOR_VERSION >= 8
+#if PHP_MINOR_VERSION > 0
+void 
+ngx_php_error_cb(int type, 
+    zend_string *error_filename, const uint32_t error_lineno, zend_string *message)
+#else
 void 
 ngx_php_error_cb(int type, 
     const char *error_filename, const uint32_t error_lineno, zend_string *message)
