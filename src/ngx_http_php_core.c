@@ -121,6 +121,7 @@ ngx_php_error_cb(int type,
 void 
 ngx_php_error_cb(int type, 
     const char *error_filename, const uint32_t error_lineno, zend_string *message)
+#endif
 #else
 void 
 ngx_php_error_cb(int type, 

@@ -426,6 +426,7 @@ ngx_http_request_t *ngx_php_request;
 void (*old_zend_error_cb)(int, zend_string *, const uint32_t, zend_string *);
 #else
 void (*old_zend_error_cb)(int, const char *, const uint32_t, zend_string *);
+#endif
 #else
 void (*old_zend_error_cb)(int, const char *, const uint, const char *, va_list);
 #endif
