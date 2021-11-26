@@ -49,7 +49,7 @@ jobs:
         if [ ! -d data-cache ]; then mkdir data-cache; fi
         if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
         tar zxvf data-cache/world-db.tar.gz
-        mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} < data-cache/world.sql
+        mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} < data-cache/world-db/world.sql
         mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'grant all on world.* to "ngx_php"@"%"; flush privileges;'
         ./.travis/compiler.sh
     - name: test
