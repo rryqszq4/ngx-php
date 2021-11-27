@@ -66,10 +66,9 @@ fi
 
 if [ -z "$NGX_PHP_LIBS" ]; then
   PHP_VERSION="`$PHP_CONFIG --version`"
-  if [ ${PHP_VERSION:0:1} -ge "8" ]; then
+  PHP_MAJOR_VERSION=`echo $PHP_VERSION | sed -e "s#\.[0-9]*##g"`
+  if [ $PHP_MAJOR_VERSION -ge "8" ]; then
     PHP_MAJOR_VERSION=""
-  else
-    PHP_MAJOR_VERSION=${PHP_VERSION:0:1}
   fi
   NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
 fi
