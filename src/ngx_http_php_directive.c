@@ -1108,7 +1108,7 @@ ngx_http_php_set_run_file(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
         }
         php_execute_simple_script(&file_handle, retval );
 #else
-        zend_stream_init_filename(&file_handle, code->code.file);
+        zend_stream_init_filename(&file_handle, filter_data->code->code.file);
         if (php_execute_simple_script(&file_handle, retval ) == FAILURE) {
             php_printf("Failed to execute PHP script.\n");
             return NGX_CONF_ERROR;
