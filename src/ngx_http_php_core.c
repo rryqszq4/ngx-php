@@ -113,9 +113,15 @@ ngx_http_php_code_from_string(ngx_pool_t *pool, ngx_str_t *code_str)
 
 
 #if PHP_MAJOR_VERSION >= 8
+#if PHP_MINOR_VERSION > 0
+void 
+ngx_php_error_cb(int type, 
+    zend_string *error_filename, const uint32_t error_lineno, zend_string *message)
+#else
 void 
 ngx_php_error_cb(int type, 
     const char *error_filename, const uint32_t error_lineno, zend_string *message)
+#endif
 #else
 void 
 ngx_php_error_cb(int type, 
@@ -145,7 +151,11 @@ ngx_php_error_cb(int type,
 #endif
             || (!PG(ignore_repeated_source)
                 && ((PG(last_error_lineno) != (int)error_lineno)
+#if PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 0
+                    || !zend_string_equals(PG(last_error_file), error_filename)))) {
+#else
                     || strcmp(PG(last_error_file), error_filename)))) {
+#endif
             display = 1;
         } else {
             display = 0;
@@ -165,7 +175,11 @@ ngx_php_error_cb(int type,
             PG(last_error_file) = NULL;
         }
         if (!error_filename) {
+#if PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION >= 1
+            error_filename = ZSTR_KNOWN(ZEND_STR_UNKNOWN_CAPITALIZED);
+#else
             error_filename = "Unknown";
+#endif
         }
         PG(last_error_type) = type;
 #if PHP_MAJOR_VERSION >= 8
@@ -173,7 +187,11 @@ ngx_php_error_cb(int type,
 #else
         PG(last_error_message) = strdup(buffer);
 #endif
+#if PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 0
+        PG(last_error_file) = zend_string_copy(error_filename);
+#else
         PG(last_error_file) = strdup(error_filename);
+#endif
         PG(last_error_lineno) = error_lineno;
     }
 
@@ -253,7 +271,13 @@ ngx_php_error_cb(int type,
                 error_type_str = "Unknown error";
                 break;
         }
-        buffer_len = spprintf(&log_buffer, 0, "%s: %s in %s on line %d", error_type_str, buffer, error_filename, error_lineno);
+        buffer_len = spprintf(&log_buffer, 0, "%s: %s in %s on line %d", error_type_str, buffer, 
+#if PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 0
+            ZSTR_VAL(error_filename),
+#else
+            error_filename, 
+#endif
+            error_lineno);
 
         ngx_buf_t *b;
         ngx_http_php_rputs_chain_list_t *chain;
@@ -671,8 +695,9 @@ ngx_php_ngx_run(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php
 
         zend_file_handle file_handle;
 
+#if PHP_MAJOR_VERSION < 8 || (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 1) 
         file_handle.type = ZEND_HANDLE_FP;
-        file_handle.opened_path = NULL;
+        file_handle.opened_path = NULL;    
         file_handle.free_filename = 0;
         file_handle.filename = code->code.file;
         if (!(file_handle.handle.fp = VCWD_FOPEN(file_handle.filename, "rb"))) {
@@ -680,6 +705,12 @@ ngx_php_ngx_run(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php
             return FAILURE;
         }
         php_execute_script(&file_handle );
+#else
+        zend_stream_init_filename(&file_handle, code->code.file);
+        if (php_execute_script(&file_handle) == FAILURE) {
+            php_printf("Failed to execute PHP script.\n");
+        }
+#endif
 
     }else {
     }
@@ -707,15 +738,23 @@ ngx_php_eval_file(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_p
 
         zend_file_handle file_handle;
 
+#if PHP_MAJOR_VERSION < 8 || (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 1) 
         file_handle.type = ZEND_HANDLE_FP;
-        file_handle.opened_path = NULL;
+        file_handle.opened_path = NULL;    
         file_handle.free_filename = 0;
         file_handle.filename = code->code.file;
         if (!(file_handle.handle.fp = VCWD_FOPEN(file_handle.filename, "rb"))) {
             php_printf("Could not open input file: %s\n", file_handle.filename);
             return FAILURE;
         }
-        php_execute_script(&file_handle);
+        php_execute_script(&file_handle );
+#else
+        zend_stream_init_filename(&file_handle, code->code.file);
+        if (php_execute_script(&file_handle) == FAILURE) {
+            php_printf("Failed to execute PHP script.\n");
+            return FAILURE;
+        }
+#endif
 
     }
 

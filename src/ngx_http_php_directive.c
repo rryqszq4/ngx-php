@@ -1097,16 +1097,23 @@ ngx_http_php_set_run_file(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
         zend_file_handle file_handle;
 
         retval = NULL;
+#if PHP_MAJOR_VERSION < 8 || (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 1) 
         file_handle.type = ZEND_HANDLE_FP;
-        file_handle.opened_path = NULL;
+        file_handle.opened_path = NULL;    
         file_handle.free_filename = 0;
         file_handle.filename = filter_data->code->code.file;
         if (!(file_handle.handle.fp = VCWD_FOPEN(file_handle.filename, "rb"))) {
             php_printf("Could not open input file: %s\n", file_handle.filename);
-            //return FAILURE;
             return NGX_CONF_ERROR;
         }
         php_execute_simple_script(&file_handle, retval );
+#else
+        zend_stream_init_filename(&file_handle, filter_data->code->code.file);
+        if (php_execute_simple_script(&file_handle, retval ) == FAILURE) {
+            php_printf("Failed to execute PHP script.\n");
+            return NGX_CONF_ERROR;
+        }
+#endif
 
         if (Z_TYPE_P(retval) == IS_TRUE || 
             Z_TYPE_P(retval) == IS_FALSE || 

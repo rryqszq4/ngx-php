@@ -29,7 +29,7 @@ jobs:
           --health-retries=3
     strategy:
       matrix:
-        php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.28, 7.4.19, 8.0.6]
+        php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.33, 7.4.26, 8.0.13, 8.1.0]
         ngxinx_version: [1.12.2, 1.16.1]
     steps:
     - uses: actions/checkout@v2
@@ -47,8 +47,9 @@ jobs:
       run: |
         mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'create database ngx_php; grant all on ngx_php.* to "ngx_php"@"%" identified by "ngx_php"; flush privileges;'
         if [ ! -d data-cache ]; then mkdir data-cache; fi
-        if [ ! -f data-cache/world.sql.gz ]; then wget -O data-cache/world.sql.gz http://downloads.mysql.com/docs/world.sql.gz; fi
-        zcat data-cache/world.sql.gz | mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }}
+        if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
+        tar zxvf data-cache/world-db.tar.gz
+        mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} < world-db/world.sql
         mysql -h 0.0.0.0 -P 33306 -uroot -p${{ secrets.DB_PASSWORD }} -e 'grant all on world.* to "ngx_php"@"%"; flush privileges;'
         ./.travis/compiler.sh
     - name: test
