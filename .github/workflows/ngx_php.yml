@@ -5,31 +5,16 @@ on:
   pull_request:
     branches: [ master ]
 
+
 env:
-  DB_PASSWORD: ngx_php
+  DB_DATABASE: test_db
+  DB_USER: root
+  DB_PASSWORD: root
 
 jobs:
   build:
 
     runs-on: ubuntu-20.04
-    services:
-      # mysql-service Label used to access the service container
-      mysql-service:
-        # Docker Hub image (also with version)
-        image: mysql:8.0
-        env:
-          ## Accessing to Github secrets, where you can store your configuration
-          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASSWORD }}
-          MYSQL_DATABASE: db_test
-        ## map the "external" 33306 port with the "internal" 3306
-        ports:
-          - 33306:3306
-        # Set health checks to wait until mysql database has started (it takes some seconds to start)
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
     strategy:
       matrix:
         php_version: [7.0.33, 7.1.33, 7.2.34, 7.3.33, 7.4.26, 8.0.28, 8.1.17]
@@ -48,6 +33,7 @@ jobs:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
           NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
       run: |
+        sudo /etc/init.d/mysql start
         mysql -h 0.0.0.0 -P 33306 -uroot -p${{ env.DB_PASSWORD }} -e 'create database ngx_php; grant all on ngx_php.* to "ngx_php"@"%" identified by "ngx_php"; flush privileges;'
         if [ ! -d data-cache ]; then mkdir data-cache; fi
         if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
