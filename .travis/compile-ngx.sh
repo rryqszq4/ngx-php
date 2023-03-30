@@ -9,16 +9,16 @@
 # mkdir php
 # mkdir nginx
 
-if [ ${PHP_SRC_VERSION:0:1} -ge "8" ]; then
-  PHP_MAJOR_VERSION=""
-else
-  PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
-fi
+# if [ ${PHP_SRC_VERSION:0:1} -ge "8" ]; then
+#   PHP_MAJOR_VERSION=""
+# else
+#   PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
+# fi
 
 echo "nginx download ..."
 wget http://nginx.org/download/nginx-${NGINX_SRC_VERSION}.tar.gz
 echo "nginx download ... done"
-tar xf nginx-${NGINX_SRC_VERSION}.tar.gz
+tar -zxf nginx-${NGINX_SRC_VERSION}.tar.gz
 
 NGINX_SRC=`pwd`'/nginx-'${NGINX_SRC_VERSION}
 NGINX_SRC_ROOT=`pwd`'/nginx'
@@ -34,23 +34,23 @@ export PHP_LIB='/usr/lib'
 
 echo "nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
-  ./configure --prefix=${NGINX_SRC_ROOT} \
-              --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-module=../third_party/ngx_devel_kit \
-              --add-module=..
+  bash ./configure  --prefix=${NGINX_SRC_ROOT} \
+                    --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+                    --add-module=../third_party/ngx_devel_kit \
+                    --add-module=..
 else
-  ./configure --prefix=${NGINX_SRC_ROOT} \
-              --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-dynamic-module=../third_party/ngx_devel_kit \
-              --add-dynamic-module=..
+  bash ./configure  --prefix=${NGINX_SRC_ROOT} \
+                    --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+                    --add-dynamic-module=../third_party/ngx_devel_kit \
+                    --add-dynamic-module=..
 fi
 make
 make install
 if [ $? -eq 0 ];then
     echo "nginx install ... done"
-    echo "ngx_php$PHP_MAJOR_VERSION compile success."
+    echo "ngx_php $PHP_SRC_VERSION compile success."
 else 
-    echo "ngx_php$PHP_MAJOR_VERSION compile failed."
+    echo "ngx_php $PHP_SRC_VERSION compile failed."
     exit 1
 fi
 
