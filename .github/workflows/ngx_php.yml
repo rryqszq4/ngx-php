@@ -21,7 +21,7 @@ jobs:
         sudo apt-get install -y redis-server redis-tools memcached
         sudo redis-server /etc/redis/redis.conf
         sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
-        sudo apt-get update -yqq  && apt-get upgrade -yqq
+        sudo apt-get update -yqq  && sudo apt-get upgrade -yqq
     - name: perl packages 
       run: sudo cpanm -n Test::Nginx
     - name: compiler
