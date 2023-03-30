@@ -24,6 +24,8 @@ NGINX_SRC=`pwd`'/nginx-'${NGINX_SRC_VERSION}
 NGINX_SRC_ROOT=`pwd`'/nginx'
 cd ${NGINX_SRC}
 
+# Show pwd
+pwd
 #export PHP_CONFIG=${PHP_SRC_ROOT}'/bin/php-config'
 export PHP_LIB='/usr/lib'
 #export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
@@ -34,13 +36,13 @@ echo "nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-module=../../ngx_php7/third_party/ngx_devel_kit \
-              --add-module=../../ngx_php7
+              --add-module=../../../ngx_php7/third_party/ngx_devel_kit \
+              --add-module=../../../ngx_php7
 else
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-dynamic-module=../../ngx_php7/third_party/ngx_devel_kit \
-              --add-dynamic-module=../../ngx_php7
+              --add-dynamic-module=../../../ngx_php7/third_party/ngx_devel_kit \
+              --add-dynamic-module=../../../ngx_php7
 fi
 make
 make install
