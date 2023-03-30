@@ -1,10 +1,5 @@
-name: actions-build
-on:
-  push:
-    branches: [ master,development ]
-  pull_request:
-    branches: [ master ]
-
+name: Ngx-php build test
+on: [ push, pull_request ]
 
 env:
   DB_DATABASE: test_db
