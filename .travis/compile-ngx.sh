@@ -37,12 +37,12 @@ if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
               --add-module=../third_party/ngx_devel_kit \
-              --add-module=../
+              --add-module=..
 else
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
               --add-dynamic-module=../third_party/ngx_devel_kit \
-              --add-dynamic-module=../
+              --add-dynamic-module=..
 fi
 make
 make install
