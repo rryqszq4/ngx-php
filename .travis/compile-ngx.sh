@@ -20,8 +20,8 @@ wget http://nginx.org/download/nginx-${NGINX_SRC_VERSION}.tar.gz
 echo "nginx download ... done"
 tar xf nginx-${NGINX_SRC_VERSION}.tar.gz
 
-NGINX_SRC='/nginx-'${NGINX_SRC_VERSION}
-NGINX_SRC_ROOT='/nginx'
+NGINX_SRC=`pwd`'/nginx-'${NGINX_SRC_VERSION}
+NGINX_SRC_ROOT=`pwd`'/nginx'
 cd ${NGINX_SRC}
 
 #export PHP_CONFIG=${PHP_SRC_ROOT}'/bin/php-config'
