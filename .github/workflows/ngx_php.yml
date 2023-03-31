@@ -32,9 +32,6 @@ jobs:
       fail-fast: false
     
     name: Test PHP-${{ matrix.php_version }} Nginx ${{ matrix.ngxinx_version }}
-    env:
-      PHP_SRC_VERSION: ${{ matrix.php_version }}
-      NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
     steps:
     - uses: actions/checkout@v3
     - name: prepare basic packages
@@ -58,9 +55,12 @@ jobs:
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} < world-db/world.sql
     
     - name: Install PHP-${{ matrix.php_version }}
-      run: sudo apt-get install php${{ env.PHP_SRC_VERSION }}-cli php${{ env.PHP_SRC_VERSION }}-dev libphp${{ env.PHP_SRC_VERSION }}-embed php${{ env.PHP_SRC_VERSION }}-mysql
+      run: sudo apt-get install php${{ matrix.php_version }}-cli php${{ matrix.php_version }}-dev libphp${{ matrix.php_version }}-embed php${{ matrix.php_version }}-mysql
     
     - name: Compile Ngx-php
+      env:
+        PHP_SRC_VERSION: ${{ matrix.php_version }}
+        NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
       run: ./.travis/compile-ngx.sh
 
     - name: test
