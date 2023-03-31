@@ -32,7 +32,9 @@ jobs:
       fail-fast: false
     
     name: Test PHP-${{ matrix.php_version }} Nginx ${{ matrix.ngxinx_version }}
-
+    env:
+            PHP_SRC_VERSION: ${{ matrix.php_version }}
+            NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
     steps:
     - uses: actions/checkout@v3
     - name: prepare basic packages
@@ -42,25 +44,24 @@ jobs:
         sudo redis-server /etc/redis/redis.conf
         sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
         sudo apt-get update -yqq >/dev/null && sudo apt-get upgrade -yqq >/dev/null
+
     - name: perl packages 
       run: sudo cpanm -n Test::Nginx
-    - name: compiler
-      env:
-          PHP_SRC_VERSION: ${{ matrix.php_version }}
-          NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
+
+    - name: MySQL Start and create table
       run: |
-        echo "MySQL Start and create table"
         sudo /etc/init.d/mysql start
         mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         if [ ! -d data-cache ]; then mkdir data-cache; fi
         if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
         tar zxvf data-cache/world-db.tar.gz
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} < world-db/world.sql
-
-        echo "Install PHP-${{ env.PHP_SRC_VERSION }}"
-        sudo apt-get install php${{ env.PHP_SRC_VERSION }}-cli php${{ env.PHP_SRC_VERSION }}-dev libphp${{ env.PHP_SRC_VERSION }}-embed php${{ env.PHP_SRC_VERSION }}-mysql
-
-        echo "Compile Ngx-php"  
-        ./.travis/compile-ngx.sh
+    
+    - name: Install PHP-PHP-${{ env.PHP_SRC_VERSION }}
+      run: sudo apt-get install php${{ env.PHP_SRC_VERSION }}-cli php${{ env.PHP_SRC_VERSION }}-dev libphp${{ env.PHP_SRC_VERSION }}-embed php${{ env.PHP_SRC_VERSION }}-mysql
+    
+    - name: Compile Ngx-php
+      run: ./.travis/compile-ngx.sh
+      
     - name: test
       run: ./.travis/test.sh
