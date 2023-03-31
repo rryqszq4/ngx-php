@@ -33,8 +33,8 @@ jobs:
     
     name: Test PHP-${{ matrix.php_version }} Nginx ${{ matrix.ngxinx_version }}
     env:
-            PHP_SRC_VERSION: ${{ matrix.php_version }}
-            NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
+      PHP_SRC_VERSION: ${{ matrix.php_version }}
+      NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
     steps:
     - uses: actions/checkout@v3
     - name: prepare basic packages
@@ -57,11 +57,11 @@ jobs:
         tar zxvf data-cache/world-db.tar.gz
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} < world-db/world.sql
     
-    - name: Install PHP-PHP-${{ env.PHP_SRC_VERSION }}
+    - name: Install PHP-${{ matrix.php_version }}
       run: sudo apt-get install php${{ env.PHP_SRC_VERSION }}-cli php${{ env.PHP_SRC_VERSION }}-dev libphp${{ env.PHP_SRC_VERSION }}-embed php${{ env.PHP_SRC_VERSION }}-mysql
     
     - name: Compile Ngx-php
       run: ./.travis/compile-ngx.sh
-      
+
     - name: test
       run: ./.travis/test.sh
