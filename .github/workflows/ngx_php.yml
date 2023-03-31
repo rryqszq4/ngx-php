@@ -30,6 +30,9 @@ jobs:
         # Disable fail-fast to allow all failing versions to fail in a
         # single build, rather than stopping when the first one fails.
       fail-fast: false
+    
+    name: Build Nginx:${{ matrix.ngxinx_version }} PHP:${{ matrix.php_version }}
+
     steps:
     - uses: actions/checkout@v3
     - name: prepare basic packages
