@@ -26,9 +26,9 @@ cd ${NGINX_SRC}
 
 # Show pwd
 pwd
-#export PHP_CONFIG=${PHP_SRC_ROOT}'/bin/php-config'
+export PHP_CONFIG='/usr/bin/php-config'
 export PHP_LIB='/usr/lib'
-#export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
+export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
 
 #ls ${PHP_SRC_ROOT}
 
