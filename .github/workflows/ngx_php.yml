@@ -63,6 +63,11 @@ jobs:
         tar zxvf data-cache/world-db.tar.gz
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} < world-db/world.sql
     
+    - name: Install Redis & Memcached
+      run: |
+        sudo apt-get install -y redis-server redis-tools memcached
+        sudo redis-server /etc/redis/redis.conf
+
     - name: Perl packages 
       run: sudo cpanm -n Test::Nginx
 
