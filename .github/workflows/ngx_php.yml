@@ -41,10 +41,10 @@ jobs:
       # Bypass installing ondrej, for faster runs
     - name: Install old PHP version if needed
       if: |
-        ${{ matrix.php_version }} == '7.0' ||
-        ${{ matrix.php_version }} == 7.1 ||
-        ${{ matrix.php_version }} == 7.2 ||
-        ${{ matrix.php_version }} == 7.3
+        matrix.php_version == '7.0' ||
+        matrix.php_version == 7.1 ||
+        matrix.php_version == 7.2 ||
+        matrix.php_version == 7.3
 
       run: |
         sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
