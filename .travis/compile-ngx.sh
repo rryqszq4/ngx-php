@@ -20,15 +20,15 @@
 # echo "nginx download ... done"
 # tar -zxf nginx-${NGINX_SRC_VERSION}.tar.gz
 
-NGINX_SRC=`pwd`'/nginx-'${NGINX_SRC_VERSION}
+# NGINX_SRC=`pwd`'/nginx-'${NGINX_SRC_VERSION}
 NGINX_SRC_ROOT=`pwd`'/nginx'
-cd ${NGINX_SRC}
+cd nginx-${NGINX_SRC_VERSION}
 
 # Show pwd
 pwd
-export PHP_CONFIG='/usr/bin/php-config'
+#export PHP_CONFIG='/usr/bin/php-config'
 export PHP_LIB='/usr/lib'
-export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
+#export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
 
 #ls ${PHP_SRC_ROOT}
 
