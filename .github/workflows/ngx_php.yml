@@ -31,7 +31,7 @@ jobs:
         # single build, rather than stopping when the first one fails.
       fail-fast: false
     
-    name: Build Nginx:${{ matrix.ngxinx_version }} PHP:${{ matrix.php_version }}
+    name: Build PHP:${{ matrix.php_version }} Nginx:${{ matrix.ngxinx_version }}
 
     steps:
     - uses: actions/checkout@v3
