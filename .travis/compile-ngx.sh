@@ -44,7 +44,7 @@ else
                     --add-dynamic-module=../third_party/ngx_devel_kit \
                     --add-dynamic-module=..
 fi
-make
+make -k
 make install
 if [ $? -eq 0 ];then
     echo "nginx install ... done"
