@@ -15,10 +15,10 @@
 #   PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
 # fi
 
-echo "nginx download ..."
-wget http://nginx.org/download/nginx-${NGINX_SRC_VERSION}.tar.gz
-echo "nginx download ... done"
-tar -zxf nginx-${NGINX_SRC_VERSION}.tar.gz
+# echo "nginx download ..."
+# wget http://nginx.org/download/nginx-${NGINX_SRC_VERSION}.tar.gz
+# echo "nginx download ... done"
+# tar -zxf nginx-${NGINX_SRC_VERSION}.tar.gz
 
 NGINX_SRC=`pwd`'/nginx-'${NGINX_SRC_VERSION}
 NGINX_SRC_ROOT=`pwd`'/nginx'
@@ -34,15 +34,15 @@ export PHP_LIB='/usr/lib'
 
 echo "nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
-  bash ./configure  --prefix=${NGINX_SRC_ROOT} \
-                    --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-                    --add-module=../third_party/ngx_devel_kit \
-                    --add-module=..
+  ./configure --prefix=${NGINX_SRC_ROOT} \
+              --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+              --add-module=../third_party/ngx_devel_kit \
+              --add-module=..
 else
-  bash ./configure  --prefix=${NGINX_SRC_ROOT} \
-                    --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-                    --add-dynamic-module=../third_party/ngx_devel_kit \
-                    --add-dynamic-module=..
+  ./configure --prefix=${NGINX_SRC_ROOT} \
+              --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+              --add-dynamic-module=../third_party/ngx_devel_kit \
+              --add-dynamic-module=..
 fi
 make
 make install
