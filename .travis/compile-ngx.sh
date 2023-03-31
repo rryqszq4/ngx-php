@@ -48,9 +48,9 @@ make
 make install
 if [ $? -eq 0 ];then
     echo "nginx install ... done"
-    echo "ngx_php $PHP_SRC_VERSION compile success."
+    echo "ngx_php $NGINX_SRC_VERSION with $PHP_SRC_VERSION compile success."
 else 
-    echo "ngx_php $PHP_SRC_VERSION compile failed."
+    echo "ngx_php $NGINX_SRC_VERSION with $PHP_SRC_VERSION compile failed."
     exit 1
 fi
 
