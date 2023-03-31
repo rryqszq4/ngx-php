@@ -1,5 +1,19 @@
 name: Ngx-php build test
-on: [ push, pull_request ]
+on:
+  push:
+    paths:
+    - 'src/**'
+    - 't/**'
+    - 'third_party/**'
+    - '.github/workfows/**'
+    - '.travis/**'
+  pull_request:
+    paths: 
+      - 'src/**'
+      - 't/**'
+      - 'third_party/**'
+      - '.github/workfows/**'
+      - '.travis/**'
 
 env:
   DB_DATABASE: ngx_php
