@@ -36,9 +36,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install dependencies
       run: | 
-        sudo apt-get install -yqq locales language-pack-de re2c libgmp-dev libicu-dev libmcrypt-dev libtidy-dev libenchant-dev libaspell-dev libpspell-dev librecode-dev libsasl2-dev libxpm-dev cpanminus openssl libssl-dev libbz2-dev libzip-dev systemtap-sdt-dev libonig-dev axel libcurl3-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev libxml2-dev
-        sudo apt-get install -y redis-server redis-tools memcached
-        sudo redis-server /etc/redis/redis.conf
+        sudo apt-get install -yqq ibxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
         sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
         sudo apt-get update -yqq >/dev/null && sudo apt-get upgrade -yqq >/dev/null
 
