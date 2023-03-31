@@ -35,8 +35,18 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
-      run: | 
-        sudo apt-get install -yqq libxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
+      run: sudo apt-get install -yqq libxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
+
+      # Ubuntu 20.04 have installed PHP v7.4 - 8.2
+      # Bypass installing ondrej, for faster runs
+    - name: Install old PHP version if needed
+      if: |
+        ${{ matrix.php_version }} == '7.0' ||
+        ${{ matrix.php_version }} == 7.1 ||
+        ${{ matrix.php_version }} == 7.2 ||
+        ${{ matrix.php_version }} == 7.3
+
+      run: |
         sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
         sudo apt-get update -yqq >/dev/null && sudo apt-get upgrade -yqq >/dev/null
 

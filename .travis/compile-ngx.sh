@@ -32,7 +32,7 @@ export PHP_LIB='/usr/lib'
 
 #ls ${PHP_SRC_ROOT}
 
-echo "nginx install ..."
+echo "Nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
@@ -47,15 +47,15 @@ fi
 make
 make install
 if [ $? -eq 0 ];then
-    echo "nginx install ... done"
-    echo "ngx_php $NGINX_SRC_VERSION with $PHP_SRC_VERSION compile success."
+    echo "Nginx install ... done"
+    echo "Ngx_php $NGINX_SRC_VERSION with $PHP_SRC_VERSION compile success."
 else 
-    echo "ngx_php Nginx:$NGINX_SRC_VERSION with PHP-$PHP_SRC_VERSION compile failed."
+    echo "Ngx_php Nginx:$NGINX_SRC_VERSION with PHP-$PHP_SRC_VERSION compile failed."
     exit 1
 fi
 
 if [ "${NGINX_MODULE}" = "DYNAMIC" ]; then
-  echo "nginx dynamic module install ..."
+  echo "Nginx dynamic module install ..."
   mkdir -p ${NGINX_SRC_ROOT}/modules
   cp ./objs/*.so ${NGINX_SRC_ROOT}/modules/
 fi
