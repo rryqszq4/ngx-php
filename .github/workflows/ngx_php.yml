@@ -45,7 +45,7 @@ jobs:
     - name: Install PHP-${{ matrix.php_version }}
       run: sudo apt-get install php${{ matrix.php_version }}-cli php${{ matrix.php_version }}-dev libphp${{ matrix.php_version }}-embed php${{ matrix.php_version }}-mysql
     
-    - name: Download Nginx
+    - name: Download Nginx v${{ matrix.ngxinx_version }}
       run: |
         wget http://nginx.org/download/nginx-${{ matrix.ngxinx_version }}.tar.gz
         tar -zxf nginx-${{ matrix.ngxinx_version }}.tar.gz
