@@ -6,15 +6,13 @@ on:
       - "src/**"
       - "t/**"
       - "third_party/**"
-      - ".github/workfows/**"
-      - ".travis/**"
+      - ".github/**"
   pull_request:
     paths:
       - "src/**"
       - "t/**"
       - "third_party/**"
-      - ".github/workfows/**"
-      - ".travis/**"
+      - ".github/**"
 
 env:
   DB_DATABASE: ngx_php
@@ -55,7 +53,7 @@ jobs:
         env:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
           NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
-        run: ./.travis/compile-ngx.sh
+        run: ./.github/ngx-php/compile-ngx.sh
 
       - name: MySQL Start and create table
         run: |
@@ -75,4 +73,4 @@ jobs:
         run: sudo cpanm -n Test::Nginx
 
       - name: Test
-        run: ./.travis/test.sh
+        run: ./.github/ngx-php/test.sh
