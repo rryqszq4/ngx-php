@@ -55,7 +55,7 @@ jobs:
         env:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
           NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
-        run: ./travis/compile-ngx.sh
+        run: ./.travis/compile-ngx.sh
 
       - name: MySQL Start and create table
         run: |
@@ -75,4 +75,4 @@ jobs:
         run: sudo cpanm -n Test::Nginx
 
       - name: Test
-        run: ./travis/test.sh
+        run: ./.travis/test.sh
