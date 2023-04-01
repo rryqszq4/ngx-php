@@ -59,7 +59,7 @@ jobs:
 
       - name: MySQL Start and create table
         run: |
-          sudo /etc/init.d/mysql start
+          sudo systemctl start mysql.service
           mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
           if [ ! -d data-cache ]; then mkdir data-cache; fi
           if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
