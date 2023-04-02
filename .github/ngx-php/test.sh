@@ -12,6 +12,6 @@ if [ -d "${NGX_MODULE_PATH}" ]; then
   export TEST_NGINX_LOAD_MODULES
 fi
 
-TRAVIS_BUILD_DIR=`pwd`
-export TRAVIS_BUILD_DIR
+export TEST_DIR=`pwd`'../../t'
+export TRAVIS_BUILD_DIR=`pwd`
 prove -r t

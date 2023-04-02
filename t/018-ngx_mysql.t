@@ -2,7 +2,7 @@
 
 use Test::Nginx::Socket 'no_plan';
 
-$ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
+$ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TEST_DIR'};
 $ENV{'TEST_NGINX_MYSQL_PATH'} ||= '/var/run/mysqld/mysqld.sock';
 $ENV{'TEST_MYSQL_HOST'} = '0.0.0.0';
 $ENV{'TEST_MYSQL_PORT'} = '3306';
