@@ -70,7 +70,7 @@ int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, 
 
     original_compiler_options = CG(compiler_options);
     CG(compiler_options) = ZEND_COMPILE_DEFAULT_FOR_EVAL;
-    new_op_array = zend_compile_string(code_str, string_name, ZEND_COMPILE_POSITION_AFTER_OPEN_TAG);
+    new_op_array = zend_compile_string(code_str, string_name);
     CG(compiler_options) = original_compiler_options;
 
     if (new_op_array) {
@@ -194,7 +194,7 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
             fci_cache = &fci_cache_local;
         }
 
-        if (!zend_is_callable_ex(&fci->function_name, fci->object, 0, NULL, fci_cache, &error)) {
+        if (!zend_is_callable_ex(&fci->function_name, fci->object, IS_CALLABLE_CHECK_SILENT, NULL, fci_cache, &error)) {
             if (error) {
                 zend_string *callable_name
                     = zend_get_callable_name_ex(&fci->function_name, fci->object);

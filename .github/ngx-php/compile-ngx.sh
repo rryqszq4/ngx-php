@@ -27,8 +27,7 @@ cd nginx-${NGINX_SRC_VERSION}
 # Show pwd
 pwd
 
-
-php-config
+#php-config
 export PHP_CONFIG="/usr/bin/php-config$PHP_SRC_VERSION"
 export PHP_LIB='/usr/lib'
 export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
@@ -48,7 +47,7 @@ else
               --add-dynamic-module=../third_party/ngx_devel_kit \
               --add-dynamic-module=..
 fi
-make CFLAGS="-Wno-error"
+make
 make install
 if [ $? -eq 0 ];then
     echo "Nginx install ... done"
