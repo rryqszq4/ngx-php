@@ -9,11 +9,11 @@
 # mkdir php
 # mkdir nginx
 
-# if [ ${PHP_SRC_VERSION:0:1} -ge "8" ]; then
-#   PHP_MAJOR_VERSION=""
-# else
-#   PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
-# fi
+if [ ${PHP_SRC_VERSION:0:1} -ge "8" ]; then
+   PHP_MAJOR_VERSION=""
+else
+   PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
+fi
 
 # echo "nginx download ..."
 # wget http://nginx.org/download/nginx-${NGINX_SRC_VERSION}.tar.gz
@@ -26,6 +26,9 @@ cd nginx-${NGINX_SRC_VERSION}
 
 # Show pwd
 pwd
+
+
+php-config
 #export PHP_CONFIG='/usr/bin/php-config'
 export PHP_LIB='/usr/lib'
 #export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
