@@ -73,4 +73,6 @@ jobs:
         run: sudo cpanm -n Test::Nginx
 
       - name: Test
+        env:
+          PHP_SRC_VERSION: ${{ matrix.php_version }}
         run: ./.github/ngx-php/test.sh
