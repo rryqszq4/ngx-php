@@ -3,7 +3,7 @@
 
 use Test::Nginx::Socket "no_plan";
 
-#$ENV{'PHP_VERSION'} = $ENV{'PHP_SRC_VERSION'};
+our $PHP_VERSION = $ENV{'PHP_SRC_VERSION'};
 
 run_tests();
 
@@ -11,7 +11,7 @@ __DATA__
 === TEST 1: ini file
 ini file
 --- http_config
-php_ini_path "/etc/php/" . $ENV{'PHP_SRC_VERSION'} . "/embed/php.ini";
+php_ini_path /etc/php/$::PHP_SRC_VERSION/embed/php.ini;
 --- config
 location = /ini {
     content_by_php '
