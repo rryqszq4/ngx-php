@@ -1,6 +1,6 @@
 # vim:set ft= ts=4 sw=4 et fdm=marker:
 
-use Test::Nginx::Socket 'no_plan' skip_all => "Need to change URL";
+use Test::Nginx::Socket skip_all => "Need to change URL";
 
 run_tests();
 

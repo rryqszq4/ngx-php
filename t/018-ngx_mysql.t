@@ -1,6 +1,6 @@
 # vim:set ft= ts=4 sw=4 et fdm=marker:
 
-use Test::Nginx::Socket 'no_plan' skip_all => "Fix later";
+use Test::Nginx::Socket skip_all => "Fix later";
 
 $ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
 $ENV{'TEST_NGINX_MYSQL_PATH'} ||= '/var/run/mysqld/mysqld.sock';
