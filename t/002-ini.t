@@ -11,7 +11,7 @@ __DATA__
 === TEST 1: ini file
 ini file
 --- http_config
-php_ini_path "/etc/php/$ENV{'PHP_VERSION'}/embed/php.ini";
+php_ini_path /etc/php/$PHP_VERSION/embed/php.ini;
 --- config
 location = /ini {
     content_by_php '
@@ -21,4 +21,4 @@ location = /ini {
 --- request
 GET /ini
 --- response_body eval
-/etc/php/$ENV{'PHP_SRC_VERSION'}/embed/php.ini
+"/etc/php/" . $ENV{'PHP_SRC_VERSION'} . "/embed/php.ini"
