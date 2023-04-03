@@ -704,12 +704,10 @@ ngx_php_ngx_run(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_php
             php_printf("Could not open input file: %s\n", file_handle.filename);
             return FAILURE;
         }
-        php_execute_script(&file_handle );
+        php_execute_script(&file_handle);
 #else
         zend_stream_init_filename(&file_handle, code->code.file);
-        if (php_execute_script(&file_handle) == FAILURE) {
-            php_printf("Failed to execute PHP script.\n");
-        }
+        php_execute_script(&file_handle);
 #endif
 
     }else {
@@ -747,13 +745,10 @@ ngx_php_eval_file(ngx_http_request_t *r, ngx_http_php_state_t *state, ngx_http_p
             php_printf("Could not open input file: %s\n", file_handle.filename);
             return FAILURE;
         }
-        php_execute_script(&file_handle );
+        php_execute_script(&file_handle);
 #else
         zend_stream_init_filename(&file_handle, code->code.file);
-        if (php_execute_script(&file_handle) == FAILURE) {
-            php_printf("Failed to execute PHP script.\n");
-            return FAILURE;
-        }
+        php_execute_script(&file_handle);
 #endif
 
     }
