@@ -1,4 +1,4 @@
-name: Ngx-php build test
+name: Build test
 
 on:
   push:
