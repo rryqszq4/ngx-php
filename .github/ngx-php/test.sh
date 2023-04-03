@@ -12,6 +12,5 @@ if [ -d "${NGX_MODULE_PATH}" ]; then
   export TEST_NGINX_LOAD_MODULES
 fi
 
-export TEST_DIR='/home/runner/work/ngx-php/ngx-php'
 export TRAVIS_BUILD_DIR=`pwd`
 prove -r t
