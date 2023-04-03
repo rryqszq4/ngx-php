@@ -3,7 +3,7 @@
 
 use Test::Nginx::Socket 'no_plan';
 
-$ENV{'TEST_NGINX_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
+$ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
 
 run_tests();
 
@@ -11,11 +11,11 @@ __DATA__
 === TEST 1: ini file
 ini file
 --- http_config
-php_ini_path $TEST_NGINX_DIR/.github/ngx-php/php.ini;
+php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
 --- config
 location = /opcache {
     content_by_php '
-        echo opcache_get_status() === false ? 'enabled' : 'disabled';
+        echo opcache_get_status() === false ? 'disabled' : 'enabled';
     ';
 }
 --- request
