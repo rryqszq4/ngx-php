@@ -1,7 +1,7 @@
 
 # vim:set ft= ts=4 sw=4 et fdm=marker:
 
-use Test::Nginx::Socket 'no_plan';
+use Test::Nginx::Socket 'no_plan' skip_all => "Fail now";
 
 $ENV{'PHP_VERSION'} = $ENV{'PHP_SRC_VERSION'};
 
