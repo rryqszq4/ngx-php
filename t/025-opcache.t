@@ -8,8 +8,8 @@ $ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
 run_tests();
 
 __DATA__
-=== TEST 1: ini file
-ini file
+=== TEST 1: opcache enabled
+Tes opcache
 --- http_config
 php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
 --- config
