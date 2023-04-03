@@ -16,8 +16,8 @@ on:
 
 env:
   DB_DATABASE: ngx_php
-  DB_USER: root
-  DB_PASSWORD: root
+  DB_USER: ngx_php
+  DB_PASSWORD: ngx_php
 
 jobs:
   build:
