@@ -11,7 +11,7 @@ __DATA__
 === TEST 1: ini file
 ini file
 --- http_config
-php_ini_path /usr/lib/php/$ENV{'PHP_VERSION'}/php.ini;
+php_ini_path "/usr/lib/php/$ENV{'PHP_VERSION'}/php.ini";
 --- config
 location = /ini {
     content_by_php '
