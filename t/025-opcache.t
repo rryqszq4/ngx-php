@@ -14,9 +14,9 @@ test opcache enabled
 php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
 --- config
 location = /opcache {
-    content_by_php '
-        echo opcache_get_status() === false ? "disabled" : "enabled";
-    ';
+    content_by_php {
+        echo opcache_get_status() === false ? 'disabled' : 'enabled';
+    };
 }
 --- request
 GET /opcache
