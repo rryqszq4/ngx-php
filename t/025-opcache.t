@@ -31,9 +31,9 @@ test opcache and JIT enabled
 php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
 --- config
 location = /jit {
-    content_by_php {
+    content_by_php '
         echo opcache_get_status()["jit"]["enabled"]) ? "JIT enabled" : "JIT disabled";
-    }
+    ';
 }
 --- request
 GET /jit
