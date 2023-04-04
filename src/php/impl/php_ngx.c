@@ -316,7 +316,6 @@ sapi_module_struct php_ngx_module = {
 
     NULL,
     NULL,
-    NULL,
     STANDARD_SAPI_MODULE_PROPERTIES
 };
 /* }}} */
