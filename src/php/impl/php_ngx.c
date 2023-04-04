@@ -260,8 +260,8 @@ static void php_ngx_register_variables(zval *track_vars_array )
 }*/
 
 sapi_module_struct php_ngx_module = {
-    "cli-server",                                       /* sapi type */
-    "php-ngx",                                          /* name */
+    "ngx-php",                                          /* name */
+    "Ngx-php",                                          /* pretty name */
 
     php_ngx_startup,                                    /* startup */
     php_module_shutdown_wrapper,                        /* shutdown */
@@ -316,7 +316,8 @@ sapi_module_struct php_ngx_module = {
 
     NULL,
     NULL,
-    NULL
+    NULL,
+    STANDARD_SAPI_MODULE_PROPERTIES
 };
 /* }}} */
 
