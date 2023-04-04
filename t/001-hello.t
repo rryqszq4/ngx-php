@@ -44,7 +44,7 @@ Echo the SAPI name  ngx-php
 location = /sapi {
     content_by_php '
         echo $PHP_SAPI."\n";
-        echo php_sapi_name()
+        echo php_sapi_name();
     ';
 }
 --- request
