@@ -290,9 +290,30 @@ sapi_module_struct php_ngx_module = {
     php_ngx_register_variables,                         /* register server variables */
     NULL,                                               /* Log message */
     NULL,                                               /* Get request time */
-    NULL,
-                                              /* Child terminate */
+    NULL,                                               /* Child terminate */
+
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+
+    0,
+    0,
+
+    NULL,
+
+    NULL,
+
+    NULL,
+    NULL,
+
+    NULL,
+
+    NULL,
+    0,
+
     NULL,
     NULL,
 #endif
