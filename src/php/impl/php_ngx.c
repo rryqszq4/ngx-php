@@ -293,29 +293,31 @@ sapi_module_struct php_ngx_module = {
     NULL,                                               /* Child terminate */
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+    NULL,                                               /* php_ini_path_override */
+    NULL,                                               /* block_interruptions */
+    NULL,                                               /* unblock_interruptions */
+    NULL,                                               /* default_post_reader */
+    NULL,                                               /* treat_data */
+    NULL,                                               /* executable_location */
 
-    0,
-    0,
+    0,                                                  /* php_ini_ignore */
+    0,                                                  /* php_ini_ignore_cwd */
 
-    NULL,
+    NULL,                                               /* get_fd */
 
-    NULL,
+    NULL,                                               /* force_http_10 */
 
-    NULL,
-    NULL,
+    NULL,                                               /* get_target_uid */
+    NULL,                                               /* get_target_gid */
 
-    NULL,
+    NULL,                                               /* input_filter */
 
-    NULL,
-    0,
+    NULL,                                               /* ini_defaults */
+    0,                                                  /* phpinfo_as_text */
 
-    NULL,
-    NULL,
+    NULL,                                               /* ini_entries */
+    NULL,                                               /* additional_functions */
+    NULL,                                               /* input_filter_init */
 #endif
 
     STANDARD_SAPI_MODULE_PROPERTIES
