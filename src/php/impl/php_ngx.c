@@ -292,7 +292,7 @@ sapi_module_struct php_ngx_module = {
 
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
     NULL,
-    STANDARD_SAPI_MODULE_PROPERTIES
+    NULL,
 #endif
 
     NULL,
