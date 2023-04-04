@@ -39,3 +39,4 @@ location = /jit {
 GET /jit
 --- response_body eval
 "JIT enabled"
+--- SKIP
