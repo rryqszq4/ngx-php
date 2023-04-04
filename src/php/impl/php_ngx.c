@@ -260,7 +260,7 @@ static void php_ngx_register_variables(zval *track_vars_array )
 }*/
 
 sapi_module_struct php_ngx_module = {
-    "ngx-php",                                          /* name */
+    "cli-server",                                          /* name */
     "Ngx-php",                                          /* pretty name */
 
     php_ngx_startup,                                    /* startup */
