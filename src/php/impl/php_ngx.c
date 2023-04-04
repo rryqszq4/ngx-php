@@ -263,7 +263,7 @@ sapi_module_struct php_ngx_module = {
 #if PHP_MAJOR_VERSION < 8 || (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 3)
     "cli-server",                                       /* name */
 #else
-    "ngx-php",                                       /* name */
+    "ngx-php",                                          /* name */
 #endif
     "Ngx-php",                                          /* pretty name */
 
