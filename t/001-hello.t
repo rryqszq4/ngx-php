@@ -35,3 +35,18 @@ location =/include {
 GET /include
 --- response_body
 hello, world!
+
+
+
+=== TEST 3: show SAPI name
+Echo the SAPI name  ngx-php
+--- config
+location = /sapi {
+    content_by_php '
+        echo $PHP_SAPI;
+    ';
+}
+--- request
+GET /sapi
+--- response_body
+ngx-php
