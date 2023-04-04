@@ -20,8 +20,8 @@ location = /opcache {
 }
 --- request
 GET /opcache
---- response_body
-enabled
+--- response_body eval
+"enabled"
 
 
 
@@ -37,6 +37,7 @@ location = /jit {
 }
 --- request
 GET /jit
---- response_body
-JIT enabled
+--- response_body eval
+"JIT enabled"
+
 --- SKIP
