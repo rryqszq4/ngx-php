@@ -21,4 +21,4 @@ location = /opcache {
 --- request
 GET /opcache
 --- response_body eval
-enabled
+"enabled"
