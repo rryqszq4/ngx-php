@@ -25,8 +25,8 @@ GET /opcache
 
 
 
-=== TEST 2: JIT enabled
-test opcache and JIT enabled
+=== TEST 2: JIT disabled
+JIT disabled for now, but also will fail when work 
 --- http_config
 php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
 --- config
@@ -38,6 +38,4 @@ location = /jit {
 --- request
 GET /jit
 --- response_body eval
-"JIT enabled"
-
---- SKIP
+"JIT disabled"
