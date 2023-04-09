@@ -32,7 +32,20 @@ php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
 --- config
 location = /jit {
     content_by_php '
-        echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled" : "JIT disabled";
+        $jit = "JIT disabled";
+        if (PHP_MAJOR_VERSION < 8) {
+             return $jit;
+        }
+
+        if (!extension_loaded('Zend OPcache')) {
+            return $jit;
+        }
+
+        if (ini_get('opcache.enable') === '0') {
+            return $jit;
+        }
+ 
+        echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled" : $jit;
     ';
 }
 --- request
