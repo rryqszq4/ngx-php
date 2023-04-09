@@ -43,13 +43,12 @@ Echo the SAPI name  ngx-php
 --- config
 location = /sapi {
     content_by_php '
-    if (version_compare(phpversion(), "8.3.0", ">=")) {
-        echo php_sapi_name();
-    } else {
-        # still using cli-server SAPI for the opcache
-        echo "ngx-php"; 
-    }
-
+        if (version_compare(phpversion(), "8.3.0", ">=")) {
+            echo php_sapi_name();
+        } else {
+            # still using cli-server SAPI for the opcache
+            echo "ngx-php"; 
+        }
     ';
 }
 --- request
