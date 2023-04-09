@@ -265,7 +265,7 @@ sapi_module_struct php_ngx_module = {
 #else
     "ngx-php",                                          /* name */
 #endif
-    "Ngx-php",                                          /* pretty name */
+    "Ngx-php PHP embedded in Nginx",                    /* pretty name */
 
     php_ngx_startup,                                    /* startup */
     php_module_shutdown_wrapper,                        /* shutdown */
