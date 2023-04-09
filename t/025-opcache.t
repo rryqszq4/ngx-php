@@ -37,11 +37,11 @@ location = /jit {
              return $jit;
         }
 
-        if (!extension_loaded('Zend OPcache')) {
+        if (!extension_loaded("Zend OPcache")) {
             return $jit;
         }
 
-        if (ini_get('opcache.enable') === '0') {
+        if (ini_get("opcache.enable") === "0") {
             return $jit;
         }
  
