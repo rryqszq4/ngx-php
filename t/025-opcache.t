@@ -26,7 +26,7 @@ enabled
 
 
 === TEST 2: JIT disabled
-JIT disabled for now, but also will fail when work 
+JIT disabled for now, # check  https://github.com/oerdnj/deb.sury.org/issues/1924 
 --- http_config
 php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
 --- config
