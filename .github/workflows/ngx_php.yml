@@ -75,4 +75,5 @@ jobs:
       - name: Test
         env:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
+        run: mv /etc/php/${PHP_SRC_VERSION}/embed/conf.d/20-xdebug.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/20-xdebug.ini.bak
         run: ./.github/ngx-php/test.sh
