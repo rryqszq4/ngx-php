@@ -205,7 +205,11 @@ const char HARDCODED_INI[] =
 
 static int php_ngx_startup(sapi_module_struct *sapi_module)
 {
+#if (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION > 1) 
+    return php_module_startup(sapi_module, NULL);
+#else
     return php_module_startup(sapi_module, NULL, 0);
+#endif
 }
 
 static int php_ngx_deactivate()
