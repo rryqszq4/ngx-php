@@ -1,5 +1,8 @@
 #!/bin/bash
 # Copyright (c) 2016-2017, rryqszq4 <rryqszq@gmail.com>
+echo "PHP version ..."
+/usr/bin/php${PHP_SRC_VERSION} -v
+
 echo "Ngx-php test ..."
 NGX_PATH=`pwd`'/nginx/sbin'
 ${NGX_PATH}/nginx -V
