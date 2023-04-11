@@ -401,9 +401,9 @@ cleanup_args:
 
         /* This flag is regularly checked while running user functions, but not internal
          * So see whether interrupt flag was set while the function was running... */
-        if (EG(vm_interrupt)) {
-            EG(vm_interrupt) = 0;
-            if (EG(timed_out)) {
+        if (zend_atomic_bool_exchange_ex(&EG(vm_interrupt)) {
+            ZEND_ATOMIC_BOOL_INIT(&EG(vm_interrupt), false);
+            if (zend_atomic_bool_load_ex(&EG(timed_out))) {
                 zend_timeout();
             } else if (zend_interrupt_function) {
                 zend_interrupt_function(EG(current_execute_data));
