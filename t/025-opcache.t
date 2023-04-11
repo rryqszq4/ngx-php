@@ -11,7 +11,7 @@ __DATA__
 === TEST 1: opcache enabled
 test opcache enabled
 --- http_config
-php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
+php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php/php.ini;
 --- config
 location = /opcache {
     content_by_php '
