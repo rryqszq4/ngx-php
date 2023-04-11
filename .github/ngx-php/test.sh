@@ -13,4 +13,6 @@ if [ -d "${NGX_MODULE_PATH}" ]; then
 fi
 
 export TRAVIS_BUILD_DIR=`pwd`
+echo $TRAVIS_BUILD_DIR
+ls
 prove -r t

@@ -260,8 +260,12 @@ static void php_ngx_register_variables(zval *track_vars_array )
 }*/
 
 sapi_module_struct php_ngx_module = {
-    "cli-server",                                       /* sapi type */
-    "php-ngx",                                          /* name */
+#if PHP_MAJOR_VERSION < 8 || (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 3)
+    "cli-server",                                       /* name */
+#else
+    "ngx-php",                                          /* name */
+#endif
+    "Ngx-php PHP embedded in Nginx",                    /* pretty name */
 
     php_ngx_startup,                                    /* startup */
     php_module_shutdown_wrapper,                        /* shutdown */
@@ -288,35 +292,35 @@ sapi_module_struct php_ngx_module = {
     NULL,                                               /* Get request time */
     NULL,                                               /* Child terminate */
 
-    "",                                                 /* php_ini_path_override */
-
 #if PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION < 1
-    NULL,
-    NULL,
+    NULL,                                               /* php_ini_path_override */
+    NULL,                                               /* block_interruptions */
+    NULL,                                               /* unblock_interruptions */
+    NULL,                                               /* default_post_reader */
+    NULL,                                               /* treat_data */
+    NULL,                                               /* executable_location */
+
+    0,                                                  /* php_ini_ignore */
+    0,                                                  /* php_ini_ignore_cwd */
+
+    NULL,                                               /* get_fd */
+
+    NULL,                                               /* force_http_10 */
+
+    NULL,                                               /* get_target_uid */
+    NULL,                                               /* get_target_gid */
+
+    NULL,                                               /* input_filter */
+
+    NULL,                                               /* ini_defaults */
+    0,                                                  /* phpinfo_as_text */
+
+    NULL,                                               /* ini_entries */
+    NULL,                                               /* additional_functions */
+    NULL,                                               /* input_filter_init */
 #endif
 
-    NULL,
-    NULL,
-    NULL,
-
-    0,
-    0,
-
-    NULL,
-
-    NULL,
-
-    NULL,
-    NULL,
-
-    NULL,
-
-    NULL,
-    0,
-
-    NULL,
-    NULL,
-    NULL
+    STANDARD_SAPI_MODULE_PROPERTIES
 };
 /* }}} */
 

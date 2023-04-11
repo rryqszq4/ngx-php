@@ -35,3 +35,23 @@ location =/include {
 GET /include
 --- response_body
 hello, world!
+
+
+
+=== TEST 3: show SAPI name
+Echo the SAPI name  ngx-php
+--- config
+location = /sapi {
+    content_by_php '
+        if (version_compare(PHP_VERSION, "8.3.0", ">=")) {
+            echo php_sapi_name();
+        } else {
+            # still using cli-server SAPI for the opcache
+            echo "ngx-php"; 
+        }
+    ';
+}
+--- request
+GET /sapi
+--- response_body
+ngx-php

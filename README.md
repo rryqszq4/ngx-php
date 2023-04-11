@@ -192,10 +192,11 @@ http {
             content_by_php_block {
                 $fd = ngx_socket_create();
 
-                yield ngx_socket_connect($fd, "hq.sinajs.cn", 80);
+                yield ngx_socket_connect($fd, "httpbin.org", 80);
 
-                $send_buf = "GET /list=s_sh000001 HTTP/1.0\r\n
-                                            Host: hq.sinajs.cn\r\nConnection: close\r\n\r\n";
+                $send_buf = "GET /get HTTP/1.1\r\n
+                                            Host: httpbin.org\r\n
+                                            Connection: close\r\n\r\n";
                 yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
 
                 $recv_buf = "";
