@@ -70,7 +70,11 @@ int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, 
 
     original_compiler_options = CG(compiler_options);
     CG(compiler_options) = ZEND_COMPILE_DEFAULT_FOR_EVAL;
+#if (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION > 1)
     new_op_array = zend_compile_string(code_str, string_name, ZEND_COMPILE_POSITION_AFTER_OPEN_TAG);
+#else
+    new_op_array = zend_compile_string(code_str, string_name);
+#endif
     CG(compiler_options) = original_compiler_options;
 
     if (new_op_array) {
