@@ -76,6 +76,6 @@ jobs:
         env:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
         run: |
-          cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/
-          cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/cli/conf.d/
+          sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/
+          sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/cli/conf.d/
           ./.github/ngx-php/test.sh
