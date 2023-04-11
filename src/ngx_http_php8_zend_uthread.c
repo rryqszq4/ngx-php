@@ -194,7 +194,7 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
             fci_cache = &fci_cache_local;
         }
 
-        if (!zend_is_callable_ex(&fci->function_name, fci->object, IS_CALLABLE_CHECK_SILENT, NULL, fci_cache, &error)) {
+        if (!zend_is_callable_ex(&fci->function_name, fci->object, 0, NULL, fci_cache, &error)) {
             if (error) {
                 zend_string *callable_name
                     = zend_get_callable_name_ex(&fci->function_name, fci->object);
