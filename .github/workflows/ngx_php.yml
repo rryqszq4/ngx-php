@@ -75,6 +75,7 @@ jobs:
       - name: Test
         env:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
+          XDEBUG_MODE: off
         run: |
           /usr/bin/php${PHP_SRC_VERSION} -v
           ./.github/ngx-php/test.sh
