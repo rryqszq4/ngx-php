@@ -261,10 +261,10 @@ static void php_ngx_register_variables(zval *track_vars_array )
 }*/
 
 sapi_module_struct php_ngx_module = {
-#if PHP_MAJOR_VERSION < 8 || (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 3)
-    "cli-server",                                       /* name */
+#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 1) 
+    "ngx-php",
 #else
-    "ngx-php",                                          /* name */
+    "cli-server",                                          /* name */
 #endif
     "Ngx-php PHP embedded in Nginx",                    /* pretty name */
 
