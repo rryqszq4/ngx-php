@@ -402,7 +402,7 @@ cleanup_args:
         /* This flag is regularly checked while running user functions, but not internal
          * So see whether interrupt flag was set while the function was running... */
 #if (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION > 1) 
-        if (zend_atomic_bool_exchange_ex(&EG(vm_interrupt)) {
+        if (zend_atomic_bool_exchange_ex(&EG(vm_interrupt))) {
             ZEND_ATOMIC_BOOL_INIT(&EG(vm_interrupt), false);
             if (zend_atomic_bool_load_ex(&EG(timed_out))) {
 #else
