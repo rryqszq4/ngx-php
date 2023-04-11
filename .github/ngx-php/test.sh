@@ -1,5 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2016-2017, rryqszq4 <rryqszq@gmail.com>
+
+# Show PHP cli
 echo "PHP version ..."
 /usr/bin/php${PHP_SRC_VERSION} -v
 
