@@ -12,6 +12,10 @@ if [ -d "${NGX_MODULE_PATH}" ]; then
   export TEST_NGINX_LOAD_MODULES
 fi
 
+# Disable Xdebug
+echo "Disable Xdebug ..."
+mv /etc/php/${PHP_SRC_VERSION}/embed/conf.d/20-xdebug.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/20-xdebug.ini.bak
+
 export TRAVIS_BUILD_DIR=`pwd`
 echo $TRAVIS_BUILD_DIR
 ls
