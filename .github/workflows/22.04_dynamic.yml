@@ -1,0 +1,82 @@
+name: Build dynamic test Ubuntu 22.04
+
+on:
+  push:
+    paths:
+      - "src/**"
+      - "t/**"
+      - "third_party/**"
+      - ".github/**"
+  pull_request:
+    paths:
+      - "src/**"
+      - "t/**"
+      - "third_party/**"
+      - ".github/**"
+
+env:
+  DB_DATABASE: ngx_php
+  DB_USER: ngx_php
+  DB_PASSWORD: ngx_php
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        php_version: ["7.4", "8.0", "8.1", "8.2"] # "7.0", "7.1", "7.2", "7.3", 
+        ngxinx_version: ["1.20.2", "1.22.1", "1.23.4"] # "1.12.2" fail to compile
+        # Disable fail-fast to allow all failing versions to fail in a
+        # single build, rather than stopping when the first one fails.
+      fail-fast: false
+
+    name: 22.04 Dynamic PHP-${{ matrix.php_version }} Nginx ${{ matrix.ngxinx_version }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -yqq cpanminus libxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
+          sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
+          sudo apt-get update -yqq >/dev/null && sudo apt-get upgrade -yqq >/dev/null
+
+      - name: Install PHP-${{ matrix.php_version }}
+        run: sudo apt-get install php${{ matrix.php_version }}-cli php${{ matrix.php_version }}-dev libphp${{ matrix.php_version }}-embed php${{ matrix.php_version }}-mysql
+
+      - name: Download Nginx v${{ matrix.ngxinx_version }}
+        run: |
+          wget http://nginx.org/download/nginx-${{ matrix.ngxinx_version }}.tar.gz
+          tar -zxf nginx-${{ matrix.ngxinx_version }}.tar.gz
+
+      - name: Compile Ngx-php
+        env:
+          PHP_SRC_VERSION: ${{ matrix.php_version }}
+          NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
+          NGINX_MODULE: "DYNAMIC"
+        run: ./.github/ngx-php/compile-ngx.sh
+
+      - name: MySQL Start and create table
+        run: |
+          sudo systemctl start mysql.service
+          mysql -uroot -proot -e 'CREATE DATABASE ${{ env.DB_DATABASE }};'
+          if [ ! -d data-cache ]; then mkdir data-cache; fi
+          if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
+          tar zxvf data-cache/world-db.tar.gz
+          mysql -uroot -proot < world-db/world.sql
+
+      - name: Install Redis & Memcached
+        run: |
+          sudo apt-get install -y redis-server redis-tools memcached
+          sudo redis-server /etc/redis/redis.conf
+
+      - name: Perl packages
+        run: sudo cpanm -n Test::Nginx
+
+      - name: Test
+        env:
+          PHP_SRC_VERSION: ${{ matrix.php_version }}
+        run: |
+          sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/
+          sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/cli/conf.d/
+          ./.github/ngx-php/test.sh
