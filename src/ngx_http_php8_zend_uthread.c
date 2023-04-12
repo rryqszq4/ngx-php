@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <zend_dtrace.h>
 #include <zend_execute.h>
 
-#if HAVE_DTRACE
+#ifdef HAVE_DTRACE
 #define php_exception__thrown_semaphore 0
 #endif /* HAVE_DTRACE */
 
@@ -440,7 +440,7 @@ cleanup_args:
 
 static void ngx_http_php_zend_throw_exception_internal(zend_object *exception) /* {{{ */
 {
-#if HAVE_DTRACE
+#ifdef HAVE_DTRACE
     if (DTRACE_EXCEPTION_THROWN_ENABLED()) {
         if (exception != NULL) {
             DTRACE_EXCEPTION_THROWN(ZSTR_VAL(exception->ce->name));
