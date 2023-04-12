@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <zend_closures.h>
 #include <zend_dtrace.h>
 
-#ifdef HAVE_DTRACE
+#if HAVE_DTRACE
 #define php_exception__thrown_semaphore 0
 #endif /* HAVE_DTRACE */
 
@@ -413,7 +413,7 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
 
 static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ */
 {
-#ifdef HAVE_DTRACE
+#if HAVE_DTRACE
     if (DTRACE_EXCEPTION_THROWN_ENABLED()) {
         if (exception != NULL) {
             DTRACE_EXCEPTION_THROWN(ZSTR_VAL(Z_OBJ_P(exception)->ce->name));
