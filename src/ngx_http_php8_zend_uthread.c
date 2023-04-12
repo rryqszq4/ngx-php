@@ -70,7 +70,11 @@ int ngx_http_php_zend_eval_stringl(char *str, size_t str_len, zval *retval_ptr, 
 
     original_compiler_options = CG(compiler_options);
     CG(compiler_options) = ZEND_COMPILE_DEFAULT_FOR_EVAL;
+#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 1)
+    new_op_array = zend_compile_string(code_str, string_name, ZEND_COMPILE_POSITION_AFTER_OPEN_TAG);
+#else
     new_op_array = zend_compile_string(code_str, string_name);
+#endif
     CG(compiler_options) = original_compiler_options;
 
     if (new_op_array) {
@@ -397,9 +401,15 @@ cleanup_args:
 
         /* This flag is regularly checked while running user functions, but not internal
          * So see whether interrupt flag was set while the function was running... */
+#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 1) 
+        if (zend_atomic_bool_load_ex(&EG(vm_interrupt))) {
+            zend_atomic_bool_store_ex(&EG(vm_interrupt), false);
+            if (zend_atomic_bool_load_ex(&EG(timed_out))) {
+#else
         if (EG(vm_interrupt)) {
             EG(vm_interrupt) = 0;
             if (EG(timed_out)) {
+#endif
                 zend_timeout();
             } else if (zend_interrupt_function) {
                 zend_interrupt_function(EG(current_execute_data));
