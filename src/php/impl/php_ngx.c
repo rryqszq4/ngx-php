@@ -205,10 +205,11 @@ const char HARDCODED_INI[] =
 
 static int php_ngx_startup(sapi_module_struct *sapi_module)
 {
-    if (php_module_startup(sapi_module, NULL, 0) == FAILURE){
-        return FAILURE;
-    }
-    return SUCCESS;
+#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 1) 
+    return php_module_startup(sapi_module, NULL);
+#else
+    return php_module_startup(sapi_module, NULL, 0);
+#endif
 }
 
 static int php_ngx_deactivate()
@@ -260,10 +261,10 @@ static void php_ngx_register_variables(zval *track_vars_array )
 }*/
 
 sapi_module_struct php_ngx_module = {
-#if PHP_MAJOR_VERSION < 8 || (PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 3)
-    "cli-server",                                       /* name */
+#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 2) 
+    "ngx-php",
 #else
-    "ngx-php",                                          /* name */
+    "cli-server",                                          /* name */
 #endif
     "Ngx-php PHP embedded in Nginx",                    /* pretty name */
 
@@ -415,10 +416,6 @@ int php_ngx_module_init()
 //#endif
 
   sapi_startup(&php_ngx_module);
-
-#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3)
-  php_ngx_module.php_ini_ignore_cwd = 1;
-#endif
 
 #ifdef PHP_WIN32
   _fmode = _O_BINARY;                       /*sets default for file streams to binary */
