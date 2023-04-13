@@ -85,13 +85,13 @@ echo "nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-module=../../../ngx_php7/third_party/ngx_devel_kit \
-              --add-module=../../../ngx_php7
+              --add-module=../ngx_php7/third_party/ngx_devel_kit \
+              --add-module=../ngx_php7
 else
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-dynamic-module=../../../ngx_php7/third_party/ngx_devel_kit \
-              --add-dynamic-module=../../../ngx_php7
+              --add-dynamic-module=../ngx_php7/third_party/ngx_devel_kit \
+              --add-dynamic-module=../ngx_php7
 fi
 make
 make install
