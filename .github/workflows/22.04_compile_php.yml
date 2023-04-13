@@ -11,6 +11,9 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[ci only 20]') }}
     
     runs-on: ubuntu-latest
+    steps:
+    - name: Run build
+      run: echo "Build running ...."
 
   build:
     needs: setup
