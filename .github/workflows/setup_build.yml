@@ -37,5 +37,5 @@ jobs:
 
   build_php_22-04:
     name: Build PHP 22.04
-    if: ${{ contains(github.event.head_commit.message, '[ci only 22]') || contains(github.event.head_commit.message, '[compile-php]') }}
+    if: ${{ contains(github.event.head_commit.message, '[compile-php]') }}
     uses: ./.github/workflows/22.04_compile_php.yml
