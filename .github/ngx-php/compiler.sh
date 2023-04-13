@@ -65,6 +65,9 @@ make install
 echo "php install ... done"
 cp php.ini-production ${PHP_SRC_ROOT}'/php.ini'
 
+# Show php-config
+../php/bin/php-config
+
 cd ..
 echo "nginx download ..."
 wget http://nginx.org/download/nginx-${NGINX_SRC_VERSION}.tar.gz
