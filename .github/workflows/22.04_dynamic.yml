@@ -20,9 +20,13 @@ env:
   DB_PASSWORD: ngx_php
 
 jobs:
-  build:
+  setup:
     if: ${{ !contains(github.event.head_commit.message, '[ci only 20]') }}
     
+    runs-on: ubuntu-latest
+
+  build:
+    needs: setup
     runs-on: ubuntu-22.04
 
     strategy:
