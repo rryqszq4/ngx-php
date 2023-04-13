@@ -1,4 +1,4 @@
-name: Ngx-php build test
+name: Ngx-php & PHP build test
 on: [ push, pull_request ]
 
 env:
@@ -8,7 +8,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         php_version: ["8.1.17"] #[7.0.33, 7.1.33, 7.2.34, 7.3.33, 7.4.26, 8.0.28, 8.1.17]
