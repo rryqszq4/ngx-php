@@ -33,6 +33,6 @@ jobs:
         if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
         tar zxvf data-cache/world-db.tar.gz
         mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} < world-db/world.sql
-        ./.gitub/ngx-php/compiler.sh
+        ./.github/ngx-php/compiler.sh
     - name: test
       run: ./.github/ngx-php/test.sh
