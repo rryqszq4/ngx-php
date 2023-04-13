@@ -81,6 +81,9 @@ export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lp
 
 ls ${PHP_SRC_ROOT}
 
+# Show pwd
+pwd
+
 echo "nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
