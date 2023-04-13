@@ -24,19 +24,19 @@ jobs:
   build_20-04:
     name: Ubuntu 20.04
     if: ${{ !contains(github.event.head_commit.message, '[ci only 22]') }}
-    uses: ./.github/workflows/ngx_php.yml
+    uses: ./.github/workflows/build/20.04.yml
     
   build_dynamic_20-04:
     name: Ubuntu 20.04 dynamic
     if: ${{ !contains(github.event.head_commit.message, '[ci only 22]') }}
-    uses: ./.github/workflows/ngx_php_dynamic.yml
+    uses: ./.github/workflows/build/20.04_dynamic.yml
 
   build_dynamic_22-04:
     name: Ubuntu 22.04 dynamic
     if: ${{ !contains(github.event.head_commit.message, '[ci only 20]') }}
-    uses: ./.github/workflows/22.04_dynamic.yml
+    uses: ./.github/workflows/build/22.04_dynamic.yml
 
   build_php_22-04:
     name: Build PHP Ubuntu 22.04
     if: ${{ contains(github.event.head_commit.message, '[compile-php]') }}
-    uses: ./.github/workflows/22.04_compile_php.yml
+    uses: ./.github/workflows/build/22.04_compile_php.yml
