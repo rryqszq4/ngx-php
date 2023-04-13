@@ -1,18 +1,7 @@
-name: Build dynamic test
+name: Build dynamic test 20.04
 
 on:
-  push:
-    paths:
-      - "src/**"
-      - "t/**"
-      - "third_party/**"
-      - ".github/**"
-  pull_request:
-    paths:
-      - "src/**"
-      - "t/**"
-      - "third_party/**"
-      - ".github/**"
+  workflow_call:
 
 env:
   DB_DATABASE: ngx_php
@@ -20,16 +9,7 @@ env:
   DB_PASSWORD: ngx_php
 
 jobs:
-  setup:
-    if: ${{ !contains(github.event.head_commit.message, '[ci only 22]') }}
-    
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run build
-        run: echo "Build running ...."
-
   build:
-    needs: setup
     runs-on: ubuntu-20.04
 
     strategy:

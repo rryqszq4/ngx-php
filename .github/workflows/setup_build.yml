@@ -1,0 +1,31 @@
+name: Build test setup
+
+on:
+  push:
+    paths:
+      - "src/**"
+      - "t/**"
+      - "third_party/**"
+      - ".github/**"
+  pull_request:
+    paths:
+      - "src/**"
+      - "t/**"
+      - "third_party/**"
+      - ".github/**"
+
+env:
+  DB_DATABASE: ngx_php
+  DB_USER: ngx_php
+  DB_PASSWORD: ngx_php
+
+jobs:
+  build_20-04:
+    name: Build 20.04
+    if: ${{ !contains(github.event.head_commit.message, '[ci only 22]') }}
+    uses: ./.github/workflows/ngx_php.yml
+    
+  build_dynamic_20-04:
+    name: Build dynamic 20.04
+    if: ${{ !contains(github.event.head_commit.message, '[ci only 22]') }}
+    uses: ./.github/workflows/ngx_php_dynamic.yml
