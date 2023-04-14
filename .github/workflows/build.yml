@@ -37,6 +37,6 @@ jobs:
     uses: ./.github/workflows/build_22.04_dynamic.yml
 
   build_php_22-04:
-    name: Build PHP Ubuntu 22.04
+    name: Compile PHP Ubuntu 22.04
     if: ${{ contains(github.event.head_commit.message, '[compile-php]') }}
     uses: ./.github/workflows/build_22.04_compile_php.yml
