@@ -1,3 +1,6 @@
+ngx_php7 0.0.27 changes:
+    * Support php version 8.2.0                                                     14 Apr 2023
+
 ngx_php7 0.0.26 changes:
     * Support php version 8.1.0                                                     30 Nov 2021
 
