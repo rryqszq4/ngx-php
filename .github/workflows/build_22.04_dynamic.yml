@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         php_version: ["7.4", "8.0", "8.1", "8.2"] # "7.0", "7.1", "7.2", "7.3", 
-        ngxinx_version: ["1.20.2", "1.22.1", "1.23.4"] # "1.12.2" fail to compile
+        ngxinx_version: ["1.20.2", "1.22.1", "1.24.0"] # "1.12.2" fail to compile
         # Disable fail-fast to allow all failing versions to fail in a
         # single build, rather than stopping when the first one fails.
       fail-fast: false
