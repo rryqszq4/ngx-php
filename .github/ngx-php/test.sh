@@ -6,7 +6,7 @@ echo "PHP version ..."
 
 PHP_COMPILE_PATH=`pwd`'/build/php'
 if [ -d "$PHP_COMPILE_PATH" ]; then
-    ${PHP_COMPILE_PATH}'/bin/php' -v
+    ${PHP_COMPILE_PATH}'/bin/php-config'
 else 
     /usr/bin/php${PHP_SRC_VERSION} -v
 fi
