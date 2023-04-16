@@ -58,7 +58,7 @@ echo "php install ..."
 --disable-cgi \
 --enable-opcache \
 --enable-embed=shared
-make
+make -j $(nproc)
 make install
 #sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/lib/libphp7.so
 #sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/local/lib/libphp7.so
@@ -99,7 +99,7 @@ else
               --add-dynamic-module=../../third_party/ngx_devel_kit \
               --add-dynamic-module=../..
 fi
-make
+make -j $(nproc)
 make install
 if [ $? -eq 0 ];then
     echo "nginx install ... done"
