@@ -6,7 +6,14 @@ echo "PHP version ..."
 /usr/bin/php${PHP_SRC_VERSION} -v
 
 echo "Ngx-php test ..."
-NGX_PATH=`pwd`'/nginx/sbin'
+
+COMPILE_PATH=`pwd`'/build/nginx/sbin'
+if [ -d "$COMPILE_PATH" ]; then
+    NGX_PATH=${COMPILE_PATH} # compiled PHP
+else 
+    NGX_PATH=`pwd`'/nginx/sbin'
+fi
+
 ${NGX_PATH}/nginx -V
 export PATH=${NGX_PATH}:$PATH
 NGX_MODULE_PATH=`pwd`'/nginx/modules'
