@@ -21,4 +21,4 @@ location = /ini {
 --- request
 GET /ini
 --- response_body eval
-"/etc/php/" . $ENV{'PHP_SRC_VERSION'} . "/embed/php.ini"
+$ENV{'TRAVIS_BUILD_DIR'} . "/.github/ngx-php/php/php.ini"
