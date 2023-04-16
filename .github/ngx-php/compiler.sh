@@ -56,6 +56,7 @@ echo "php install ..."
 --without-pear  \
 --disable-cli \
 --disable-cgi \
+--enable-opcache \
 --enable-embed=shared
 make
 make install
