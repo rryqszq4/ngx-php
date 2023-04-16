@@ -3,13 +3,20 @@
 
 # Show PHP cli
 echo "PHP version ..."
-/usr/bin/php${PHP_SRC_VERSION} -v
+
+PHP_COMPILE_PATH=`pwd`'/build/php'
+if [ -d "$PHP_COMPILE_PATH" ]; then
+    ${PHP_COMPILE_PATH}'/bin/php' -v
+else 
+    /usr/bin/php${PHP_SRC_VERSION} -v
+fi
+
 
 echo "Ngx-php test ..."
 
-COMPILE_PATH=`pwd`'/build/nginx/sbin'
-if [ -d "$COMPILE_PATH" ]; then
-    NGX_PATH=${COMPILE_PATH} # compiled PHP
+NGINX_COMPILE_PATH=`pwd`'/build/nginx/sbin'
+if [ -d "$NGINX_COMPILE_PATH" ]; then
+    NGX_PATH=${NGINX_COMPILE_PATH}
 else 
     NGX_PATH=`pwd`'/nginx/sbin'
 fi
