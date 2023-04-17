@@ -244,10 +244,11 @@ Test
 ----
 Using the perl of [Test::Nginx](https://github.com/openresty/test-nginx) module to testing, searching and finding out problem in ngx_php7.
 ```sh
-ngx_php7 test ...
-nginx version: nginx/1.12.2
-built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
-configure arguments: --prefix=/home/travis/build/rryqszq4/ngx_php7/build/nginx --with-ld-opt=-Wl,-rpath,/home/travis/build/rryqszq4/ngx_php7/build/php/lib --add-module=../../../ngx_php7/third_party/ngx_devel_kit --add-module=../../../ngx_php7
+Ngx-php test ...
+nginx version: nginx/1.22.1
+built by gcc 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
+configure arguments: --prefix=/home/runner/work/ngx-php/ngx-php/nginx --with-ld-opt=-Wl,-rpath,/usr/lib --add-module=../third_party/ngx_devel_kit --add-module=..
+/home/runner/work/ngx-php/ngx-php
 t/001-hello.t ..................... ok
 t/002-ini.t ....................... ok
 t/003-error.t ..................... ok
@@ -262,17 +263,19 @@ t/011-ngx_constants.t ............. ok
 t/012-function.t .................. ok
 t/013-class.t ..................... ok
 t/014-ngx_var.t ................... ok
-t/015-ngx_header.t ................ 1/? WARNING: TEST 2: set content-length of response headers - unexpected extra bytes after last chunk in response: "Testing ngx_header!\x{0a}"
 t/015-ngx_header.t ................ ok
 t/016-rewrite_by_php.t ............ ok
 t/017-ngx_redirect.t .............. ok
-t/018-ngx_mysql.t ................. ok
+t/018-ngx_mysql.t ................. skipped: Fix later
 t/019-php_set.t ................... ok
 t/020-ngx_cookie.t ................ ok
 t/021-content_by_php_block.t ...... ok
 t/022-init_worker_by_php_block.t .. ok
+t/023-ngx_redis.t ................. ok
+t/024-ngx_request_body.t .......... ok
+t/025-opcache.t ................... ok
 All tests successful.
-Files=22, Tests=84, 14 wallclock secs ( 0.09 usr  0.02 sys +  2.19 cusr  0.43 csys =  2.73 CPU)
+Files=25, Tests=92, 16 wallclock secs ( 0.08 usr  0.04 sys +  4.56 cusr  0.93 csys =  5.61 CPU)
 Result: PASS
 ```
 
