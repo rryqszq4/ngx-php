@@ -11,6 +11,7 @@ else
     /usr/bin/php${PHP_SRC_VERSION} -v
 fi
 
+ls
 
 echo "Ngx-php test ..."
 
@@ -33,5 +34,5 @@ fi
 
 export TRAVIS_BUILD_DIR=`pwd`
 echo $TRAVIS_BUILD_DIR
-ls
+
 prove -r t
