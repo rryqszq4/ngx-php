@@ -1,4 +1,4 @@
-ngx_php
+ngx-php
 ========
 [![Build dynamic test](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml/badge.svg)](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml)
 [![GitHub release](https://img.shields.io/github/release/rryqszq4/ngx-php.svg)](https://github.com/rryqszq4/ngx-php/releases/latest)
