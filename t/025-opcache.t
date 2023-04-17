@@ -47,7 +47,7 @@ JIT enabled
 
 
 
-=== TEST 3: JIT ini value
+=== TEST 3: JIT ini values
 show .ini valude
 --- http_config
 php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php/php.ini;
@@ -56,13 +56,16 @@ location = /jit-ini {
     content_by_php '
         if (PHP_MAJOR_VERSION < 8) {
             # JIT only added in PHP8
-            echo "tracing";
+            echo "jit tracing\n";
+            echo "jit_buffer_size 128M\n";
         } else {
-            echo ini_get("opcache.jit");
+            echo "jit ", ini_get("opcache.jit"), "\n";
+            echo "jit_buffer_size ", ini_get("opcache.jit_buffer_size"), "\n";
         }
     ';
 }
 --- request
 GET /jit-ini
 --- response_body
-tracing
+jit tracing
+jit_buffer_size 128M
