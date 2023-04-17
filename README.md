@@ -1,7 +1,6 @@
 ngx_php
 ========
-[![workflow](https://github.com/rryqszq4/ngx-php/workflows/actions-build/badge.svg)](https://github.com/rryqszq4/ngx-php/actions?query=workflow%3Aactions-build)
-[![Build Status](https://travis-ci.com/rryqszq4/ngx-php.svg?branch=master)](https://travis-ci.com/rryqszq4/ngx-php7)
+[![Build dynamic test](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml/badge.svg)](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml)
 [![GitHub release](https://img.shields.io/github/release/rryqszq4/ngx-php.svg)](https://github.com/rryqszq4/ngx-php/releases/latest)
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx-php/blob/master/LICENSE)
 [![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx-php)
