@@ -42,4 +42,4 @@ location = /jit {
 --- request
 GET /jit
 --- response_body
-JIT disabled
+JIT enabled

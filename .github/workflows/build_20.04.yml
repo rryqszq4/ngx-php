@@ -67,4 +67,6 @@ jobs:
         run: |
           sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/
           sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/cli/conf.d/
+          sudo cp .github/ngx-php/php/99-opcache.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/
+          sudo cp .github/ngx-php/php/99-opcache.ini /etc/php/${PHP_SRC_VERSION}/cli/conf.d/
           ./.github/ngx-php/test.sh
