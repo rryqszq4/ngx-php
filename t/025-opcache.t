@@ -36,6 +36,8 @@ location = /jit {
             # JIT only added in PHP8
             echo "JIT enabled\n";
         } else {
+            # set at runtime, as is not enabled from php.ini
+            ini_set("opcache.jit", "tracing");
             echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled\n" : "JIT disabled";
         }
     ';
