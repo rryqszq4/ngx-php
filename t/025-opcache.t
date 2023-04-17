@@ -34,7 +34,7 @@ location = /jit {
     content_by_php '
         if (PHP_MAJOR_VERSION < 8) {
             # JIT only added in PHP8
-            echo "JIT enabled";
+            echo "JIT enabled\n";
         } else {
             echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled\n" : "JIT disabled";
         }
