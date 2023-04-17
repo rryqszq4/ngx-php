@@ -28,11 +28,11 @@ cd nginx-${NGINX_SRC_VERSION}
 pwd
 
 #php-config
-#export PHP_CONFIG="/usr/bin/php-config$PHP_SRC_VERSION"
+export PHP_CONFIG="/usr/bin/php-config$PHP_SRC_VERSION"
 export PHP_LIB='/usr/lib'
-#export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
+export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
 
-php-config$PHP_SRC_VERSION
+php-config
 #ls ${PHP_SRC_ROOT}
 
 echo "Nginx install ..."

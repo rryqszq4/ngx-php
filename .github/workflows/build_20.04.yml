@@ -25,13 +25,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        run: |
-          sudo apt-get install -yqq cpanminus libxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
-          sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
-          sudo apt-get update -yqq >/dev/null && sudo apt-get upgrade -yqq >/dev/null
+        run: sudo apt-get install -yqq cpanminus libxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
 
-      - name: Install PHP-${{ matrix.php_version }}
-        run: sudo apt-get install php${{ matrix.php_version }}-cli php${{ matrix.php_version }}-dev libphp${{ matrix.php_version }}-embed php${{ matrix.php_version }}-opcache php${{ matrix.php_version }}-mysql
+      - name: Setup PHP-${{ matrix.php_version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php_version }}
+          extensions: dev, embed, opcache, mysql
+          ini-values: opcache.enable=1, opcache.enable_cli=1, opcache.jit=tracing, opcache.jit_buffer_size=128M,error_reporting=E_ALL
+          coverage: none
 
       - name: Download Nginx v${{ matrix.ngxinx_version }}
         run: |
