@@ -33,7 +33,8 @@ php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php/php.ini;
 location = /jit {
     content_by_php '
         if (PHP_MAJOR_VERSION < 8) {
-            echo "JIT disabled";
+            # JIT only added in PHP8
+            echo "JIT enabled";
         } else {
             echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled" : "JIT disabled";
         }
