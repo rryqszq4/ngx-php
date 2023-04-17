@@ -81,4 +81,6 @@ jobs:
       - name: Test
         env:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
-        run: ./.github/ngx-php/test.sh
+        run: |
+          sudo sed -i "s|opcache.jit=off|opcache.jit=tracing|g" /etc/php/${PHP_SRC_VERSION}/embed/conf.d/10-opcache.ini
+          ./.github/ngx-php/test.sh
