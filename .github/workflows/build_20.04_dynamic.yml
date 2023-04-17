@@ -31,10 +31,8 @@ jobs:
           sudo apt-get update -yqq >/dev/null && sudo apt-get upgrade -yqq >/dev/null
 
       - name: Install PHP-${{ matrix.php_version }}
-        run: |
-          sudo apt-get install php${{ matrix.php_version }}-cli php${{ matrix.php_version }}-dev libphp${{ matrix.php_version }}-embed php${{ matrix.php_version }}-mysql
-          sudo sed -i "s|opcache.jit=off|opcache.jit=tracing|g" /etc/php/${{ matrix.php_version }}/embed/conf.d/10-opcache.ini
-          
+        run: sudo apt-get install php${{ matrix.php_version }}-cli php${{ matrix.php_version }}-dev libphp${{ matrix.php_version }}-embed php${{ matrix.php_version }}-mysql
+         
       - name: Download Nginx v${{ matrix.ngxinx_version }}
         run: |
           wget http://nginx.org/download/nginx-${{ matrix.ngxinx_version }}.tar.gz
@@ -70,4 +68,5 @@ jobs:
         run: |
           sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/embed/conf.d/
           sudo cp .github/ngx-php/php/99-xdebug.ini /etc/php/${PHP_SRC_VERSION}/cli/conf.d/
+          sudo sed -i "s|opcache.jit=off|opcache.jit=tracing|g" /etc/php/${PHP_SRC_VERSION}/embed/conf.d/10-opcache.ini
           ./.github/ngx-php/test.sh
