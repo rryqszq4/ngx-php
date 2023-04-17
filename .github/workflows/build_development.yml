@@ -65,10 +65,7 @@ jobs:
         run: |
           sudo systemctl start mysql.service
           mysql -uroot -proot -e 'CREATE DATABASE ${{ env.DB_DATABASE }};'
-          if [ ! -d data-cache ]; then mkdir data-cache; fi
-          if [ ! -f data-cache/world-db.tar.gz ]; then wget -O data-cache/world-db.tar.gz https://downloads.mysql.com/docs/world-db.tar.gz; fi
-          tar zxvf data-cache/world-db.tar.gz
-          mysql -uroot -proot < world-db/world.sql
+          mysql -uroot -proot < .github/ngx-php/world.sql
 
       - name: Install Redis & Memcached
         run: |
