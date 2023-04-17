@@ -31,7 +31,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php_version }}
-          extensions: opcache, mysql
+          extensions: dev, embed, opcache, mysql
           ini-values: opcache.enable=1, opcache.enable_cli=1, opcache.jit=tracing, opcache.jit_buffer_size=128M,error_reporting=E_ALL
           coverage: none
 
