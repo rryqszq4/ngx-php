@@ -1,20 +1,19 @@
-ngx_php7
+ngx-php
 ========
-[![workflow](https://github.com/rryqszq4/ngx_php7/workflows/actions-build/badge.svg)](https://github.com/rryqszq4/ngx_php7/actions?query=workflow%3Aactions-build)
-[![Build Status](https://travis-ci.com/rryqszq4/ngx_php7.svg?branch=master)](https://travis-ci.com/rryqszq4/ngx_php7)
-[![GitHub release](https://img.shields.io/github/release/rryqszq4/ngx_php7.svg)](https://github.com/rryqszq4/ngx_php7/releases/latest)
-[![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx_php7/blob/master/LICENSE)
-[![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx_php7)
+[![Build dynamic test](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml/badge.svg)](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml)
+[![GitHub release](https://img.shields.io/github/release/rryqszq4/ngx-php.svg)](https://github.com/rryqszq4/ngx-php/releases/latest)
+[![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx-php/blob/master/LICENSE)
+[![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx-php)
 
-ngx_php7 is an extension module of high-performance web server nginx, which implements embedded php7 script to process nginx location and variables.  
+ngx-php is an extension module of high-performance web server nginx, which implements embedded PHP7 andPHP8 script to process nginx location and variables.  
 
-ngx_php7 draws on the design of [ngx_lua](https://github.com/openresty/lua-nginx-module) and is committed to providing non-blocking web services with significant performance advantages over php-cgi, mod_php, php-fpm and hhvm.  
+ngx-php draws on the design of [ngx_lua](https://github.com/openresty/lua-nginx-module) and is committed to providing non-blocking web services with significant performance advantages over php-cgi, mod_php, php-fpm and hhvm.  
 
-ngx_php7 doesn't want to replace anything, just want to provide a solution.  
+ngx-php doesn't want to replace anything, just want to provide a solution.  
 
 There is a legacy version of [ngx_php5](https://github.com/rryqszq4/ngx_php/tree/ngx_php5), which records some of my past code practices and is also valuable.   
 
-[Benchmarks about ngx_php7 and php](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=fortune)  
+[Benchmarks about ngx-php and php](https://www.techempower.com/benchmarks/#section=data-r19&hw=ph&test=fortune)  
 
 Table of contents
 -----------------
@@ -55,7 +54,7 @@ $ cd php-7.3.10
 $ ./configure --prefix=/path/to/php --enable-embed
 $ make && make install
 
-$ git clone https://github.com/rryqszq4/ngx_php7.git
+$ git clone https://github.com/rryqszq4/ngx-php.git
 
 $ wget 'http://nginx.org/download/nginx-1.12.2.tar.gz'
 $ tar -zxvf nginx-1.12.2.tar.gz
@@ -69,8 +68,8 @@ $ export PHP_LIB=/path/to/php/lib
 $ ./configure --user=www --group=www \
 $             --prefix=/path/to/nginx \
 $             --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-$             --add-module=/path/to/ngx_php7/third_party/ngx_devel_kit \
-$             --add-module=/path/to/ngx_php7
+$             --add-module=/path/to/ngx-php/third_party/ngx_devel_kit \
+$             --add-module=/path/to/ngx-php
 $ make && make install
 ```
 
@@ -97,7 +96,7 @@ apt-get install -yqq wget git unzip libxml2-dev cmake make systemtap-sdt-dev \
                      zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev \
                      php7.4-cli php7.4-dev libphp7.4-embed php7.4-mysql
 
-git clone https://github.com/rryqszq4/ngx_php7.git
+git clone https://github.com/rryqszq4/ngx-php.git
 
 wget 'http://nginx.org/download/nginx-1.18.0.tar.gz'
 tar -zxvf nginx-1.18.0.tar.gz
@@ -108,13 +107,13 @@ export PHP_LIB=/usr/lib
 ./configure --user=www --group=www \
             --prefix=/path/to/nginx \
             --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-            --add-module=/path/to/ngx_php7/third_party/ngx_devel_kit \
-            --add-module=/path/to/ngx_php7
+            --add-module=/path/to/ngx-php/third_party/ngx_devel_kit \
+            --add-module=/path/to/ngx-php
 make && make install
 ```
 
 ### Mac osx
-[https://github.com/rryqszq4/ngx_php7/blob/master/docs/zh-cn/osx_install.md](https://github.com/rryqszq4/ngx_php7/blob/master/docs/zh-cn/osx_install.md)  
+[https://github.com/rryqszq4/ngx-php/blob/master/docs/zh-cn/osx_install.md](https://github.com/rryqszq4/ngx-php/blob/master/docs/zh-cn/osx_install.md)  
 
 ### Docker
 
@@ -153,7 +152,7 @@ http {
     
         location /php {
             content_by_php_block {
-                echo "hello ngx_php7";
+                echo "hello ngx-php";
             }
         }
 
@@ -242,12 +241,13 @@ http {
 
 Test
 ----
-Using the perl of [Test::Nginx](https://github.com/openresty/test-nginx) module to testing, searching and finding out problem in ngx_php7.
+Using the perl of [Test::Nginx](https://github.com/openresty/test-nginx) module to testing, searching and finding out problem in ngx-php.
 ```sh
-ngx_php7 test ...
-nginx version: nginx/1.12.2
-built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.3) 
-configure arguments: --prefix=/home/travis/build/rryqszq4/ngx_php7/build/nginx --with-ld-opt=-Wl,-rpath,/home/travis/build/rryqszq4/ngx_php7/build/php/lib --add-module=../../../ngx_php7/third_party/ngx_devel_kit --add-module=../../../ngx_php7
+Ngx-php test ...
+nginx version: nginx/1.22.1
+built by gcc 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
+configure arguments: --prefix=/home/runner/work/ngx-php/ngx-php/nginx --with-ld-opt=-Wl,-rpath,/usr/lib --add-module=../third_party/ngx_devel_kit --add-module=..
+/home/runner/work/ngx-php/ngx-php
 t/001-hello.t ..................... ok
 t/002-ini.t ....................... ok
 t/003-error.t ..................... ok
@@ -262,17 +262,19 @@ t/011-ngx_constants.t ............. ok
 t/012-function.t .................. ok
 t/013-class.t ..................... ok
 t/014-ngx_var.t ................... ok
-t/015-ngx_header.t ................ 1/? WARNING: TEST 2: set content-length of response headers - unexpected extra bytes after last chunk in response: "Testing ngx_header!\x{0a}"
 t/015-ngx_header.t ................ ok
 t/016-rewrite_by_php.t ............ ok
 t/017-ngx_redirect.t .............. ok
-t/018-ngx_mysql.t ................. ok
+t/018-ngx_mysql.t ................. skipped: Fix later
 t/019-php_set.t ................... ok
 t/020-ngx_cookie.t ................ ok
 t/021-content_by_php_block.t ...... ok
 t/022-init_worker_by_php_block.t .. ok
+t/023-ngx_redis.t ................. ok
+t/024-ngx_request_body.t .......... ok
+t/025-opcache.t ................... ok
 All tests successful.
-Files=22, Tests=84, 14 wallclock secs ( 0.09 usr  0.02 sys +  2.19 cusr  0.43 csys =  2.73 CPU)
+Files=25, Tests=92, 16 wallclock secs ( 0.08 usr  0.04 sys +  4.56 cusr  0.93 csys =  5.61 CPU)
 Result: PASS
 ```
 
