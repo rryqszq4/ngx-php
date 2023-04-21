@@ -32,7 +32,7 @@ export PHP_CONFIG="/usr/bin/php-config$PHP_SRC_VERSION"
 export PHP_LIB='/usr/lib'
 export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lphp$PHP_MAJOR_VERSION "
 
-php-config$PHP_SRC_VERSION
+php-config
 #ls ${PHP_SRC_ROOT}
 
 echo "Nginx install ..."
@@ -47,7 +47,7 @@ else
               --add-dynamic-module=../third_party/ngx_devel_kit \
               --add-dynamic-module=..
 fi
-make
+make -j$(nproc)
 make install
 if [ $? -eq 0 ];then
     echo "Nginx install ... done"

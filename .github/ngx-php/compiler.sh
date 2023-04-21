@@ -56,14 +56,17 @@ echo "php install ..."
 --without-pear  \
 --disable-cli \
 --disable-cgi \
---enable-dtrace \
+--enable-opcache \
 --enable-embed=shared
-make
+make -j$(nproc)
 make install
 #sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/lib/libphp7.so
 #sudo ln -s ${PHP_SRC_ROOT}/lib/libphp7.so /usr/local/lib/libphp7.so
 echo "php install ... done"
 cp php.ini-production ${PHP_SRC_ROOT}'/php.ini'
+
+# Show php-config
+../php/bin/php-config
 
 cd ..
 echo "nginx download ..."
@@ -81,19 +84,22 @@ export NGX_PHP_LIBS="`$PHP_CONFIG --ldflags` `$PHP_CONFIG --libs` -L$PHP_LIB -lp
 
 ls ${PHP_SRC_ROOT}
 
+# Show pwd
+pwd
+
 echo "nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-module=../../ngx_php7/third_party/ngx_devel_kit \
-              --add-module=../../ngx_php7
+              --add-module=../../third_party/ngx_devel_kit \
+              --add-module=../..
 else
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
-              --add-dynamic-module=../../ngx_php7/third_party/ngx_devel_kit \
-              --add-dynamic-module=../../ngx_php7
+              --add-dynamic-module=../../third_party/ngx_devel_kit \
+              --add-dynamic-module=../..
 fi
-make
+make -j$(nproc)
 make install
 if [ $? -eq 0 ];then
     echo "nginx install ... done"

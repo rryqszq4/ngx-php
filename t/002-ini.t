@@ -3,7 +3,7 @@
 
 use Test::Nginx::Socket "no_plan";
 
-$ENV{'TEST_NGINX_PHP_VERSION'} = $ENV{'PHP_SRC_VERSION'};
+$ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
 
 run_tests();
 
@@ -11,7 +11,7 @@ __DATA__
 === TEST 1: ini file
 ini file
 --- http_config
-php_ini_path /etc/php/$TEST_NGINX_PHP_VERSION/embed/php.ini;
+php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php/php.ini;
 --- config
 location = /ini {
     content_by_php '
@@ -21,4 +21,4 @@ location = /ini {
 --- request
 GET /ini
 --- response_body eval
-"/etc/php/" . $ENV{'PHP_SRC_VERSION'} . "/embed/php.ini"
+$ENV{'TRAVIS_BUILD_DIR'} . "/.github/ngx-php/php/php.ini"
