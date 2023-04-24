@@ -1,0 +1,68 @@
+name: Build test 20.04
+
+on:
+  workflow_call:
+
+env:
+  DB_DATABASE: ngx_php
+  DB_USER: ngx_php
+  DB_PASSWORD: ngx_php
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        php_version: ["7.4", "8.0", "8.1", "8.2"]
+        ngxinx_version: ["1.20.2", "1.22.1", "1.24.0"] # "1.12.2" fail to compile
+        # Disable fail-fast to allow all failing versions to fail in a
+        # single build, rather than stopping when the first one fails.
+      fail-fast: false
+
+    name: PHP-${{ matrix.php_version }} Nginx ${{ matrix.ngxinx_version }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: sudo apt-get install -yqq cpanminus libxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
+
+      - name: Setup PHP-${{ matrix.php_version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php_version }}
+          extensions: dev, embed, opcache, mysql
+          ini-values: opcache.enable=1, opcache.enable_cli=1, opcache.jit=tracing, opcache.jit_buffer_size=128M,error_reporting=E_ALL
+          coverage: none
+
+      - name: Download Nginx v${{ matrix.ngxinx_version }}
+        run: |
+          wget http://nginx.org/download/nginx-${{ matrix.ngxinx_version }}.tar.gz
+          tar -zxf nginx-${{ matrix.ngxinx_version }}.tar.gz
+
+      - name: Compile Ngx-php
+        env:
+          PHP_SRC_VERSION: ${{ matrix.php_version }}
+          NGINX_SRC_VERSION: ${{ matrix.ngxinx_version }}
+        run: ./.github/ngx-php/compile-ngx.sh
+
+      - name: MySQL Start and create table
+        run: |
+          sudo systemctl start mysql.service
+          mysql -uroot -proot -e 'CREATE DATABASE ${{ env.DB_DATABASE }};'
+          mysql -uroot -proot < .github/ngx-php/world.sql
+
+      - name: Install Redis & Memcached
+        run: |
+          sudo apt-get install -y redis-server redis-tools memcached
+          sudo redis-server /etc/redis/redis.conf
+
+      - name: Perl packages
+        run: sudo cpanm -n Test::Nginx
+
+      - name: Test
+        env:
+          PHP_SRC_VERSION: ${{ matrix.php_version }}
+        run: |
+          sudo sed -i "s|opcache.jit=off|opcache.jit=tracing|g" /etc/php/${PHP_SRC_VERSION}/embed/conf.d/10-opcache.ini
+          ./.github/ngx-php/test.sh

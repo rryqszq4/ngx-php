@@ -36,6 +36,11 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '<20') }}
     uses: ./.github/workflows/build_20.04_dynamic.yml
 
+  build_22-04:
+    name: Ubuntu 22.04
+    if: ${{ !contains(github.event.head_commit.message, '<22') }}
+    uses: ./.github/workflows/build_22.04.yml
+
   build_dynamic_22-04:
     name: Ubuntu 22.04 dynamic
     if: ${{ !contains(github.event.head_commit.message, '<22') }}
