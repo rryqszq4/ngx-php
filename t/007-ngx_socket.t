@@ -30,6 +30,6 @@ location = /ngx_socket2 {
 GET /ngx_socket2
 --- response_body
 string(15) "HTTP/1.1 200 OK"
-string(9) "Date: GMT"
+string(9) "date: GMT"
 string(46) "content-type: application/json; encoding=utf-8"
 string(14) "Content-Length"
