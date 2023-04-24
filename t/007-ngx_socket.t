@@ -13,23 +13,23 @@ location = /ngx_socket2 {
     default_type 'application/json;charset=UTF-8';
     content_by_php '
         $fd = ngx_socket_create();
-        yield ngx_socket_connect($fd, "httpbin.org", 80);
-        $send_buf = "GET /get HTTP/1.1\\r\\nHost: httpbin.org\\r\\nConnection: close\\r\\n\\r\\n";
+        yield ngx_socket_connect($fd, "httpbingo.org", 80);
+        $send_buf = "GET /get HTTP/1.1\\r\\nHost: httpbingo.org\\r\\nConnection: close\\r\\n\\r\\n";
         yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
         $ret = "";
         yield ngx_socket_recv($fd, $ret, 1024);
         yield ngx_socket_close($fd);
         $ret = explode("\r\n",$ret);
         var_dump($ret[0]);
-        var_dump(explode(":",$ret[1])[0].": GMT");
-        var_dump($ret[2]);
-        var_dump(explode(":",$ret[3])[0]);
+        var_dump(explode(":",$ret[4])[0].": GMT");
+        var_dump($ret[3]);
+        var_dump(explode(":",$ret[5])[0]);
     ';
 }
 --- request
 GET /ngx_socket2
 --- response_body
 string(15) "HTTP/1.1 200 OK"
-string(9) "Date: GMT"
-string(30) "Content-Type: application/json"
-string(14) "Content-Length"
+string(9) "date: GMT"
+string(46) "content-type: application/json; encoding=utf-8"
+string(14) "content-length"
