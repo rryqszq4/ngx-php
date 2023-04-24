@@ -13,7 +13,7 @@ location = /ngx_socket2 {
     default_type 'text/html; charset=UTF-8';
     content_by_php '
         $fd = ngx_socket_create();
-        yield ngx_socket_connect($fd, "httpbin.org", 80);
+        yield ngx_socket_connect($fd, "example.com", 80);
         $send_buf = "GET /get HTTP/1.1\\r\\nHost: example.com\\r\\nConnection: close\\r\\n\\r\\n";
         yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
         $ret = "";
