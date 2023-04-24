@@ -440,16 +440,6 @@ cleanup_args:
 
 static void ngx_http_php_zend_throw_exception_internal(zend_object *exception) /* {{{ */
 {
-#ifdef HAVE_DTRACE
-    if (DTRACE_EXCEPTION_THROWN_ENABLED()) {
-        if (exception != NULL) {
-            DTRACE_EXCEPTION_THROWN(ZSTR_VAL(exception->ce->name));
-        } else {
-            DTRACE_EXCEPTION_THROWN(NULL);
-        }
-    }
-#endif /* HAVE_DTRACE */
-
     if (exception != NULL) {
         zend_object *previous = EG(exception);
         zend_exception_set_previous(exception, EG(exception));
