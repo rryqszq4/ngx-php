@@ -14,7 +14,7 @@ location = /ngx_socket2 {
     content_by_php '
         $fd = ngx_socket_create();
         yield ngx_socket_connect($fd, "example.com", 80);
-        $send_buf = "GET /get HTTP/1.1\\r\\nHost: example.com\\r\\nConnection: close\\r\\n\\r\\n";
+        $send_buf = "GET / HTTP/1.1\\r\\nHost: example.com\\r\\nConnection: close\\r\\n\\r\\n";
         yield ngx_socket_send($fd, $send_buf, strlen($send_buf));
         $ret = "";
         yield ngx_socket_recv($fd, $ret, 1024);
