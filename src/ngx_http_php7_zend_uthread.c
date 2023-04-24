@@ -414,16 +414,6 @@ static int ngx_http_php_zend_call_function(zend_fcall_info *fci, zend_fcall_info
 
 static void ngx_http_php_zend_throw_exception_internal(zval *exception) /* {{{ */
 {
-#ifdef HAVE_DTRACE
-    if (DTRACE_EXCEPTION_THROWN_ENABLED()) {
-        if (exception != NULL) {
-            DTRACE_EXCEPTION_THROWN(ZSTR_VAL(Z_OBJ_P(exception)->ce->name));
-        } else {
-            DTRACE_EXCEPTION_THROWN(NULL);
-        }
-    }
-#endif /* HAVE_DTRACE */
-
     if (exception != NULL) {
         zend_object *previous = EG(exception);
         zend_exception_set_previous(Z_OBJ_P(exception), EG(exception));
