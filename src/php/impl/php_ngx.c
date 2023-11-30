@@ -425,7 +425,7 @@ int php_ngx_module_init()
 #endif
 
 #if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 2)
-  php_embed_module.ini_entries = HARDCODED_INI;
+  php_ngx_module.ini_entries = HARDCODED_INI;
 #else
   php_ngx_module.ini_entries = malloc(sizeof(HARDCODED_INI));
   memcpy(php_ngx_module.ini_entries, HARDCODED_INI, sizeof(HARDCODED_INI));
