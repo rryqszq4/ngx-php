@@ -23,8 +23,8 @@ env:
 jobs:
   build_php_22-04:
     name: Compile PHP Ubuntu 22.04
-    if: ${{ contains(github.event.head_commit.message, '<compile') }}
-    uses: ./.github/workflows/build_22.04_compile_php.yml
+    if: ${{ !contains(github.event.head_commit.message, '<compile') }}
+    uses: ./.github/workflows/build_22.04.yml
 
   build_20-04:
     name: Ubuntu 20.04
@@ -38,6 +38,6 @@ jobs:
 
   build_dynamic_22-04:
     name: Ubuntu 22.04 dynamic
-    if: ${{ !contains(github.event.head_commit.message, '<22') }}
+    if: ${{ contains(github.event.head_commit.message, '<22') }}
     uses: ./.github/workflows/build_22.04_dynamic.yml
 

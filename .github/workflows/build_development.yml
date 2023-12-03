@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - development
+      - next
     paths:
       - "src/**"
       - "t/**"

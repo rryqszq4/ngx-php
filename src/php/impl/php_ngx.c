@@ -261,7 +261,7 @@ static void php_ngx_register_variables(zval *track_vars_array )
 }*/
 
 sapi_module_struct php_ngx_module = {
-#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 2) 
+#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 2)
     "ngx-php",
 #else
     "cli-server",                                          /* name */
@@ -424,8 +424,12 @@ int php_ngx_module_init()
   setmode(_fileno(stderr), O_BINARY);       /* make the stdio mode be binary */
 #endif
 
+#if (PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION > 2)
+  php_ngx_module.ini_entries = HARDCODED_INI;
+#else
   php_ngx_module.ini_entries = malloc(sizeof(HARDCODED_INI));
   memcpy(php_ngx_module.ini_entries, HARDCODED_INI, sizeof(HARDCODED_INI));
+#endif
 
   php_ngx_module.additional_functions = additional_functions;
 
@@ -466,8 +470,12 @@ void php_ngx_module_shutdown()
 #ifdef ZTS
     tsrm_shutdown();
 #endif
+
+#if (PHP_MAJOR_VERSION <= 8 && PHP_MINOR_VERSION <= 2)
     if (php_ngx_module.ini_entries){
         free(php_ngx_module.ini_entries);
         php_ngx_module.ini_entries = NULL;
     }
+#endif
+
 }
