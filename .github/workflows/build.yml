@@ -23,7 +23,7 @@ env:
 jobs:
   build_php_22-04:
     name: Compile PHP Ubuntu 22.04
-    if: ${{ !contains(github.event.head_commit.message, '<compile') }}
+    if: ${{ contains(github.event.head_commit.message, '<compile') }}
     uses: ./.github/workflows/build_22.04.yml
 
   build_20-04:
