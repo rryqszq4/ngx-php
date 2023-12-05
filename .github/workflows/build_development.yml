@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - development
-      - next
     paths:
       - "src/**"
       - "t/**"
@@ -26,12 +25,12 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
         php_version: ["8.3"]
-        ngxinx_version: ["1.24.0"] # "1.12.2" fail to compile
+        ngxinx_version: ["1.25.3"] # "1.12.2" fail to compile
         # Disable fail-fast to allow all failing versions to fail in a
         # single build, rather than stopping when the first one fails.
       fail-fast: false
