@@ -1,11 +1,11 @@
 ngx-php
 ========
-[![Build dynamic test](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml/badge.svg)](https://github.com/rryqszq4/ngx-php/actions/workflows/ngx_php_dynamic.yml)
+[![Build](https://github.com/rryqszq4/ngx-php/actions/workflows/build.yml/badge.svg)](https://github.com/rryqszq4/ngx-php/actions/workflows/build.yml)
 [![GitHub release](https://img.shields.io/github/release/rryqszq4/ngx-php.svg)](https://github.com/rryqszq4/ngx-php/releases/latest)
 [![license](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](https://github.com/rryqszq4/ngx-php/blob/master/LICENSE)
 [![QQ group](https://img.shields.io/badge/QQ--group-558795330-26bcf5.svg)](https://github.com/rryqszq4/ngx-php)
 
-ngx-php is an extension module of high-performance web server nginx, which implements embedded PHP7 andPHP8 script to process nginx location and variables.  
+ngx-php is an extension module of high-performance web server nginx, which implements embedded PHP7 and PHP8 script to process nginx location and variables.  
 
 ngx-php draws on the design of [ngx_lua](https://github.com/openresty/lua-nginx-module) and is committed to providing non-blocking web services with significant performance advantages over php-cgi, mod_php, php-fpm and hhvm.  
 
