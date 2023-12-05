@@ -101,6 +101,8 @@ array(0) {
 ngx_post_args one arg is +10K
 --- config
 location = /ngx_post_args_10k {
+    client_max_body_size 64k;
+    client_body_buffer_size 64k;
     content_by_php '
         echo "ngx::post_args() +10k\n";
         var_dump(ngx::post_args());
