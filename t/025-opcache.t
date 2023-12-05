@@ -25,21 +25,49 @@ enabled
 
 
 
-=== TEST 2: JIT disabled
+=== TEST 2: JIT enabled
 JIT disabled for now, # check  https://github.com/oerdnj/deb.sury.org/issues/1924 
 --- http_config
-php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php.ini;
+php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php/php.ini;
 --- config
 location = /jit {
     content_by_php '
         if (PHP_MAJOR_VERSION < 8) {
-            echo "JIT disabled";
+            # JIT only added in PHP8
+            echo "JIT enabled\n";
         } else {
-            echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled" : "JIT disabled";
+            # set at runtime, as is not enabled from php.ini
+            # ini_set("opcache.jit", "tracing");
+            echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled\n" : "JIT disabled";
         }
     ';
 }
 --- request
 GET /jit
 --- response_body
-JIT disabled
+JIT enabled
+
+
+
+=== TEST 3: JIT ini values
+show .ini valude
+--- http_config
+php_ini_path $TEST_NGINX_BUILD_DIR/.github/ngx-php/php/php.ini;
+--- config
+location = /jit-ini {
+    content_by_php '
+        if (PHP_MAJOR_VERSION < 8) {
+            # JIT only added in PHP8
+            echo "jit tracing\n";
+            echo "jit_buffer_size 128M\n";
+        } else {
+            echo "jit ", ini_get("opcache.jit"), "\n";
+            echo "jit_buffer_size ", ini_get("opcache.jit_buffer_size"), "\n";
+        }
+    ';
+}
+--- request
+GET /jit-ini
+--- response_body
+jit tracing
+jit_buffer_size 128M
