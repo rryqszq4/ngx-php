@@ -38,7 +38,7 @@ jobs:
     name: PHP-${{ matrix.php_version }} Nginx ${{ matrix.ngxinx_version }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: sudo apt-get install -yqq cpanminus libxml2-dev systemtap-sdt-dev zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev
 
