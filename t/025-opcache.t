@@ -1,7 +1,7 @@
 
 # vim:set ft= ts=4 sw=4 et fdm=marker:
 
-use Test::Nginx::Socket 'no_plan';
+use Test::Nginx::Socket skip_all => "Skip";
 
 $ENV{'TEST_NGINX_BUILD_DIR'} = $ENV{'TRAVIS_BUILD_DIR'};
 
@@ -44,7 +44,6 @@ location = /jit {
 GET /jit
 --- response_body
 JIT enabled
---- SKIP
 
 
 === TEST 3: JIT ini values
@@ -69,4 +68,3 @@ GET /jit-ini
 --- response_body
 jit tracing
 jit_buffer_size 128M
---- SKIP
