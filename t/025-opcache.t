@@ -37,7 +37,7 @@ location = /jit {
             echo "JIT enabled\n";
         } else {
             # set at runtime, as is not enabled from php.ini
-            # ini_set("opcache.jit", "tracing");
+            ini_set("opcache.jit", "tracing");
             echo opcache_get_status()["jit"]["enabled"] ? "JIT enabled\n" : "JIT disabled";
         }
     ';
@@ -61,6 +61,7 @@ location = /jit-ini {
             echo "jit tracing\n";
             echo "jit_buffer_size 128M\n";
         } else {
+            ini_set("opcache.jit", "tracing");
             echo "jit ", ini_get("opcache.jit"), "\n";
             echo "jit_buffer_size ", ini_get("opcache.jit_buffer_size"), "\n";
         }
