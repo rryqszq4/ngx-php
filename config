@@ -66,7 +66,7 @@ fi
 
 if [ -z "$NGX_PHP_LIBS" ]; then
   PHP_VERSION="`$PHP_CONFIG --vernum`"
-  PHP_MAJOR_VERSION=${PHP_VERSION:0:1}
+  PHP_MAJOR_VERSION=`echo $PHP_VERSION | cut -b 1`
   if [ $PHP_MAJOR_VERSION -ge "8" ]; then
     PHP_MAJOR_VERSION=""
   fi
