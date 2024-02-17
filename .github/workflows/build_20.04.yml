@@ -64,5 +64,5 @@ jobs:
         env:
           PHP_SRC_VERSION: ${{ matrix.php_version }}
         run: |
-          sudo echo opcache.jit=tracing > /etc/php/${PHP_SRC_VERSION}/embed/conf.d/10-opcache.ini
+          echo opcache.jit=tracing | sudo tee --append /etc/php/${PHP_SRC_VERSION}/embed/conf.d/10-opcache.ini
           ./.github/ngx-php/test.sh
