@@ -26,7 +26,7 @@ ${NGX_PATH}/nginx -V
 export PATH=${NGX_PATH}:$PATH
 NGX_MODULE_PATH=`pwd`'/nginx/modules'
 if [ -d "${NGX_MODULE_PATH}" ]; then
-  for file in `\find ${NGX_MODULE_PATH} -name '*.so'`; do
+  for file in `\find ${NGX_MODULE_PATH} -name '*.so' | sort -h | xargs find`; do
     TEST_NGINX_LOAD_MODULES="${TEST_NGINX_LOAD_MODULES}${file} "
   done
   export TEST_NGINX_LOAD_MODULES
