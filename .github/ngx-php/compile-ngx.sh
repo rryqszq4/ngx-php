@@ -9,10 +9,9 @@
 # mkdir php
 # mkdir nginx
 
-if [ ${PHP_SRC_VERSION:0:1} -ge "8" ]; then
-   PHP_MAJOR_VERSION=""
-else
-   PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
+PHP_MAJOR_VERSION=${PHP_SRC_VERSION:0:1}
+if [ $PHP_MAJOR_VERSION -ge "8" ]; then
+    PHP_MAJOR_VERSION=""
 fi
 
 # echo "nginx download ..."
