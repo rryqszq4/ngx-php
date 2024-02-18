@@ -9,6 +9,7 @@ on:
       - "t/**"
       - "third_party/**"
       - ".github/**"
+      - "config"
   pull_request:
     branches:
       - development
@@ -17,6 +18,7 @@ on:
       - "t/**"
       - "third_party/**"
       - ".github/**"
+      - "config"
 
 env:
   DB_DATABASE: ngx_php
