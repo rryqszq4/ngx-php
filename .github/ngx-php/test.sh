@@ -35,4 +35,6 @@ fi
 export TRAVIS_BUILD_DIR=`pwd`
 echo $TRAVIS_BUILD_DIR
 
+killall nginx
+
 prove -r t
