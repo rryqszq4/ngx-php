@@ -38,8 +38,8 @@ What's different with official php
 Requirement
 -----------
 - Linux only
-- PHP-7.* ~ PHP-8.1
-- nginx-1.4.7 ~ nginx-1.23.x
+- PHP-7.* ~ PHP-8.3
+- nginx-1.4.7 ~ nginx-1.25.x
 
 Installation
 ------------
