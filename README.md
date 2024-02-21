@@ -38,8 +38,8 @@ What's different with official php
 Requirement
 -----------
 - Linux only
-- PHP-7.* ~ PHP-8.1
-- nginx-1.4.7 ~ nginx-1.23.x
+- PHP-7.* ~ PHP-8.3
+- nginx-1.4.7 ~ nginx-1.25.x
 
 Installation
 ------------
@@ -93,7 +93,7 @@ apt-get update -yqq && apt-get install -yqq software-properties-common
 LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 apt-get update -yqq
 apt-get install -yqq wget git unzip libxml2-dev cmake make systemtap-sdt-dev \
-                     zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev \
+                     zlib1g-dev libpcre3-dev libargon2-0-dev libsodium-dev libkrb5-dev \
                      php7.4-cli php7.4-dev libphp7.4-embed php7.4-mysql
 
 git clone https://github.com/rryqszq4/ngx-php.git
