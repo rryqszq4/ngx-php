@@ -80,15 +80,21 @@ ngx_http_php_request_read_body_cb(ngx_http_request_t *r)
         ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    cl = r->request_body->bufs;
-
-    if (cl->next == NULL){
-        len = cl->buf->last - cl->buf->pos;
-        if (len == 0){
-            return ;
+    len = 0;
+    for (cl = r->request_body->bufs; cl; cl = cl->next){
+        if (cl->buf == NULL){
+            continue;
         }
 
-        ctx->request_body_ctx.data = cl->buf->pos;
+        len += cl->buf->last - cl->buf->pos;
+    }
+
+    if (len == 0){
+        return ;
+    }
+
+    if (r->request_body->bufs->next == NULL){
+        ctx->request_body_ctx.data = r->request_body->bufs->buf->pos;
         ctx->request_body_ctx.len = len;
         ngx_log_error(NGX_LOG_INFO, r->connection->log, 0, "request_body(%d|%d): %V", len, strlen((char *)ctx->request_body_ctx.data), &ctx->request_body_ctx);
         if (ctx->request_body_more){
@@ -100,18 +106,13 @@ ngx_http_php_request_read_body_cb(ngx_http_request_t *r)
         return ;
     }
 
-    len = 0;
-    for (; cl; cl = cl->next){
-        len += cl->buf->last - cl->buf->pos;
-    }
-
-    if (len == 0){
-        return ;
-    }
-
     buf = ngx_palloc(r->pool, len);
     p = buf;
     for (cl = r->request_body->bufs; cl; cl = cl->next){
+        if (cl->buf == NULL){
+            continue;
+        }
+
         p = ngx_copy(p, cl->buf->pos, cl->buf->last - cl->buf->pos);
     }
 
@@ -186,7 +187,6 @@ ngx_http_php_request_get_request_body(ngx_http_request_t *r)
     u_char *p;
     u_char *data;
     size_t len;
-    ngx_buf_t *buf, *next;
     ngx_chain_t *cl;
     ngx_str_t body = ngx_null_string;
 
@@ -198,32 +198,36 @@ ngx_http_php_request_get_request_body(ngx_http_request_t *r)
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "temp_file: %s", r->request_body->temp_file->file.name.data);
         body = r->request_body->temp_file->file.name;
         return body;
-    }else {
-        cl = r->request_body->bufs;
-        buf = cl->buf;
-
-        if (cl->next == NULL){
-            len = buf->last - buf->pos;
-            p = ngx_pnalloc(r->pool, len + 1);
-            if (p == NULL){
-                return body;
-            }
-            data = p;
-            ngx_memcpy(p, buf->pos, len);
-            data[len] = 0;
-        } else {
-            next = cl->next->buf;
-            len = (buf->last - buf->pos) + (next->last - next->pos);
-            p = ngx_pnalloc(r->pool, len + 1);
-            data = p;
-            if (p == NULL){
-                return body;
-            }
-            p = ngx_cpymem(p, buf->pos, buf->last - buf->pos);
-            ngx_memcpy(p, next->pos, next->last - next->pos);
-            data[len] = 0;
-        }
     }
+
+    len = 0;
+    for (cl = r->request_body->bufs; cl; cl = cl->next) {
+        if (cl->buf == NULL) {
+            continue;
+        }
+
+        len += cl->buf->last - cl->buf->pos;
+    }
+
+    if (len == 0) {
+        return body;
+    }
+
+    p = ngx_pnalloc(r->pool, len + 1);
+    if (p == NULL) {
+        return body;
+    }
+
+    data = p;
+    for (cl = r->request_body->bufs; cl; cl = cl->next) {
+        if (cl->buf == NULL) {
+            continue;
+        }
+
+        p = ngx_copy(p, cl->buf->pos, cl->buf->last - cl->buf->pos);
+    }
+
+    *p = '\0';
 
     body.len = len;
     body.data = data;
