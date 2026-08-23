@@ -125,6 +125,40 @@ $ docker run -p 80:80 -v $PWD/app.conf:/etc/nginx/conf.d/default.conf nginx-php7
 ```
 
 
+Only to developers of ngx-php code !!
+
+To build and run the Ubuntu 24.04 regression tests locally:
+
+```sh
+$ docker build --file Dockerfile.test --tag ngx-php-test .
+$ docker run --rm ngx-php-test
+```
+
+The test image accepts the same version dimensions as CI:
+
+```sh
+$ docker build --file Dockerfile.test --build-arg PHP_VERSION=8.4 --build-arg NGINX_VERSION=1.27.3 --tag ngx-php-test .
+```
+
+To test locally all tests
+
+```sh
+docker run --rm ngx-php-test:local bash -c "export PATH=/src/nginx/sbin:/usr/bin:/bin; export TRAVIS_BUILD_DIR=/src; prove -r t"
+```
+
+To test only 1 test locally
+
+```sh
+docker run --rm ngx-php-test:local bash -c "export PATH=/src/nginx/sbin:/usr/bin:/bin; export TRAVIS_BUILD_DIR=/src; prove -v t/024-ngx_request_body.t"
+```
+
+We can also pass the arguments in the docker build
+
+```sh
+docker build --no-cache --build-arg PHP_VERSION=8.5 --build-arg NGINX_VERSION=1.31.4 ...
+```
+
+
 Synopsis
 --------
 
