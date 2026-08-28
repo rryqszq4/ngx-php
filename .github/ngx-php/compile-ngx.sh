@@ -38,11 +38,13 @@ echo "Nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+              --with-cc-opt="-Wno-error=clobbered" \
               --add-module=../third_party/ngx_devel_kit \
               --add-module=..
 else
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+              --with-cc-opt="-Wno-error=clobbered" \
               --add-dynamic-module=../third_party/ngx_devel_kit \
               --add-dynamic-module=..
 fi

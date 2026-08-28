@@ -25,7 +25,8 @@ PHP_SRC_ROOT=`pwd`'/php'
 cd ${PHP_SRC}
 
 echo "php install ..."
-./configure --prefix=${PHP_SRC_ROOT} \
+./configure CFLAGS="-Wno-clobbered" \
+--prefix=${PHP_SRC_ROOT} \
 --with-config-file-path=${PHP_SRC_ROOT} \
 --with-mysqli=mysqlnd \
 --with-pdo-mysql=mysqlnd \
@@ -91,11 +92,13 @@ echo "nginx install ..."
 if [ ! "${NGINX_MODULE}" = "DYNAMIC" ]; then
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+              --with-cc-opt="-Wno-error=clobbered" \
               --add-module=../../third_party/ngx_devel_kit \
               --add-module=../..
 else
   ./configure --prefix=${NGINX_SRC_ROOT} \
               --with-ld-opt="-Wl,-rpath,$PHP_LIB" \
+              --with-cc-opt="-Wno-error=clobbered" \
               --add-dynamic-module=../../third_party/ngx_devel_kit \
               --add-dynamic-module=../..
 fi
