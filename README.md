@@ -40,7 +40,7 @@ Requirement
 -----------
 - Linux only
 - PHP-7.* ~ PHP-8.5
-- nginx-1.4.7 ~ nginx-1.30.x
+- nginx-1.4.7 ~ nginx-1.31.x
 
 Installation
 ------------
