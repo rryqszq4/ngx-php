@@ -655,7 +655,7 @@ ngx_http_php_code_header_handler(sapi_header_struct *sapi_header,
 {
     ngx_http_request_t *r;
     ngx_table_elt_t *h;
-    char *tmp;
+    const char *tmp;
 
     if ((tmp = ngx_strstr(sapi_header->header, ": ")) == NULL){
         return NGX_ERROR;

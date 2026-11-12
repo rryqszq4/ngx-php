@@ -23,20 +23,20 @@ env:
   DB_PASSWORD: ngx_php
 
 jobs:
-  #build_26-04:
-  #  name: Ubuntu 26.04
-  #  if: ${{ !contains(github.event.head_commit.message, '<compile') }}
-  #  uses: ./.github/workflows/build_26.04.yml
+  build_26-04:
+    name: Ubuntu 26.04
+    if: ${{ !contains(github.event.head_commit.message, '<compile') }}
+    uses: ./.github/workflows/build_26.04.yml
 
   build_24-04:
     name: Ubuntu 24.04
     if: ${{ !contains(github.event.head_commit.message, '<compile') }}
     uses: ./.github/workflows/build_24.04.yml
 
-  build_22-04:
-    name: Ubuntu 22.04
-    if: ${{ !contains(github.event.head_commit.message, '<compile') }}
-    uses: ./.github/workflows/build_22.04.yml
+  #build_22-04:
+  #  name: Ubuntu 22.04
+  #  if: ${{ !contains(github.event.head_commit.message, '<compile') }}
+  #  uses: ./.github/workflows/build_22.04.yml
 
   #build_20-04:
   #  name: Ubuntu 20.04
@@ -44,20 +44,20 @@ jobs:
   #  uses: ./.github/workflows/build_20.04.yml
  
   # Dinamyc build
-  #build_dynamic_26-04:
-  #  name: Ubuntu 26.04 dynamic
-  #  if: ${{ !contains(github.event.head_commit.message, '<24') }}
-  #  uses: ./.github/workflows/build_26.04_dynamic.yml
+  build_dynamic_26-04:
+    name: Ubuntu 26.04 dynamic
+    if: ${{ !contains(github.event.head_commit.message, '<26') }}
+    uses: ./.github/workflows/build_26.04_dynamic.yml
   
   build_dynamic_24-04:
     name: Ubuntu 24.04 dynamic
     if: ${{ !contains(github.event.head_commit.message, '<24') }}
     uses: ./.github/workflows/build_24.04_dynamic.yml
 
-  build_dynamic_22-04:
-    name: Ubuntu 22.04 dynamic
-    if: ${{ !contains(github.event.head_commit.message, '<22') }}
-    uses: ./.github/workflows/build_22.04_dynamic.yml
+  #build_dynamic_22-04:
+  #  name: Ubuntu 22.04 dynamic
+  #  if: ${{ !contains(github.event.head_commit.message, '<22') }}
+  #  uses: ./.github/workflows/build_22.04_dynamic.yml
 
   #build_dynamic_20-04:
   #  name: Ubuntu 20.04 dynamic
