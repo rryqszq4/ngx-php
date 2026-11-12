@@ -39,8 +39,8 @@ What's different with official php
 Requirement
 -----------
 - Linux only
-- PHP-7.* ~ PHP-8.3
-- nginx-1.4.7 ~ nginx-1.26.x
+- PHP-7.* ~ PHP-8.5
+- nginx-1.4.7 ~ nginx-1.31.x
 
 Installation
 ------------
