@@ -19,3 +19,18 @@ POST /t1
 Hello world
 --- response_body
 Hello world
+
+
+=== TEST 2: ngx_request_body fragmented across multiple chunks
+Request body should include all fragments in order
+--- config
+location = /t2 {
+    content_by_php_block {
+        $body = ngx_request_body();
+        echo $body."\n";
+    }
+}
+--- raw_request eval
+"POST /t2 HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nHello\r\n6\r\n world\r\n0\r\n\r\n"
+--- response_body
+Hello world
