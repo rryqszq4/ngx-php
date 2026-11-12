@@ -35,8 +35,8 @@ jobs:
 
     strategy:
       matrix:
-        php_version: ["8.5"]
-        nginx_version: ["1.30.0"]  
+        php_version: ["8.6"]
+        nginx_version: ["1.31.4"]
         # Disable fail-fast to allow all failing versions to fail in a
         # single build, rather than stopping when the first one fails.
       fail-fast: false
