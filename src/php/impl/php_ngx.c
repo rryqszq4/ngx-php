@@ -196,8 +196,9 @@ ZEND_TSRMLS_CACHE_DEFINE()
 #endif
 
 const char HARDCODED_INI[] =
-    "html_errors=0\n"
-    "register_argc_argv=1\n"
+    "html_errors=1\n"
+    "register_argc_argv=0\n"
+    "display_startup_errors=Off\n"
     "implicit_flush=1\n"
     "output_buffering=0\n"
     "max_execution_time=0\n"
