@@ -1,0 +1,11 @@
+*
+!config
+!src/
+!src/**
+!third_party/
+!t
+!t/
+!t/**
+!/.github
+!/.github/
+!/.github/**

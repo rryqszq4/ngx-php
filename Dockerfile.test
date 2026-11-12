@@ -1,0 +1,37 @@
+FROM ubuntu:24.04
+
+ARG PHP_VERSION=8.4
+ARG NGINX_VERSION=1.31.4
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PHP_SRC_VERSION=${PHP_VERSION} \
+    NGINX_SRC_VERSION=${NGINX_VERSION} \
+    TRAVIS_BUILD_DIR=/src
+
+WORKDIR /src
+
+RUN PHP_OPCACHE_PACKAGE=php${PHP_VERSION}-opcache \
+ && if [ "${PHP_VERSION}" >= "8.5" ]; then PHP_OPCACHE_PACKAGE=; fi \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends software-properties-common ca-certificates wget curl \
+ && add-apt-repository ppa:ondrej/php \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+    bash build-essential cpanminus gdb libargon2-dev libkrb5-dev libpcre3-dev libxml2-dev psmisc \
+      libxslt1-dev libsodium-dev libtool memcached mysql-server redis-server systemtap-sdt-dev \
+      zlib1g-dev php${PHP_VERSION}-cli php${PHP_VERSION}-dbg php${PHP_VERSION}-dev libphp${PHP_VERSION}-embed \
+      php${PHP_VERSION}-mysql ${PHP_OPCACHE_PACKAGE} \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY . /src
+
+RUN wget -q http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+ && tar -xzf nginx-${NGINX_VERSION}.tar.gz \
+ && find config src third_party .github -type f -exec sed -i 's/\r$//' {} + \
+ && ./.github/ngx-php/compile-ngx.sh \
+ && cpanm -n Test::Nginx \
+ && chmod +x .github/ngx-php/docker-test-entrypoint.sh \
+ && rm -f nginx-${NGINX_VERSION}.tar.gz
+
+ENTRYPOINT ["/src/.github/ngx-php/docker-test-entrypoint.sh"]
+CMD ["./.github/ngx-php/test.sh"]
